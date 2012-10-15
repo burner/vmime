@@ -43,7 +43,7 @@ VMIME_TEST_SUITE_BEGIN
 	static const vmime::string encode(const vmime::string& name, const vmime::string& in,
 		int maxLineLength = 0, const vmime::propertySet props = vmime::propertySet())
 	{
-		vmime::ref <vmime::utility::encoder::encoder> enc =
+		vmime::std::shared_ptr<vmime::utility::encoder::encoder> enc =
 			vmime::utility::encoder::encoderFactory::getInstance()->create(name);
 
 		enc->getProperties() = props;
@@ -64,7 +64,7 @@ VMIME_TEST_SUITE_BEGIN
 	// Decoding helper function
 	static const vmime::string decode(const vmime::string& name, const vmime::string& in, int maxLineLength = 0)
 	{
-		vmime::ref <vmime::utility::encoder::encoder> enc =
+		vmime::std::shared_ptr<vmime::utility::encoder::encoder> enc =
 			vmime::utility::encoder::encoderFactory::getInstance()->create(name);
 
 		if (maxLineLength != 0)

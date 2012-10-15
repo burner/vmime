@@ -38,7 +38,7 @@ namespace windows {
 // posixSocket
 //
 
-windowsSocket::windowsSocket(ref <vmime::net::timeoutHandler> th)
+windowsSocket::windowsSocket(std::shared_ptr<vmime::net::timeoutHandler> th)
 	: m_timeoutHandler(th), m_desc(-1)
 {
 	WSAData wsaData;
@@ -177,15 +177,15 @@ void windowsSocket::sendRaw(const char* buffer, const size_type count)
 // posixSocketFactory
 //
 
-ref <vmime::net::socket> windowsSocketFactory::create()
+std::shared_ptr<vmime::net::socket> windowsSocketFactory::create()
 {
-	ref <vmime::net::timeoutHandler> th = NULL;
-	return vmime::create <windowsSocket>(th);
+	std::shared_ptr<vmime::net::timeoutHandler> th = NULL;
+	return vmime::std::make_shared<windowsSocket>(th);
 }
 
-ref <vmime::net::socket> windowsSocketFactory::create(ref <vmime::net::timeoutHandler> th)
+std::shared_ptr<vmime::net::socket> windowsSocketFactory::create(std::shared_ptr<vmime::net::timeoutHandler> th)
 {
-    return vmime::create <windowsSocket>(th);
+    return vmime::std::make_shared<windowsSocket>(th);
 }
 
 } // posix

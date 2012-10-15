@@ -60,7 +60,7 @@ public:
 	  *
 	  * @param part part to append
 	  */
-	void appendPart(ref <bodyPart> part);
+	void appendPart(std::shared_ptr<bodyPart> part);
 
 	/** Insert a new part before the specified part.
 	  *
@@ -68,7 +68,7 @@ public:
 	  * @param part part to insert
 	  * @throw exceptions::no_such_part if the part is not in the list
 	  */
-	void insertPartBefore(ref <bodyPart> beforePart, ref <bodyPart> part);
+	void insertPartBefore(std::shared_ptr<bodyPart> beforePart, std::shared_ptr<bodyPart> part);
 
 	/** Insert a new part before the specified position.
 	  *
@@ -76,7 +76,7 @@ public:
 	  * the beginning of the list)
 	  * @param part part to insert
 	  */
-	void insertPartBefore(const int pos, ref <bodyPart> part);
+	void insertPartBefore(const int pos, std::shared_ptr<bodyPart> part);
 
 	/** Insert a new part after the specified part.
 	  *
@@ -84,21 +84,21 @@ public:
 	  * @param part part to insert
 	  * @throw exceptions::no_such_part if the part is not in the list
 	  */
-	void insertPartAfter(ref <bodyPart> afterPart, ref <bodyPart> part);
+	void insertPartAfter(std::shared_ptr<bodyPart> afterPart, std::shared_ptr<bodyPart> part);
 
 	/** Insert a new part after the specified position.
 	  *
 	  * @param pos position of the part before the new part
 	  * @param part part to insert
 	  */
-	void insertPartAfter(const int pos, ref <bodyPart> part);
+	void insertPartAfter(const int pos, std::shared_ptr<bodyPart> part);
 
 	/** Remove the specified part from the list.
 	  *
 	  * @param part part to remove
 	  * @throw exceptions::no_such_part if the part is not in the list
 	  */
-	void removePart(ref <bodyPart> part);
+	void removePart(std::shared_ptr<bodyPart> part);
 
 	/** Remove the part at the specified position.
 	  *
@@ -127,26 +127,26 @@ public:
 	  * @param pos position
 	  * @return part at position 'pos'
 	  */
-	ref <bodyPart> getPartAt(const int pos);
+	std::shared_ptr<bodyPart> getPartAt(const int pos);
 
 	/** Return the part at the specified position.
 	  *
 	  * @param pos position
 	  * @return part at position 'pos'
 	  */
-	const ref <const bodyPart> getPartAt(const int pos) const;
+	const std::shared_ptr<const bodyPart> getPartAt(const int pos) const;
 
 	/** Return the part list.
 	  *
 	  * @return list of parts
 	  */
-	const std::vector <ref <const bodyPart> > getPartList() const;
+	const std::vector <std::shared_ptr<const bodyPart> > getPartList() const;
 
 	/** Return the part list.
 	  *
 	  * @return list of parts
 	  */
-	const std::vector <ref <bodyPart> > getPartList();
+	const std::vector <std::shared_ptr<bodyPart> > getPartList();
 
 	/** Return the prolog text.
 	  *
@@ -176,20 +176,20 @@ public:
 	  *
 	  * @return read-only body contents
 	  */
-	const ref <const contentHandler> getContents() const;
+	const std::shared_ptr<const contentHandler> getContents() const;
 
 	/** Set the body contents.
 	  *
 	  * @param contents new body contents
 	  */
-	void setContents(ref <const contentHandler> contents);
+	void setContents(std::shared_ptr<const contentHandler> contents);
 
 	/** Set the body contents and type.
 	  *
 	  * @param contents new body contents
 	  * @param type type of contents
 	  */
-	void setContents(ref <const contentHandler> contents, const mediaType& type);
+	void setContents(std::shared_ptr<const contentHandler> contents, const mediaType& type);
 
 	/** Set the body contents, type and charset.
 	  *
@@ -197,7 +197,7 @@ public:
 	  * @param type type of contents
 	  * @param charset charset of contents
 	  */
-	void setContents(ref <const contentHandler> contents, const mediaType& type, const charset& chset);
+	void setContents(std::shared_ptr<const contentHandler> contents, const mediaType& type, const charset& chset);
 
 	/** Set the body contents, type, charset and encoding.
 	  *
@@ -206,7 +206,7 @@ public:
 	  * @param charset charset of contents
 	  * @param encoding contents encoding
 	  */
-	void setContents(ref <const contentHandler> contents, const mediaType& type,
+	void setContents(std::shared_ptr<const contentHandler> contents, const mediaType& type,
 		const charset& chset, const encoding& enc);
 
 	/** Set the MIME type and charset of contents.
@@ -274,36 +274,36 @@ public:
 	  */
 	static bool isValidBoundary(const string& boundary);
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 	body& operator=(const body& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 private:
 
-	void setParentPart(ref <bodyPart> parent);
+	void setParentPart(std::shared_ptr<bodyPart> parent);
 
 
 	string m_prologText;
 	string m_epilogText;
 
-	ref <const contentHandler> m_contents;
+	std::shared_ptr<const contentHandler> m_contents;
 
-	weak_ref <bodyPart> m_part;
-	weak_ref <header> m_header;
+	std::weak_ptr<bodyPart> m_part;
+	std::weak_ptr<header> m_header;
 
-	std::vector <ref <bodyPart> > m_parts;
+	std::vector <std::shared_ptr<bodyPart> > m_parts;
 
 	bool isRootPart() const;
 
-	void initNewPart(ref <bodyPart> part);
+	void initNewPart(std::shared_ptr<bodyPart> part);
 
 protected:
 
 	// Component parsing & assembling
 	void parseImpl
-		(ref <utility::parserInputStreamAdapter> parser,
+		(std::shared_ptr<utility::parserInputStreamAdapter> parser,
 		 const utility::stream::size_type position,
 		 const utility::stream::size_type end,
 		 utility::stream::size_type* newPosition = NULL);

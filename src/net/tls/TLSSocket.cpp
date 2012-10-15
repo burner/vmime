@@ -37,7 +37,7 @@ namespace net {
 namespace tls {
 
 
-TLSSocket::TLSSocket(ref <TLSSession> session, ref <socket> sok)
+TLSSocket::TLSSocket(std::shared_ptr<TLSSession> session, std::shared_ptr<socket> sok)
 	: m_session(session), m_wrapped(sok), m_connected(false),
 	  m_handshaking(false), m_ex(NULL)
 {
@@ -147,7 +147,7 @@ void TLSSocket::sendRaw(const char* buffer, const size_type count)
 }
 
 
-void TLSSocket::handshake(ref <timeoutHandler> toHandler)
+void TLSSocket::handshake(std::shared_ptr<timeoutHandler> toHandler)
 {
 	if (toHandler)
 		toHandler->resetTimeOut();
@@ -197,7 +197,7 @@ void TLSSocket::handshake(ref <timeoutHandler> toHandler)
 	m_toHandler = NULL;
 
 	// Verify server's certificate(s)
-	ref <security::cert::certificateChain> certs = getPeerCertificates();
+	std::shared_ptr<security::cert::certificateChain> certs = getPeerCertificates();
 
 	if (certs == NULL)
 		throw exceptions::tls_exception("No peer certificate.");
@@ -292,7 +292,7 @@ ssize_t TLSSocket::gnutlsPullFunc
 }
 
 
-ref <security::cert::certificateChain> TLSSocket::getPeerCertificates() const
+std::shared_ptr<security::cert::certificateChain> TLSSocket::getPeerCertificates() const
 {
 	unsigned int certCount = 0;
 	const gnutls_datum* rawData = gnutls_certificate_get_peers
@@ -320,7 +320,7 @@ ref <security::cert::certificateChain> TLSSocket::getPeerCertificates() const
 	}
 
 	{
-		std::vector <ref <security::cert::certificate> > certs;
+		std::vector <std::shared_ptr<security::cert::certificate> > certs;
 		bool error = false;
 
 		for (unsigned int i = 0 ; i < certCount ; ++i)
@@ -335,7 +335,7 @@ ref <security::cert::certificateChain> TLSSocket::getPeerCertificates() const
 			gnutls_x509_crt_export(x509Certs[i],
 				GNUTLS_X509_FMT_DER, &data[0], &dataSize);
 
-			ref <security::cert::X509Certificate> cert =
+			std::shared_ptr<security::cert::X509Certificate> cert =
 				security::cert::X509Certificate::import(&data[0], dataSize);
 
 			if (cert != NULL)
@@ -351,7 +351,7 @@ ref <security::cert::certificateChain> TLSSocket::getPeerCertificates() const
 		if (error)
 			return NULL;
 
-		return vmime::create <security::cert::certificateChain>(certs);
+		return vmime::std::make_shared<security::cert::certificateChain>(certs);
 	}
 
 	delete [] x509Certs;
@@ -385,7 +385,7 @@ private:
 
 void TLSSocket::internalThrow()
 {
-	static std::vector <ref <TLSSocket_DeleteExWrapper> > exToDelete;
+	static std::vector <std::shared_ptr<TLSSocket_DeleteExWrapper> > exToDelete;
 
 	if (m_ex)
 	{
@@ -395,7 +395,7 @@ void TLSSocket::internalThrow()
 		m_ex = NULL;
 
 		// To avoid memory leaks
-		exToDelete.push_back(vmime::create <TLSSocket_DeleteExWrapper>(ex));
+		exToDelete.push_back(vmime::std::make_shared<TLSSocket_DeleteExWrapper>(ex));
 
 		throw *ex;
 	}

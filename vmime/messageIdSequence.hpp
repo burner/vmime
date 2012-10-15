@@ -45,18 +45,18 @@ public:
 	~messageIdSequence();
 
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 	messageIdSequence& operator=(const messageIdSequence& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 
 	/** Add a message-id at the end of the list.
 	  *
 	  * @param mid message-id to append
 	  */
-	void appendMessageId(ref <messageId> mid);
+	void appendMessageId(std::shared_ptr<messageId> mid);
 
 	/** Insert a new message-id before the specified message-id.
 	  *
@@ -64,7 +64,7 @@ public:
 	  * @param mid message-id to insert
 	  * @throw exceptions::no_such_messageid if the message-id is not in the list
 	  */
-	void insertMessageIdBefore(ref <messageId> beforeMid, ref <messageId> mid);
+	void insertMessageIdBefore(std::shared_ptr<messageId> beforeMid, std::shared_ptr<messageId> mid);
 
 	/** Insert a new message-id before the specified position.
 	  *
@@ -72,7 +72,7 @@ public:
 	  * the beginning of the list)
 	  * @param mid message-id to insert
 	  */
-	void insertMessageIdBefore(const int pos, ref <messageId> mid);
+	void insertMessageIdBefore(const int pos, std::shared_ptr<messageId> mid);
 
 	/** Insert a new message-id after the specified message-id.
 	  *
@@ -80,21 +80,21 @@ public:
 	  * @param mid message-id to insert
 	  * @throw exceptions::no_such_message_id if the message-id is not in the list
 	  */
-	void insertMessageIdAfter(ref <messageId> afterMid, ref <messageId> mid);
+	void insertMessageIdAfter(std::shared_ptr<messageId> afterMid, std::shared_ptr<messageId> mid);
 
 	/** Insert a new message-id after the specified position.
 	  *
 	  * @param pos position of the message-id before the new message-id
 	  * @param mid message-id to insert
 	  */
-	void insertMessageIdAfter(const int pos, ref <messageId> mid);
+	void insertMessageIdAfter(const int pos, std::shared_ptr<messageId> mid);
 
 	/** Remove the specified message-id from the list.
 	  *
 	  * @param mid message-id to remove
 	  * @throw exceptions::no_such_message_id if the message-id is not in the list
 	  */
-	void removeMessageId(ref <messageId> mid);
+	void removeMessageId(std::shared_ptr<messageId> mid);
 
 	/** Remove the message-id at the specified position.
 	  *
@@ -123,30 +123,30 @@ public:
 	  * @param pos position
 	  * @return message-id at position 'pos'
 	  */
-	const ref <messageId> getMessageIdAt(const int pos);
+	const std::shared_ptr<messageId> getMessageIdAt(const int pos);
 
 	/** Return the message-id at the specified position.
 	  *
 	  * @param pos position
 	  * @return message-id at position 'pos'
 	  */
-	const ref <const messageId> getMessageIdAt(const int pos) const;
+	const std::shared_ptr<const messageId> getMessageIdAt(const int pos) const;
 
 	/** Return the message-id list.
 	  *
 	  * @return list of message-ids
 	  */
-	const std::vector <ref <const messageId> > getMessageIdList() const;
+	const std::vector <std::shared_ptr<const messageId> > getMessageIdList() const;
 
 	/** Return the message-id list.
 	  *
 	  * @return list of message-ids
 	  */
-	const std::vector <ref <messageId> > getMessageIdList();
+	const std::vector <std::shared_ptr<messageId> > getMessageIdList();
 
 private:
 
-	std::vector <ref <messageId> > m_list;
+	std::vector <std::shared_ptr<messageId> > m_list;
 
 protected:
 

@@ -92,7 +92,7 @@ public:
 
 	posixFileWriter(const vmime::utility::file::path& path, const vmime::string& nativePath);
 
-	ref <vmime::utility::outputStream> getOutputStream();
+	std::shared_ptr<vmime::utility::outputStream> getOutputStream();
 
 private:
 
@@ -108,7 +108,7 @@ public:
 
 	posixFileReader(const vmime::utility::file::path& path, const vmime::string& nativePath);
 
-	ref <vmime::utility::inputStream> getInputStream();
+	std::shared_ptr<vmime::utility::inputStream> getInputStream();
 
 private:
 
@@ -126,7 +126,7 @@ public:
 	~posixFileIterator();
 
 	bool hasMoreElements() const;
-	ref <vmime::utility::file> nextElement();
+	std::shared_ptr<vmime::utility::file> nextElement();
 
 private:
 
@@ -162,16 +162,16 @@ public:
 
 	bool exists() const;
 
-	ref <vmime::utility::file> getParent() const;
+	std::shared_ptr<vmime::utility::file> getParent() const;
 
 	void rename(const path& newName);
 
 	void remove();
 
-	ref <vmime::utility::fileWriter> getFileWriter();
-	ref <vmime::utility::fileReader> getFileReader();
+	std::shared_ptr<vmime::utility::fileWriter> getFileWriter();
+	std::shared_ptr<vmime::utility::fileReader> getFileReader();
 
-	ref <vmime::utility::fileIterator> getFiles() const;
+	std::shared_ptr<vmime::utility::fileIterator> getFiles() const;
 
 private:
 
@@ -189,7 +189,7 @@ class posixFileSystemFactory : public vmime::utility::fileSystemFactory
 {
 public:
 
-	ref <vmime::utility::file> create(const vmime::utility::file::path& path) const;
+	std::shared_ptr<vmime::utility::file> create(const vmime::utility::file::path& path) const;
 
 	const vmime::utility::file::path stringToPath(const vmime::string& str) const;
 	const vmime::string pathToString(const vmime::utility::file::path& path) const;

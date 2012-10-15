@@ -57,7 +57,7 @@ text::text(const string& t)
 
 text::text(const word& w)
 {
-	appendWord(vmime::create <word>(w));
+	appendWord(vmime::std::make_shared<word>(w));
 }
 
 
@@ -74,7 +74,7 @@ void text::parseImpl(const string& buffer, const string::size_type position,
 
 	string::size_type newPos;
 
-	const std::vector <ref <word> > words = word::parseMultiple(buffer, position, end, &newPos);
+	const std::vector <std::shared_ptr<word> > words = word::parseMultiple(buffer, position, end, &newPos);
 
 	copy_vector(words, m_words);
 
@@ -98,8 +98,8 @@ void text::copyFrom(const component& other)
 
 	removeAllWords();
 
-	for (std::vector <ref <word> >::const_iterator i = t.m_words.begin() ; i != t.m_words.end() ; ++i)
-		m_words.push_back(vmime::create <word>(**i));
+	for (std::vector <std::shared_ptr<word> >::const_iterator i = t.m_words.begin() ; i != t.m_words.end() ; ++i)
+		m_words.push_back(vmime::std::make_shared<word>(**i));
 }
 
 
@@ -123,8 +123,8 @@ bool text::operator==(const text& t) const
 	{
 		bool equal = true;
 
-		std::vector <ref <word> >::const_iterator i = m_words.begin();
-		std::vector <ref <word> >::const_iterator j = t.m_words.begin();
+		std::vector <std::shared_ptr<word> >::const_iterator i = m_words.begin();
+		std::vector <std::shared_ptr<word> >::const_iterator j = t.m_words.begin();
 
 		for ( ; equal && i != m_words.end() ; ++i, ++j)
 			equal = (**i == **j);
@@ -146,26 +146,26 @@ const string text::getConvertedText(const charset& dest) const
 {
 	string out;
 
-	for (std::vector <ref <word> >::const_iterator i = m_words.begin() ; i != m_words.end() ; ++i)
+	for (std::vector <std::shared_ptr<word> >::const_iterator i = m_words.begin() ; i != m_words.end() ; ++i)
 		out += (*i)->getConvertedText(dest);
 
 	return (out);
 }
 
 
-void text::appendWord(ref <word> w)
+void text::appendWord(std::shared_ptr<word> w)
 {
 	m_words.push_back(w);
 }
 
 
-void text::insertWordBefore(const int pos, ref <word> w)
+void text::insertWordBefore(const int pos, std::shared_ptr<word> w)
 {
 	m_words.insert(m_words.begin() + pos, w);
 }
 
 
-void text::insertWordAfter(const int pos, ref <word> w)
+void text::insertWordAfter(const int pos, std::shared_ptr<word> w)
 {
 	m_words.insert(m_words.begin() + pos + 1, w);
 }
@@ -173,7 +173,7 @@ void text::insertWordAfter(const int pos, ref <word> w)
 
 void text::removeWord(const int pos)
 {
-	const std::vector <ref <word> >::iterator it = m_words.begin() + pos;
+	const std::vector <std::shared_ptr<word> >::iterator it = m_words.begin() + pos;
 
 	m_words.erase(it);
 }
@@ -197,25 +197,25 @@ bool text::isEmpty() const
 }
 
 
-const ref <word> text::getWordAt(const int pos)
+const std::shared_ptr<word> text::getWordAt(const int pos)
 {
 	return (m_words[pos]);
 }
 
 
-const ref <const word> text::getWordAt(const int pos) const
+const std::shared_ptr<const word> text::getWordAt(const int pos) const
 {
 	return (m_words[pos]);
 }
 
 
-const std::vector <ref <const word> > text::getWordList() const
+const std::vector <std::shared_ptr<const word> > text::getWordList() const
 {
-	std::vector <ref <const word> > list;
+	std::vector <std::shared_ptr<const word> > list;
 
 	list.reserve(m_words.size());
 
-	for (std::vector <ref <word> >::const_iterator it = m_words.begin() ;
+	for (std::vector <std::shared_ptr<word> >::const_iterator it = m_words.begin() ;
 	     it != m_words.end() ; ++it)
 	{
 		list.push_back(*it);
@@ -225,21 +225,21 @@ const std::vector <ref <const word> > text::getWordList() const
 }
 
 
-const std::vector <ref <word> > text::getWordList()
+const std::vector <std::shared_ptr<word> > text::getWordList()
 {
 	return (m_words);
 }
 
 
-ref <component> text::clone() const
+std::shared_ptr<component> text::clone() const
 {
-	return vmime::create <text>(*this);
+	return vmime::std::make_shared<text>(*this);
 }
 
 
-ref <text> text::newFromString(const string& in, const charset& ch)
+std::shared_ptr<text> text::newFromString(const string& in, const charset& ch)
 {
-	ref <text> t = vmime::create <text>();
+	std::shared_ptr<text> t = vmime::std::make_shared<text>();
 
 	t->createFromString(in, ch);
 
@@ -270,7 +270,7 @@ void text::createFromString(const string& in, const charset& ch)
 	// If there are "too much" non-ASCII chars, encode everything
 	if (alwaysEncode || asciiPercent < 60)  // less than 60% ASCII chars
 	{
-		appendWord(vmime::create <word>(in, ch));
+		appendWord(vmime::std::make_shared<word>(in, ch));
 	}
 	// Else, only encode words which need it
 	else
@@ -294,18 +294,18 @@ void text::createFromString(const string& in, const charset& ch)
 					{
 						// No need to create a new encoded word, just append
 						// the current word to the previous one.
-						ref <word> w = getWordAt(getWordCount() - 1);
+						std::shared_ptr<word> w = getWordAt(getWordCount() - 1);
 						w->getBuffer() += " " + chunk;
 					}
 					else
 					{
 						if (count)
 						{
-							ref <word> w = getWordAt(getWordCount() - 1);
+							std::shared_ptr<word> w = getWordAt(getWordCount() - 1);
 							w->getBuffer() += ' ';
 						}
 
-						appendWord(vmime::create <word>(chunk, ch));
+						appendWord(vmime::std::make_shared<word>(chunk, ch));
 
 						prevIs8bit = true;
 						++count;
@@ -315,12 +315,12 @@ void text::createFromString(const string& in, const charset& ch)
 				{
 					if (count && !prevIs8bit)
 					{
-						ref <word> w = getWordAt(getWordCount() - 1);
+						std::shared_ptr<word> w = getWordAt(getWordCount() - 1);
 						w->getBuffer() += " " + chunk;
 					}
 					else
 					{
-						appendWord(vmime::create <word>
+						appendWord(vmime::std::make_shared<word>
 							(chunk, charset(charsets::US_ASCII)));
 
 						prevIs8bit = false;
@@ -365,9 +365,9 @@ void text::encodeAndFold(utility::outputStream& os, const string::size_type maxL
 }
 
 
-ref <text> text::decodeAndUnfold(const string& in)
+std::shared_ptr<text> text::decodeAndUnfold(const string& in)
 {
-	ref <text> t = vmime::create <text>();
+	std::shared_ptr<text> t = vmime::std::make_shared<text>();
 
 	decodeAndUnfold(in, t.get());
 
@@ -381,7 +381,7 @@ text* text::decodeAndUnfold(const string& in, text* generateInExisting)
 
 	out->removeAllWords();
 
-	const std::vector <ref <word> > words = word::parseMultiple(in, 0, in.length(), NULL);
+	const std::vector <std::shared_ptr<word> > words = word::parseMultiple(in, 0, in.length(), NULL);
 
 	copy_vector(words, out->m_words);
 
@@ -389,9 +389,9 @@ text* text::decodeAndUnfold(const string& in, text* generateInExisting)
 }
 
 
-const std::vector <ref <component> > text::getChildComponents()
+const std::vector <std::shared_ptr<component> > text::getChildComponents()
 {
-	std::vector <ref <component> > list;
+	std::vector <std::shared_ptr<component> > list;
 
 	copy_vector(m_words, list);
 
@@ -403,7 +403,7 @@ const string text::getWholeBuffer() const
 {
 	string res;
 
-	for (std::vector <ref <word> >::const_iterator it = m_words.begin() ;
+	for (std::vector <std::shared_ptr<word> >::const_iterator it = m_words.begin() ;
 	     it != m_words.end() ; ++it)
 	{
 		res += (*it)->getBuffer();

@@ -90,9 +90,9 @@ void encoding::generateImpl(utility::outputStream& os, const string::size_type /
 }
 
 
-ref <utility::encoder::encoder> encoding::getEncoder() const
+std::shared_ptr<utility::encoder::encoder> encoding::getEncoder() const
 {
-	ref <utility::encoder::encoder> encoder =
+	std::shared_ptr<utility::encoder::encoder> encoder =
 		utility::encoder::encoderFactory::getInstance()->create(generate());
 
 	// FIXME: this should not be here (move me into QP encoder instead?)
@@ -185,7 +185,7 @@ const encoding encoding::decideImpl
 
 
 const encoding encoding::decide
-	(ref <const contentHandler> data, const EncodingUsage usage)
+	(std::shared_ptr<const contentHandler> data, const EncodingUsage usage)
 {
 	encoding enc;
 
@@ -212,7 +212,7 @@ const encoding encoding::decide
 }
 
 
-const encoding encoding::decide(ref <const contentHandler> data,
+const encoding encoding::decide(std::shared_ptr<const contentHandler> data,
 	const charset& chset, const EncodingUsage usage)
 {
 	if (usage == USAGE_TEXT)
@@ -230,9 +230,9 @@ const encoding encoding::decide(ref <const contentHandler> data,
 }
 
 
-ref <component> encoding::clone() const
+std::shared_ptr<component> encoding::clone() const
 {
-	return vmime::create <encoding>(*this);
+	return vmime::std::make_shared<encoding>(*this);
 }
 
 
@@ -268,9 +268,9 @@ void encoding::setUsage(const EncodingUsage usage)
 }
 
 
-const std::vector <ref <component> > encoding::getChildComponents()
+const std::vector <std::shared_ptr<component> > encoding::getChildComponents()
 {
-	return std::vector <ref <component> >();
+	return std::vector <std::shared_ptr<component> >();
 }
 
 

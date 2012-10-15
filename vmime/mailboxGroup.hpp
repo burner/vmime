@@ -24,6 +24,8 @@
 #ifndef VMIME_MAILBOXGROUP_HPP_INCLUDED
 #define VMIME_MAILBOXGROUP_HPP_INCLUDED
 
+#include <memory>
+
 
 #include "vmime/address.hpp"
 #include "vmime/mailbox.hpp"
@@ -49,10 +51,10 @@ public:
 
 
 	void copyFrom(const component& other);
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	mailboxGroup& operator=(const component& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 	/** Return the name of the group.
 	  *
@@ -70,7 +72,7 @@ public:
 	  *
 	  * @param mbox mailbox to append
 	  */
-	void appendMailbox(ref <mailbox> mbox);
+	void appendMailbox(std::shared_ptr<mailbox> mbox);
 
 	/** Insert a new mailbox before the specified mailbox.
 	  *
@@ -78,7 +80,7 @@ public:
 	  * @param mbox mailbox to insert
 	  * @throw exceptions::no_such_mailbox if the mailbox is not in the list
 	  */
-	void insertMailboxBefore(ref <mailbox> beforeMailbox, ref <mailbox> mbox);
+	void insertMailboxBefore(std::shared_ptr<mailbox> beforeMailbox, std::shared_ptr<mailbox> mbox);
 
 	/** Insert a new mailbox before the specified position.
 	  *
@@ -86,7 +88,7 @@ public:
 	  * the beginning of the list)
 	  * @param mbox mailbox to insert
 	  */
-	void insertMailboxBefore(const int pos, ref <mailbox> mbox);
+	void insertMailboxBefore(const int pos, std::shared_ptr<mailbox> mbox);
 
 	/** Insert a new mailbox after the specified mailbox.
 	  *
@@ -94,21 +96,21 @@ public:
 	  * @param mbox mailbox to insert
 	  * @throw exceptions::no_such_mailbox if the mailbox is not in the list
 	  */
-	void insertMailboxAfter(ref <mailbox> afterMailbox, ref <mailbox> mbox);
+	void insertMailboxAfter(std::shared_ptr<mailbox> afterMailbox, std::shared_ptr<mailbox> mbox);
 
 	/** Insert a new mailbox after the specified position.
 	  *
 	  * @param pos position of the mailbox before the new mailbox
 	  * @param mbox mailbox to insert
 	  */
-	void insertMailboxAfter(const int pos, ref <mailbox> mbox);
+	void insertMailboxAfter(const int pos, std::shared_ptr<mailbox> mbox);
 
 	/** Remove the specified mailbox from the list.
 	  *
 	  * @param mbox mailbox to remove
 	  * @throw exceptions::no_such_mailbox if the mailbox is not in the list
 	  */
-	void removeMailbox(ref <mailbox> mbox);
+	void removeMailbox(std::shared_ptr<mailbox> mbox);
 
 	/** Remove the mailbox at the specified position.
 	  *
@@ -137,33 +139,33 @@ public:
 	  * @param pos position
 	  * @return mailbox at position 'pos'
 	  */
-	ref <mailbox> getMailboxAt(const int pos);
+	std::shared_ptr<mailbox> getMailboxAt(const int pos);
 
 	/** Return the mailbox at the specified position.
 	  *
 	  * @param pos position
 	  * @return mailbox at position 'pos'
 	  */
-	const ref <const mailbox> getMailboxAt(const int pos) const;
+	const std::shared_ptr<const mailbox> getMailboxAt(const int pos) const;
 
 	/** Return the mailbox list.
 	  *
 	  * @return list of mailboxes
 	  */
-	const std::vector <ref <const mailbox> > getMailboxList() const;
+	const std::vector <std::shared_ptr<const mailbox> > getMailboxList() const;
 
 	/** Return the mailbox list.
 	  *
 	  * @return list of mailboxes
 	  */
-	const std::vector <ref <mailbox> > getMailboxList();
+	const std::vector <std::shared_ptr<mailbox> > getMailboxList();
 
 	bool isGroup() const;
 
 private:
 
 	text m_name;
-	std::vector <ref <mailbox> > m_list;
+	std::vector <std::shared_ptr<mailbox> > m_list;
 
 protected:
 

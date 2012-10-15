@@ -29,7 +29,7 @@ namespace net {
 namespace imap {
 
 
-IMAPSStore::IMAPSStore(ref <session> sess, ref <security::authenticator> auth)
+IMAPSStore::IMAPSStore(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth)
 	: IMAPStore(sess, auth, true)
 {
 }

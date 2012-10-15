@@ -56,14 +56,14 @@ class IMAPStore : public store
 
 public:
 
-	IMAPStore(ref <session> sess, ref <security::authenticator> auth, const bool secured = false);
+	IMAPStore(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth, const bool secured = false);
 	~IMAPStore();
 
 	const string getProtocolName() const;
 
-	ref <folder> getDefaultFolder();
-	ref <folder> getRootFolder();
-	ref <folder> getFolder(const folder::path& path);
+	std::shared_ptr<folder> getDefaultFolder();
+	std::shared_ptr<folder> getRootFolder();
+	std::shared_ptr<folder> getFolder(const folder::path& path);
 
 	bool isValidFolderName(const folder::path::component& name) const;
 
@@ -81,16 +81,16 @@ public:
 	bool isIMAPS() const;
 
 	bool isSecuredConnection() const;
-	ref <connectionInfos> getConnectionInfos() const;
+	std::shared_ptr<connectionInfos> getConnectionInfos() const;
 
 protected:
 
 	// Connection
-	ref <IMAPConnection> m_connection;
+	std::shared_ptr<IMAPConnection> m_connection;
 
 
 
-	ref <IMAPConnection> connection();
+	std::shared_ptr<IMAPConnection> connection();
 
 
 	void registerFolder(IMAPFolder* folder);

@@ -23,6 +23,7 @@
 
 #ifndef VMIME_COMPONENT_HPP_INCLUDED
 #define VMIME_COMPONENT_HPP_INCLUDED
+#include <memory>
 
 
 #include "vmime/base.hpp"
@@ -57,7 +58,7 @@ public:
 	  * or if length is not specified, entire contents of the stream will
 	  * be loaded into memory before parsing.
 	  */
-	void parse(ref <utility::inputStream> inputStream, const utility::stream::size_type length);
+	void parse(std::shared_ptr<utility::inputStream> inputStream, const utility::stream::size_type length);
 
 	/** Parse RFC-822/MIME data for this component.
 	  *
@@ -82,7 +83,7 @@ public:
 	  * @param newPosition will receive the new position in the input stream
 	  */
 	void parse
-		(ref <utility::inputStream> inputStream,
+		(std::shared_ptr<utility::inputStream> inputStream,
 		 const utility::stream::size_type position,
 		 const utility::stream::size_type end,
 		 utility::stream::size_type* newPosition = NULL);
@@ -120,7 +121,7 @@ public:
 	  * @param newLinePos will receive the new line position (length of the last line written)
 	  */
 	virtual void generate
-		(ref <utility::outputStream> outputStream,
+		(std::shared_ptr<utility::outputStream> outputStream,
 		 const string::size_type maxLineLength = lineLengthLimits::infinite,
 		 const string::size_type curLinePos = 0,
 		 string::size_type* newLinePos = NULL) const;
@@ -129,7 +130,7 @@ public:
 	  *
 	  * @return a copy of this component
 	  */
-	virtual ref <component> clone() const = 0;
+	virtual std::shared_ptr<component> clone() const = 0;
 
 	/** Replace data in this component by data in other component.
 	  * Both components must be of the same type.
@@ -160,7 +161,7 @@ public:
 	  *
 	  * @return list of child components
 	  */
-	virtual const std::vector <ref <component> > getChildComponents() = 0;
+	virtual const std::vector <std::shared_ptr<component> > getChildComponents() = 0;
 
 protected:
 
@@ -168,7 +169,7 @@ protected:
 
 	// AT LEAST ONE of these parseImpl() functions MUST be implemented in derived class
 	virtual void parseImpl
-		(ref <utility::parserInputStreamAdapter> parser,
+		(std::shared_ptr<utility::parserInputStreamAdapter> parser,
 		 const utility::stream::size_type position,
 		 const utility::stream::size_type end,
 		 utility::stream::size_type* newPosition = NULL);

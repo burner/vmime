@@ -55,8 +55,8 @@ private:
 	{
 	public:
 
-		virtual ref <SASLMechanism> create
-			(ref <SASLContext> ctx, const string& name) = 0;
+		virtual std::shared_ptr<SASLMechanism> create
+			(std::shared_ptr<SASLContext> ctx, const string& name) = 0;
 	};
 
 	template <typename T>
@@ -64,13 +64,13 @@ private:
 	{
 	public:
 
-		ref <SASLMechanism> create(ref <SASLContext> ctx, const string& name)
+		std::shared_ptr<SASLMechanism> create(std::shared_ptr<SASLContext> ctx, const string& name)
 		{
-			return vmime::create <T>(ctx, name);
+			return vmime::std::make_shared<T>(ctx, name);
 		}
 	};
 
-	typedef std::map <string, ref <registeredMechanism> > MapType;
+	typedef std::map <string, std::shared_ptr<registeredMechanism> > MapType;
 	MapType m_mechs;
 
 public:
@@ -86,7 +86,7 @@ public:
 	void registerMechanism(const string& name)
 	{
 		m_mechs.insert(MapType::value_type(name,
-			vmime::create <registeredMechanismImpl <MECH_CLASS> >()));
+			vmime::std::make_shared<registeredMechanismImpl <MECH_CLASS> >()));
 	}
 
 	/** Create a mechanism object given its name.
@@ -97,7 +97,7 @@ public:
 	  * @throw exceptions::no_such_mechanism if no mechanism is
 	  * registered for the specified name
 	  */
-	ref <SASLMechanism> create(ref <SASLContext> ctx, const string& name);
+	std::shared_ptr<SASLMechanism> create(std::shared_ptr<SASLContext> ctx, const string& name);
 
 	/** Return a list of supported mechanisms. This includes mechanisms
 	  * registered using registerMechanism() as well as the ones that

@@ -55,8 +55,8 @@ public:
 	~header();
 
 #define FIELD_ACCESS(methodName, fieldName) \
-	ref <headerField> methodName() { return getField(fields::fieldName); } \
-	ref <const headerField> methodName() const { return findField(fields::fieldName); }
+	std::shared_ptr<headerField> methodName() { return getField(fields::fieldName); } \
+	std::shared_ptr<const headerField> methodName() const { return findField(fields::fieldName); }
 
 	FIELD_ACCESS(From,                         FROM)
 	FIELD_ACCESS(Sender,                       SENDER)
@@ -102,14 +102,14 @@ public:
 	  * @throw exceptions::no_such_field if no field with this name exists
 	  * @return first field with the specified name
 	  */
-	ref <headerField> findField(const string& fieldName) const;
+	std::shared_ptr<headerField> findField(const string& fieldName) const;
 
 	/** Find all fields that match the specified name.
 	  * If no field is found, an empty vector is returned.
 	  *
 	  * @return list of fields with the specified name
 	  */
-	std::vector <ref <headerField> > findAllFields(const string& fieldName);
+	std::vector <std::shared_ptr<headerField> > findAllFields(const string& fieldName);
 
 	/** Find the first field that matches the specified name.
 	  * If no field is found, one will be created and inserted into
@@ -118,13 +118,13 @@ public:
 	  * @return first field with the specified name or a new field
 	  * if no field is found
 	  */
-	ref <headerField> getField(const string& fieldName);
+	std::shared_ptr<headerField> getField(const string& fieldName);
 
 	/** Add a field at the end of the list.
 	  *
 	  * @param field field to append
 	  */
-	void appendField(ref <headerField> field);
+	void appendField(std::shared_ptr<headerField> field);
 
 	/** Insert a new field before the specified field.
 	  *
@@ -132,7 +132,7 @@ public:
 	  * @param field field to insert
 	  * @throw exceptions::no_such_field if the field is not in the list
 	  */
-	void insertFieldBefore(ref <headerField> beforeField, ref <headerField> field);
+	void insertFieldBefore(std::shared_ptr<headerField> beforeField, std::shared_ptr<headerField> field);
 
 	/** Insert a new field before the specified position.
 	  *
@@ -140,7 +140,7 @@ public:
 	  * the beginning of the list)
 	  * @param field field to insert
 	  */
-	void insertFieldBefore(const int pos, ref <headerField> field);
+	void insertFieldBefore(const int pos, std::shared_ptr<headerField> field);
 
 	/** Insert a new field after the specified field.
 	  *
@@ -148,21 +148,21 @@ public:
 	  * @param field field to insert
 	  * @throw exceptions::no_such_field if the field is not in the list
 	  */
-	void insertFieldAfter(ref <headerField> afterField, ref <headerField> field);
+	void insertFieldAfter(std::shared_ptr<headerField> afterField, std::shared_ptr<headerField> field);
 
 	/** Insert a new field after the specified position.
 	  *
 	  * @param pos position of the field before the new field
 	  * @param field field to insert
 	  */
-	void insertFieldAfter(const int pos, ref <headerField> field);
+	void insertFieldAfter(const int pos, std::shared_ptr<headerField> field);
 
 	/** Remove the specified field from the list.
 	  *
 	  * @param field field to remove
 	  * @throw exceptions::no_such_field if the field is not in the list
 	  */
-	void removeField(ref <headerField> field);
+	void removeField(std::shared_ptr<headerField> field);
 
 	/** Remove the field at the specified position.
 	  *
@@ -195,36 +195,36 @@ public:
 	  * @param pos position
 	  * @return field at position 'pos'
 	  */
-	const ref <headerField> getFieldAt(const int pos);
+	const std::shared_ptr<headerField> getFieldAt(const int pos);
 
 	/** Return the field at the specified position.
 	  *
 	  * @param pos position
 	  * @return field at position 'pos'
 	  */
-	const ref <const headerField> getFieldAt(const int pos) const;
+	const std::shared_ptr<const headerField> getFieldAt(const int pos) const;
 
 	/** Return the field list.
 	  *
 	  * @return list of fields
 	  */
-	const std::vector <ref <const headerField> > getFieldList() const;
+	const std::vector <std::shared_ptr<const headerField> > getFieldList() const;
 
 	/** Return the field list.
 	  *
 	  * @return list of fields
 	  */
-	const std::vector <ref <headerField> > getFieldList();
+	const std::vector <std::shared_ptr<headerField> > getFieldList();
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 	header& operator=(const header& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 private:
 
-	std::vector <ref <headerField> > m_fields;
+	std::vector <std::shared_ptr<headerField> > m_fields;
 
 
 	class fieldHasName
@@ -232,7 +232,7 @@ private:
 	public:
 
 		fieldHasName(const string& name);
-		bool operator() (const ref <const headerField>& field);
+		bool operator() (const std::shared_ptr<const headerField>& field);
 
 	private:
 
@@ -244,7 +244,7 @@ private:
 	public:
 
 		fieldHasNotName(const string& name);
-		bool operator() (const ref <const headerField>& field);
+		bool operator() (const std::shared_ptr<const headerField>& field);
 
 	private:
 

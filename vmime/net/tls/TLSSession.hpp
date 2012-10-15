@@ -53,7 +53,7 @@ public:
 	  * sent by the server
 	  * @return a new TLS session
 	  */
-	TLSSession(ref <security::cert::certificateVerifier> cv);
+	TLSSession(std::shared_ptr<security::cert::certificateVerifier> cv);
 
 	/** Create a new socket that adds a TLS security layer around
 	  * an existing socket. You should create only one socket
@@ -62,12 +62,12 @@ public:
 	  * @param sok socket to wrap
 	  * @return TLS socket wrapper
 	  */
-	ref <TLSSocket> getSocket(ref <socket> sok);
+	std::shared_ptr<TLSSocket> getSocket(std::shared_ptr<socket> sok);
 
 	/** Get the object responsible for verifying certificates when
 	  * using secured connections (TLS/SSL).
 	  */
-	ref <security::cert::certificateVerifier> getCertificateVerifier();
+	std::shared_ptr<security::cert::certificateVerifier> getCertificateVerifier();
 
 private:
 
@@ -82,7 +82,7 @@ private:
 	void* m_gnutlsSession;
 #endif // LIBGNUTLS_VERSION
 
-	ref <security::cert::certificateVerifier> m_certVerifier;
+	std::shared_ptr<security::cert::certificateVerifier> m_certVerifier;
 };
 
 

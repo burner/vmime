@@ -76,7 +76,7 @@ public:
 	  * @throws exceptions::operation_timed_out if no data
 	  * has been received within the granted time
 	  */
-	static ref <SMTPResponse> readResponse(ref <socket> sok, ref <timeoutHandler> toh);
+	static std::shared_ptr<SMTPResponse> readResponse(std::shared_ptr<socket> sok, std::shared_ptr<timeoutHandler> toh);
 
 	/** Return the SMTP response code.
 	  *
@@ -112,7 +112,7 @@ public:
 
 private:
 
-	SMTPResponse(ref <socket> sok, ref <timeoutHandler> toh);
+	SMTPResponse(std::shared_ptr<socket> sok, std::shared_ptr<timeoutHandler> toh);
 	SMTPResponse(const SMTPResponse&);
 
 	void readResponse();
@@ -125,8 +125,8 @@ private:
 
 	std::vector <responseLine> m_lines;
 
-	ref <socket> m_socket;
-	ref <timeoutHandler> m_timeoutHandler;
+	std::shared_ptr<socket> m_socket;
+	std::shared_ptr<timeoutHandler> m_timeoutHandler;
 
 	string m_responseBuffer;
 	bool m_responseContinues;

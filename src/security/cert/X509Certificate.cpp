@@ -77,7 +77,7 @@ X509Certificate::~X509Certificate()
 
 
 // static
-ref <X509Certificate> X509Certificate::import(utility::inputStream& is)
+std::shared_ptr<X509Certificate> X509Certificate::import(utility::inputStream& is)
 {
 	byteArray bytes;
 	utility::stream::value_type chunk[4096];
@@ -93,7 +93,7 @@ ref <X509Certificate> X509Certificate::import(utility::inputStream& is)
 
 
 // static
-ref <X509Certificate> X509Certificate::import
+std::shared_ptr<X509Certificate> X509Certificate::import
 	(const byte_t* data, const unsigned int length)
 {
 	gnutls_datum buffer;
@@ -101,13 +101,13 @@ ref <X509Certificate> X509Certificate::import
 	buffer.size = length;
 
 	// Try DER format
-	ref <X509Certificate> derCert = vmime::create <X509Certificate>();
+	std::shared_ptr<X509Certificate> derCert = vmime::std::make_shared<X509Certificate>();
 
 	if (gnutls_x509_crt_import(derCert->m_data->cert, &buffer, GNUTLS_X509_FMT_DER) >= 0)
 		return derCert;
 
 	// Try PEM format
-	ref <X509Certificate> pemCert = vmime::create <X509Certificate>();
+	std::shared_ptr<X509Certificate> pemCert = vmime::std::make_shared<X509Certificate>();
 
 	if (gnutls_x509_crt_import(pemCert->m_data->cert, &buffer, GNUTLS_X509_FMT_PEM) >= 0)
 		return pemCert;
@@ -149,14 +149,14 @@ const byteArray X509Certificate::getSerialNumber() const
 }
 
 
-bool X509Certificate::checkIssuer(ref <const X509Certificate> issuer) const
+bool X509Certificate::checkIssuer(std::shared_ptr<const X509Certificate> issuer) const
 {
 	return (gnutls_x509_crt_check_issuer
 			(m_data->cert, issuer->m_data->cert) >= 1);
 }
 
 
-bool X509Certificate::verify(ref <const X509Certificate> caCert) const
+bool X509Certificate::verify(std::shared_ptr<const X509Certificate> caCert) const
 {
 	unsigned int verify = 0;
 
@@ -243,9 +243,9 @@ int X509Certificate::getVersion() const
 }
 
 
-bool X509Certificate::equals(ref <const certificate> other) const
+bool X509Certificate::equals(std::shared_ptr<const certificate> other) const
 {
-	ref <const X509Certificate> otherX509 =
+	std::shared_ptr<const X509Certificate> otherX509 =
 		other.dynamicCast <const X509Certificate>();
 
 	if (!otherX509)

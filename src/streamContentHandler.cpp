@@ -39,7 +39,7 @@ streamContentHandler::streamContentHandler()
 }
 
 
-streamContentHandler::streamContentHandler(ref <utility::inputStream> is,
+streamContentHandler::streamContentHandler(std::shared_ptr<utility::inputStream> is,
 	const utility::stream::size_type length, const vmime::encoding& enc)
 {
 	setData(is, length, enc);
@@ -58,9 +58,9 @@ streamContentHandler::streamContentHandler(const streamContentHandler& cts)
 }
 
 
-ref <contentHandler> streamContentHandler::clone() const
+std::shared_ptr<contentHandler> streamContentHandler::clone() const
 {
-	return vmime::create <streamContentHandler>(*this);
+	return vmime::std::make_shared<streamContentHandler>(*this);
 }
 
 
@@ -75,7 +75,7 @@ streamContentHandler& streamContentHandler::operator=(const streamContentHandler
 }
 
 
-void streamContentHandler::setData(ref <utility::inputStream> is,
+void streamContentHandler::setData(std::shared_ptr<utility::inputStream> is,
 	const utility::stream::size_type length, const vmime::encoding& enc)
 {
 	m_encoding = enc;
@@ -99,8 +99,8 @@ void streamContentHandler::generate(utility::outputStream& os, const vmime::enco
 		// buffer, and then re-encode to output stream...
 		if (m_encoding != enc)
 		{
-			ref <utility::encoder::encoder> theDecoder = m_encoding.getEncoder();
-			ref <utility::encoder::encoder> theEncoder = enc.getEncoder();
+			std::shared_ptr<utility::encoder::encoder> theDecoder = m_encoding.getEncoder();
+			std::shared_ptr<utility::encoder::encoder> theEncoder = enc.getEncoder();
 
 			theEncoder->getProperties()["maxlinelength"] = maxLineLength;
 
@@ -127,7 +127,7 @@ void streamContentHandler::generate(utility::outputStream& os, const vmime::enco
 	// Need to encode data before
 	else
 	{
-		ref <utility::encoder::encoder> theEncoder = enc.getEncoder();
+		std::shared_ptr<utility::encoder::encoder> theEncoder = enc.getEncoder();
 		theEncoder->getProperties()["maxlinelength"] = maxLineLength;
 
 		m_stream->reset();  // may not work...
@@ -156,7 +156,7 @@ void streamContentHandler::extract(utility::outputStream& os,
 	// Need to decode data
 	else
 	{
-		ref <utility::encoder::encoder> theDecoder = m_encoding.getEncoder();
+		std::shared_ptr<utility::encoder::encoder> theDecoder = m_encoding.getEncoder();
 
 		m_stream->reset();  // may not work...
 

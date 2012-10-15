@@ -44,13 +44,13 @@ const utility::file::path::component maildirFormat::NEW_DIR("new", vmime::charse
 // maildirFormat::context
 //
 
-maildirFormat::context::context(ref <maildirStore> store)
+maildirFormat::context::context(std::shared_ptr<maildirStore> store)
 	: m_store(store)
 {
 }
 
 
-ref <maildirStore> maildirFormat::context::getStore() const
+std::shared_ptr<maildirStore> maildirFormat::context::getStore() const
 {
 	return m_store.acquire().constCast <maildirStore>();
 }
@@ -60,37 +60,37 @@ ref <maildirStore> maildirFormat::context::getStore() const
 // maildirFormat
 //
 
-maildirFormat::maildirFormat(ref <context> ctx)
+maildirFormat::maildirFormat(std::shared_ptr<context> ctx)
 	: m_context(ctx)
 {
 }
 
 
-ref <maildirFormat::context> maildirFormat::getContext()
+std::shared_ptr<maildirFormat::context> maildirFormat::getContext()
 {
 	return m_context;
 }
 
 
-ref <const maildirFormat::context> maildirFormat::getContext() const
+std::shared_ptr<const maildirFormat::context> maildirFormat::getContext() const
 {
 	return m_context;
 }
 
 
 // static
-ref <maildirFormat> maildirFormat::detect(ref <maildirStore> store)
+std::shared_ptr<maildirFormat> maildirFormat::detect(std::shared_ptr<maildirStore> store)
 {
-	ref <context> ctx = create <context>(store);
+	std::shared_ptr<context> ctx = std::make_shared<context>(store);
 
 	// Try Courier format
-	ref <maildirFormat> fmt = create <format::courierMaildirFormat>(ctx);
+	std::shared_ptr<maildirFormat> fmt = std::make_shared<format::courierMaildirFormat>(ctx);
 
 	if (fmt->supports())
 		return fmt;
 
 	// Default is KMail format
-	return create <format::kmailMaildirFormat>(ctx);
+	return std::make_shared<format::kmailMaildirFormat>(ctx);
 }
 
 

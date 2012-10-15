@@ -50,7 +50,7 @@ class IMAPConnection : public object
 {
 public:
 
-	IMAPConnection(ref <IMAPStore> store, ref <security::authenticator> auth);
+	IMAPConnection(std::shared_ptr<IMAPStore> store, std::shared_ptr<security::authenticator> auth);
 	~IMAPConnection();
 
 
@@ -81,22 +81,22 @@ public:
 	IMAPParser::response* readResponse(IMAPParser::literalHandler* lh = NULL);
 
 
-	ref <const IMAPTag> getTag() const;
-	ref <const IMAPParser> getParser() const;
+	std::shared_ptr<const IMAPTag> getTag() const;
+	std::shared_ptr<const IMAPParser> getParser() const;
 
-	ref <const IMAPStore> getStore() const;
-	ref <IMAPStore> getStore();
+	std::shared_ptr<const IMAPStore> getStore() const;
+	std::shared_ptr<IMAPStore> getStore();
 
-	ref <session> getSession();
+	std::shared_ptr<session> getSession();
 
 	const std::vector <string> getCapabilities();
 
-	ref <security::authenticator> getAuthenticator();
+	std::shared_ptr<security::authenticator> getAuthenticator();
 
 	bool isSecuredConnection() const;
-	ref <connectionInfos> getConnectionInfos() const;
+	std::shared_ptr<connectionInfos> getConnectionInfos() const;
 
-	ref <const socket> getSocket() const;
+	std::shared_ptr<const socket> getSocket() const;
 
 private:
 
@@ -110,24 +110,24 @@ private:
 #endif // VMIME_HAVE_TLS_SUPPORT
 
 
-	weak_ref <IMAPStore> m_store;
+	std::weak_ptr<IMAPStore> m_store;
 
-	ref <security::authenticator> m_auth;
+	std::shared_ptr<security::authenticator> m_auth;
 
-	ref <socket> m_socket;
+	std::shared_ptr<socket> m_socket;
 
-	ref <IMAPParser> m_parser;
+	std::shared_ptr<IMAPParser> m_parser;
 
-	ref <IMAPTag> m_tag;
+	std::shared_ptr<IMAPTag> m_tag;
 
 	char m_hierarchySeparator;
 
 	ProtocolStates m_state;
 
-	ref <timeoutHandler> m_timeoutHandler;
+	std::shared_ptr<timeoutHandler> m_timeoutHandler;
 
 	bool m_secured;
-	ref <connectionInfos> m_cntInfos;
+	std::shared_ptr<connectionInfos> m_cntInfos;
 
 
 	void internalDisconnect();

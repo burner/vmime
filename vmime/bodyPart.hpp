@@ -46,63 +46,63 @@ class bodyPart : public component
 public:
 
 	bodyPart();
-	bodyPart(weak_ref <vmime::bodyPart> parentPart);
+	bodyPart(std::weak_ptr<vmime::bodyPart> parentPart);
 
 	/** Return the header section of this part.
 	  *
 	  * @return header section
 	  */
-	const ref <const header> getHeader() const;
+	const std::shared_ptr<const header> getHeader() const;
 
 	/** Return the header section of this part.
 	  *
 	  * @return header section
 	  */
-	ref <header> getHeader();
+	std::shared_ptr<header> getHeader();
 
 	/** Return the body section of this part.
 	  *
 	  * @return body section
 	  */
-	const ref <const body> getBody() const;
+	const std::shared_ptr<const body> getBody() const;
 
 	/** Return the body section of this part.
 	  *
 	  * @return body section
 	  */
-	ref <body> getBody();
+	std::shared_ptr<body> getBody();
 
 	/** Return the parent part of this part.
 	  *
 	  * @return parent part or NULL if not known
 	  */
-	ref <bodyPart> getParentPart();
+	std::shared_ptr<bodyPart> getParentPart();
 
 	/** Return the parent part of this part (const version).
 	  *
 	  * @return parent part or NULL if not known
 	  */
-	ref <const bodyPart> getParentPart() const;
+	std::shared_ptr<const bodyPart> getParentPart() const;
 
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 	bodyPart& operator=(const bodyPart& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 private:
 
-	ref <header> m_header;
-	ref <body> m_body;
+	std::shared_ptr<header> m_header;
+	std::shared_ptr<body> m_body;
 
-	weak_ref <bodyPart> m_parent;
+	std::weak_ptr<bodyPart> m_parent;
 
 protected:
 
 	// Component parsing & assembling
 	void parseImpl
-		(ref <utility::parserInputStreamAdapter> parser,
+		(std::shared_ptr<utility::parserInputStreamAdapter> parser,
 		 const utility::stream::size_type position,
 		 const utility::stream::size_type end,
 		 utility::stream::size_type* newPosition = NULL);

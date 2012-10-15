@@ -55,11 +55,11 @@ public:
 
 	~headerField();
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 	headerField& operator=(const headerField& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 	/** Sets the name of this field.
 	  *
@@ -84,25 +84,25 @@ public:
 	  *
 	  * @return read-only value object
 	  */
-	virtual ref <const headerFieldValue> getValue() const;
+	virtual std::shared_ptr<const headerFieldValue> getValue() const;
 
 	/** Return the value object attached to this field.
 	  *
 	  * @return value object
 	  */
-	virtual ref <headerFieldValue> getValue();
+	virtual std::shared_ptr<headerFieldValue> getValue();
 
 	/** Set the value of this field.
 	  *
 	  * @param value new value
 	  */
-	virtual void setValue(ref <headerFieldValue> value);
+	virtual void setValue(std::shared_ptr<headerFieldValue> value);
 
 	/** Set the value of this field by cloning the specified value.
 	  *
 	  * @param value new value
 	  */
-	virtual void setValueConst(ref <const headerFieldValue> value);
+	virtual void setValueConst(std::shared_ptr<const headerFieldValue> value);
 
 	/** Set the value of this field (reference version).
 	  * The value will be cloned.
@@ -133,7 +133,7 @@ protected:
 		 string::size_type* newLinePos = NULL) const;
 
 
-	static ref <headerField> parseNext
+	static std::shared_ptr<headerField> parseNext
 		(const string& buffer,
 		 const string::size_type position,
 		 const string::size_type end,
@@ -141,7 +141,7 @@ protected:
 
 
 	string m_name;
-	ref <headerFieldValue> m_value;
+	std::shared_ptr<headerFieldValue> m_value;
 };
 
 

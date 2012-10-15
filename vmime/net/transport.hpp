@@ -48,7 +48,7 @@ class transport : public service
 {
 protected:
 
-	transport(ref <session> sess, const serviceInfos& infos, ref <security::authenticator> auth);
+	transport(std::shared_ptr<session> sess, const serviceInfos& infos, std::shared_ptr<security::authenticator> auth);
 
 public:
 
@@ -57,7 +57,7 @@ public:
 	  * @param msg message to send
 	  * @param progress progress listener, or NULL if not used
 	  */
-	virtual void send(ref <vmime::message> msg, utility::progressListener* progress = NULL);
+	virtual void send(std::shared_ptr<vmime::message> msg, utility::progressListener* progress = NULL);
 
 	/** Send a message over this transport service.
 	  *

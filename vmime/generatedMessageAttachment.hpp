@@ -42,30 +42,30 @@ class generatedMessageAttachment : public messageAttachment
 {
 public:
 
-	generatedMessageAttachment(ref <const bodyPart> part);
+	generatedMessageAttachment(std::shared_ptr<const bodyPart> part);
 
 	const mediaType getType() const;
 	const text getDescription() const;
 	const word getName() const;
 
-	const ref <const contentHandler> getData() const;
+	const std::shared_ptr<const contentHandler> getData() const;
 
 	const encoding getEncoding() const;
 
-	ref <const object> getPart() const;
+	std::shared_ptr<const object> getPart() const;
 
-	ref <const header> getHeader() const;
+	std::shared_ptr<const header> getHeader() const;
 
-	ref <message> getMessage() const;
+	std::shared_ptr<message> getMessage() const;
 
 protected:
 
-	void generateIn(ref <bodyPart> parent) const;
+	void generateIn(std::shared_ptr<bodyPart> parent) const;
 
 private:
 
-	ref <bodyPartAttachment> m_bpa;
-	mutable ref <message> m_msg;
+	std::shared_ptr<bodyPartAttachment> m_bpa;
+	mutable std::shared_ptr<message> m_msg;
 };
 
 

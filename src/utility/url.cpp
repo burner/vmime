@@ -130,7 +130,7 @@ const string url::build() const
 		oss << urlUtils::encode(m_path);
 	}
 
-	const std::vector <ref <const propertySet::property> > params
+	const std::vector <std::shared_ptr<const propertySet::property> > params
 		= m_params.getPropertyList();
 
 	if (!params.empty())
@@ -142,7 +142,7 @@ const string url::build() const
 
 		for (unsigned int i = 0 ; i < params.size() ; ++i)
 		{
-			const ref <const propertySet::property> prop = params[i];
+			const std::shared_ptr<const propertySet::property> prop = params[i];
 
 			if (i != 0)
 				oss << "&";

@@ -28,13 +28,13 @@ namespace vmime {
 namespace net {
 
 
-ref <const part> part::getPartAt(const int pos) const
+std::shared_ptr<const part> part::getPartAt(const int pos) const
 {
 	return getStructure()->getPartAt(pos);
 }
 
 
-ref <part> part::getPartAt(const int pos)
+std::shared_ptr<part> part::getPartAt(const int pos)
 {
 	return getStructure()->getPartAt(pos);
 }

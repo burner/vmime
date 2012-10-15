@@ -45,7 +45,7 @@ namespace net {
 namespace imap {
 
 
-IMAPFolder::IMAPFolder(const folder::path& path, ref <IMAPStore> store, const int type, const int flags)
+IMAPFolder::IMAPFolder(const folder::path& path, std::shared_ptr<IMAPStore> store, const int type, const int flags)
 	: m_store(store), m_connection(store->connection()), m_path(path),
 	  m_name(path.isEmpty() ? folder::path::component("") : path.getLastComponent()), m_mode(-1),
 	  m_open(false), m_type(type), m_flags(flags), m_messageCount(0), m_uidValidity(0)
@@ -56,7 +56,7 @@ IMAPFolder::IMAPFolder(const folder::path& path, ref <IMAPStore> store, const in
 
 IMAPFolder::~IMAPFolder()
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (store)
 	{
@@ -136,14 +136,14 @@ const folder::path IMAPFolder::getFullPath() const
 
 void IMAPFolder::open(const int mode, bool failIfModeIsNotAvailable)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 
 	// Open a connection for this folder
-	ref <IMAPConnection> connection =
-		vmime::create <IMAPConnection>(store, store->getAuthenticator());
+	std::shared_ptr<IMAPConnection> connection =
+		vmime::std::make_shared<IMAPConnection>(store, store->getAuthenticator());
 
 	try
 	{
@@ -280,7 +280,7 @@ void IMAPFolder::open(const int mode, bool failIfModeIsNotAvailable)
 
 void IMAPFolder::close(const bool expunge)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -288,7 +288,7 @@ void IMAPFolder::close(const bool expunge)
 	if (!isOpen())
 		throw exceptions::illegal_state("Folder not open");
 
-	ref <IMAPConnection> oldConnection = m_connection;
+	std::shared_ptr<IMAPConnection> oldConnection = m_connection;
 
 	// Emit the "CLOSE" command to expunge messages marked
 	// as deleted (this is fastest than "EXPUNGE")
@@ -329,7 +329,7 @@ void IMAPFolder::onClose()
 
 void IMAPFolder::create(const int type)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -379,7 +379,7 @@ void IMAPFolder::create(const int type)
 
 void IMAPFolder::destroy()
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -416,7 +416,7 @@ void IMAPFolder::destroy()
 
 bool IMAPFolder::exists()
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!isOpen() && !store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -503,7 +503,7 @@ bool IMAPFolder::isOpen() const
 }
 
 
-ref <message> IMAPFolder::getMessage(const int num)
+std::shared_ptr<message> IMAPFolder::getMessage(const int num)
 {
 	if (!isOpen())
 		throw exceptions::illegal_state("Folder not open");
@@ -511,11 +511,11 @@ ref <message> IMAPFolder::getMessage(const int num)
 	if (num < 1 || num > m_messageCount)
 		throw exceptions::message_not_found();
 
-	return vmime::create <IMAPMessage>(thisRef().dynamicCast <IMAPFolder>(), num);
+	return vmime::std::make_shared<IMAPMessage>(thisRef().dynamicCast <IMAPFolder>(), num);
 }
 
 
-std::vector <ref <message> > IMAPFolder::getMessages(const int from, const int to)
+std::vector <std::shared_ptr<message> > IMAPFolder::getMessages(const int from, const int to)
 {
 	const int messageCount = getMessageCount();
 	const int to2 = (to == -1 ? messageCount : to);
@@ -525,37 +525,37 @@ std::vector <ref <message> > IMAPFolder::getMessages(const int from, const int t
 	else if (to2 < from || from < 1 || to2 < 1 || from > messageCount || to2 > messageCount)
 		throw exceptions::message_not_found();
 
-	std::vector <ref <message> > v;
-	ref <IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
+	std::vector <std::shared_ptr<message> > v;
+	std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
 
 	for (int i = from ; i <= to2 ; ++i)
-		v.push_back(vmime::create <IMAPMessage>(thisFolder, i));
+		v.push_back(vmime::std::make_shared<IMAPMessage>(thisFolder, i));
 
 	return (v);
 }
 
 
-std::vector <ref <message> > IMAPFolder::getMessages(const std::vector <int>& nums)
+std::vector <std::shared_ptr<message> > IMAPFolder::getMessages(const std::vector <int>& nums)
 {
 	if (!isOpen())
 		throw exceptions::illegal_state("Folder not open");
 
-	std::vector <ref <message> > v;
-	ref <IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
+	std::vector <std::shared_ptr<message> > v;
+	std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
 
 	for (std::vector <int>::const_iterator it = nums.begin() ; it != nums.end() ; ++it)
-		v.push_back(vmime::create <IMAPMessage>(thisFolder, *it));
+		v.push_back(vmime::std::make_shared<IMAPMessage>(thisFolder, *it));
 
 	return (v);
 }
 
 
-ref <message> IMAPFolder::getMessageByUID(const message::uid& uid)
+std::shared_ptr<message> IMAPFolder::getMessageByUID(const message::uid& uid)
 {
 	std::vector <message::uid> uids;
 	uids.push_back(uid);
 
-	std::vector <ref <message> > msgs = getMessagesByUID(uids);
+	std::vector <std::shared_ptr<message> > msgs = getMessagesByUID(uids);
 
 	if (msgs.size() == 0)
 		throw exceptions::message_not_found();
@@ -564,13 +564,13 @@ ref <message> IMAPFolder::getMessageByUID(const message::uid& uid)
 }
 
 
-std::vector <ref <message> > IMAPFolder::getMessagesByUID(const std::vector <message::uid>& uids)
+std::vector <std::shared_ptr<message> > IMAPFolder::getMessagesByUID(const std::vector <message::uid>& uids)
 {
 	if (!isOpen())
 		throw exceptions::illegal_state("Folder not open");
 
 	if (uids.size() == 0)
-		return std::vector <ref <message> >();
+		return std::vector <std::shared_ptr<message> >();
 
 	//     C: . UID FETCH uuuu1,uuuu2,uuuu3 UID
 	//     S: * nnnn1 FETCH (UID uuuu1)
@@ -605,7 +605,7 @@ std::vector <ref <message> > IMAPFolder::getMessagesByUID(const std::vector <mes
 	const std::vector <IMAPParser::continue_req_or_response_data*>& respDataList =
 		resp->continue_req_or_response_data();
 
-	std::vector <ref <message> > messages;
+	std::vector <std::shared_ptr<message> > messages;
 
 	for (std::vector <IMAPParser::continue_req_or_response_data*>::const_iterator
 	     it = respDataList.begin() ; it != respDataList.end() ; ++it)
@@ -644,8 +644,8 @@ std::vector <ref <message> > IMAPFolder::getMessagesByUID(const std::vector <mes
 
 		if (!msgUID.empty())
 		{
-			ref <IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
-			messages.push_back(vmime::create <IMAPMessage>(thisFolder, msgNum, msgFullUID));
+			std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
+			messages.push_back(vmime::std::make_shared<IMAPMessage>(thisFolder, msgNum, msgFullUID));
 		}
 	}
 
@@ -662,20 +662,20 @@ int IMAPFolder::getMessageCount()
 }
 
 
-ref <folder> IMAPFolder::getFolder(const folder::path::component& name)
+std::shared_ptr<folder> IMAPFolder::getFolder(const folder::path::component& name)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 
-	return vmime::create <IMAPFolder>(m_path / name, store);
+	return vmime::std::make_shared<IMAPFolder>(m_path / name, store);
 }
 
 
-std::vector <ref <folder> > IMAPFolder::getFolders(const bool recursive)
+std::vector <std::shared_ptr<folder> > IMAPFolder::getFolders(const bool recursive)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!isOpen() && !store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -723,7 +723,7 @@ std::vector <ref <folder> > IMAPFolder::getFolders(const bool recursive)
 		resp->continue_req_or_response_data();
 
 
-	std::vector <ref <folder> > v;
+	std::vector <std::shared_ptr<folder> > v;
 
 	for (std::vector <IMAPParser::continue_req_or_response_data*>::const_iterator
 	     it = respDataList.begin() ; it != respDataList.end() ; ++it)
@@ -753,7 +753,7 @@ std::vector <ref <folder> > IMAPFolder::getFolders(const bool recursive)
 			const class IMAPParser::mailbox_flag_list* mailbox_flag_list =
 				mailboxData->mailbox_list()->mailbox_flag_list();
 
-			v.push_back(vmime::create <IMAPFolder>(path, store,
+			v.push_back(vmime::std::make_shared<IMAPFolder>(path, store,
 				IMAPUtils::folderTypeFromFlags(mailbox_flag_list),
 				IMAPUtils::folderFlagsFromFlags(mailbox_flag_list)));
 		}
@@ -763,10 +763,10 @@ std::vector <ref <folder> > IMAPFolder::getFolders(const bool recursive)
 }
 
 
-void IMAPFolder::fetchMessages(std::vector <ref <message> >& msg, const int options,
+void IMAPFolder::fetchMessages(std::vector <std::shared_ptr<message> >& msg, const int options,
                                utility::progressListener* progress)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -777,9 +777,9 @@ void IMAPFolder::fetchMessages(std::vector <ref <message> >& msg, const int opti
 	std::vector <int> list;
 	list.reserve(msg.size());
 
-	std::map <int, ref <IMAPMessage> > numberToMsg;
+	std::map <int, std::shared_ptr<IMAPMessage> > numberToMsg;
 
-	for (std::vector <ref <message> >::iterator it = msg.begin() ; it != msg.end() ; ++it)
+	for (std::vector <std::shared_ptr<message> >::iterator it = msg.begin() ; it != msg.end() ; ++it)
 	{
 		list.push_back((*it)->getNumber());
 		numberToMsg[(*it)->getNumber()] = (*it).dynamicCast <IMAPMessage>();
@@ -829,7 +829,7 @@ void IMAPFolder::fetchMessages(std::vector <ref <message> >& msg, const int opti
 			// Process fetch response for this message
 			const int num = static_cast <int>(messageData->number());
 
-			std::map <int, ref <IMAPMessage> >::iterator msg = numberToMsg.find(num);
+			std::map <int, std::shared_ptr<IMAPMessage> >::iterator msg = numberToMsg.find(num);
 
 			if (msg != numberToMsg.end())
 			{
@@ -853,9 +853,9 @@ void IMAPFolder::fetchMessages(std::vector <ref <message> >& msg, const int opti
 }
 
 
-void IMAPFolder::fetchMessage(ref <message> msg, const int options)
+void IMAPFolder::fetchMessage(std::shared_ptr<message> msg, const int options)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -874,22 +874,22 @@ int IMAPFolder::getFetchCapabilities() const
 }
 
 
-ref <folder> IMAPFolder::getParent()
+std::shared_ptr<folder> IMAPFolder::getParent()
 {
 	if (m_path.isEmpty())
 		return NULL;
 	else
-		return vmime::create <IMAPFolder>(m_path.getParent(), m_store.acquire());
+		return vmime::std::make_shared<IMAPFolder>(m_path.getParent(), m_store.acquire());
 }
 
 
-ref <const store> IMAPFolder::getStore() const
+std::shared_ptr<const store> IMAPFolder::getStore() const
 {
 	return m_store.acquire();
 }
 
 
-ref <store> IMAPFolder::getStore()
+std::shared_ptr<store> IMAPFolder::getStore()
 {
 	return m_store.acquire();
 }
@@ -919,7 +919,7 @@ void IMAPFolder::onStoreDisconnected()
 
 void IMAPFolder::deleteMessage(const int num)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -972,7 +972,7 @@ void IMAPFolder::deleteMessage(const int num)
 
 void IMAPFolder::deleteMessages(const int from, const int to)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (from < 1 || (to < from && to != -1))
 		throw exceptions::invalid_argument();
@@ -1039,7 +1039,7 @@ void IMAPFolder::deleteMessages(const int from, const int to)
 
 void IMAPFolder::deleteMessages(const std::vector <int>& nums)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (nums.empty())
 		throw exceptions::invalid_argument();
@@ -1102,7 +1102,7 @@ void IMAPFolder::deleteMessages(const std::vector <int>& nums)
 
 void IMAPFolder::setMessageFlags(const int from, const int to, const int flags, const int mode)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (from < 1 || (to < from && to != -1))
 		throw exceptions::invalid_argument();
@@ -1193,7 +1193,7 @@ void IMAPFolder::setMessageFlags(const int from, const int to, const int flags, 
 
 void IMAPFolder::setMessageFlags(const std::vector <int>& nums, const int flags, const int mode)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1309,7 +1309,7 @@ void IMAPFolder::setMessageFlags(const string& set, const int flags, const int m
 }
 
 
-void IMAPFolder::addMessage(ref <vmime::message> msg, const int flags,
+void IMAPFolder::addMessage(std::shared_ptr<vmime::message> msg, const int flags,
                             vmime::datetime* date, utility::progressListener* progress)
 {
 	std::ostringstream oss;
@@ -1327,7 +1327,7 @@ void IMAPFolder::addMessage(ref <vmime::message> msg, const int flags,
 void IMAPFolder::addMessage(utility::inputStream& is, const int size, const int flags,
                             vmime::datetime* date, utility::progressListener* progress)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1454,7 +1454,7 @@ void IMAPFolder::addMessage(utility::inputStream& is, const int size, const int 
 
 void IMAPFolder::expunge()
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1544,7 +1544,7 @@ void IMAPFolder::expunge()
 
 void IMAPFolder::rename(const folder::path& newPath)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1623,7 +1623,7 @@ void IMAPFolder::rename(const folder::path& newPath)
 
 void IMAPFolder::copyMessage(const folder::path& dest, const int num)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1661,7 +1661,7 @@ void IMAPFolder::copyMessage(const folder::path& dest, const int num)
 
 void IMAPFolder::copyMessages(const folder::path& dest, const int from, const int to)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1710,7 +1710,7 @@ void IMAPFolder::copyMessages(const folder::path& dest, const int from, const in
 
 void IMAPFolder::copyMessages(const folder::path& dest, const std::vector <int>& nums)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1766,7 +1766,7 @@ void IMAPFolder::copyMessages(const string& set, const folder::path& dest)
 
 void IMAPFolder::status(int& count, int& unseen)
 {
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	count = 0;
 	unseen = 0;

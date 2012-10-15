@@ -38,9 +38,9 @@ class IMAPMessagePartContentHandler : public contentHandler
 {
 public:
 
-	IMAPMessagePartContentHandler(ref <IMAPMessage> msg, ref <class part> part, const vmime::encoding& encoding);
+	IMAPMessagePartContentHandler(std::shared_ptr<IMAPMessage> msg, std::shared_ptr<class part> part, const vmime::encoding& encoding);
 
-	ref <contentHandler> clone() const;
+	std::shared_ptr<contentHandler> clone() const;
 
 	void generate(utility::outputStream& os, const vmime::encoding& enc, const string::size_type maxLineLength = lineLengthLimits::infinite) const;
 
@@ -59,8 +59,8 @@ public:
 
 private:
 
-	weak_ref <IMAPMessage> m_message;
-	weak_ref <part> m_part;
+	std::weak_ptr<IMAPMessage> m_message;
+	std::weak_ptr<part> m_part;
 
 	vmime::encoding m_encoding;
 };

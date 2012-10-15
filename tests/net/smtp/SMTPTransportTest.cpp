@@ -42,14 +42,14 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testGreetingError()
 	{
-		vmime::ref <vmime::net::session> session =
-			vmime::create <vmime::net::session>();
+		vmime::std::shared_ptr<vmime::net::session> session =
+			vmime::std::make_shared<vmime::net::session>();
 
-		vmime::ref <vmime::net::transport> tr = session->getTransport
+		vmime::std::shared_ptr<vmime::net::transport> tr = session->getTransport
 			(vmime::utility::url("smtp://localhost"));
 
-		tr->setSocketFactory(vmime::create <testSocketFactory <greetingErrorSMTPTestSocket> >());
-		tr->setTimeoutHandlerFactory(vmime::create <testTimeoutHandlerFactory>());
+		tr->setSocketFactory(vmime::std::make_shared<testSocketFactory <greetingErrorSMTPTestSocket> >());
+		tr->setTimeoutHandlerFactory(vmime::std::make_shared<testTimeoutHandlerFactory>());
 
 		VASSERT_THROW("Connection", tr->connect(),
 			vmime::exceptions::connection_greeting_error);
@@ -57,23 +57,23 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testMAILandRCPT()
 	{
-		vmime::ref <vmime::net::session> session =
-			vmime::create <vmime::net::session>();
+		vmime::std::shared_ptr<vmime::net::session> session =
+			vmime::std::make_shared<vmime::net::session>();
 
-		vmime::ref <vmime::net::transport> tr = session->getTransport
+		vmime::std::shared_ptr<vmime::net::transport> tr = session->getTransport
 			(vmime::utility::url("smtp://localhost"));
 
-		tr->setSocketFactory(vmime::create <testSocketFactory <MAILandRCPTSMTPTestSocket> >());
-		tr->setTimeoutHandlerFactory(vmime::create <testTimeoutHandlerFactory>());
+		tr->setSocketFactory(vmime::std::make_shared<testSocketFactory <MAILandRCPTSMTPTestSocket> >());
+		tr->setTimeoutHandlerFactory(vmime::std::make_shared<testTimeoutHandlerFactory>());
 
 		VASSERT_NO_THROW("Connection", tr->connect());
 
 		vmime::mailbox exp("expeditor@test.vmime.org");
 
 		vmime::mailboxList recips;
-		recips.appendMailbox(vmime::create <vmime::mailbox>("recipient1@test.vmime.org"));
-		recips.appendMailbox(vmime::create <vmime::mailbox>("recipient2@test.vmime.org"));
-		recips.appendMailbox(vmime::create <vmime::mailbox>("recipient3@test.vmime.org"));
+		recips.appendMailbox(vmime::std::make_shared<vmime::mailbox>("recipient1@test.vmime.org"));
+		recips.appendMailbox(vmime::std::make_shared<vmime::mailbox>("recipient2@test.vmime.org"));
+		recips.appendMailbox(vmime::std::make_shared<vmime::mailbox>("recipient3@test.vmime.org"));
 
 		vmime::string data("Message data");
 		vmime::utility::inputStreamStringAdapter is(data);

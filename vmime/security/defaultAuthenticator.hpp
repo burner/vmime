@@ -48,12 +48,12 @@ public:
 	const string getAnonymousToken() const;
 	const string getServiceName() const;
 
-	void setService(ref <net::service> serv);
-	weak_ref <net::service> getService() const;
+	void setService(std::shared_ptr<net::service> serv);
+	std::weak_ptr<net::service> getService() const;
 
 private:
 
-	weak_ref <net::service> m_service;
+	std::weak_ptr<net::service> m_service;
 };
 
 

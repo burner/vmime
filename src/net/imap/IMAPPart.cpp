@@ -30,7 +30,7 @@ namespace net {
 namespace imap {
 
 
-IMAPPart::IMAPPart(ref <IMAPPart> parent, const int number, const IMAPParser::body_type_mpart* mpart)
+IMAPPart::IMAPPart(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body_type_mpart* mpart)
 	: m_parent(parent), m_header(NULL), m_number(number), m_size(0)
 {
 	m_mediaType = vmime::mediaType
@@ -38,7 +38,7 @@ IMAPPart::IMAPPart(ref <IMAPPart> parent, const int number, const IMAPParser::bo
 }
 
 
-IMAPPart::IMAPPart(ref <IMAPPart> parent, const int number, const IMAPParser::body_type_1part* part)
+IMAPPart::IMAPPart(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body_type_1part* part)
 	: m_parent(parent), m_header(NULL), m_number(number), m_size(0)
 {
 	if (part->body_type_text())
@@ -68,7 +68,7 @@ IMAPPart::IMAPPart(ref <IMAPPart> parent, const int number, const IMAPParser::bo
 }
 
 
-ref <const structure> IMAPPart::getStructure() const
+std::shared_ptr<const structure> IMAPPart::getStructure() const
 {
 	if (m_structure != NULL)
 		return m_structure;
@@ -77,7 +77,7 @@ ref <const structure> IMAPPart::getStructure() const
 }
 
 
-ref <structure> IMAPPart::getStructure()
+std::shared_ptr<structure> IMAPPart::getStructure()
 {
 	if (m_structure != NULL)
 		return m_structure;
@@ -86,7 +86,7 @@ ref <structure> IMAPPart::getStructure()
 }
 
 
-ref <const IMAPPart> IMAPPart::getParent() const
+std::shared_ptr<const IMAPPart> IMAPPart::getParent() const
 {
 	return m_parent.acquire();
 }
@@ -110,7 +110,7 @@ int IMAPPart::getNumber() const
 }
 
 
-ref <const header> IMAPPart::getHeader() const
+std::shared_ptr<const header> IMAPPart::getHeader() const
 {
 	if (m_header == NULL)
 		throw exceptions::unfetched_object();
@@ -120,19 +120,19 @@ ref <const header> IMAPPart::getHeader() const
 
 
 // static
-ref <IMAPPart> IMAPPart::create
-	(ref <IMAPPart> parent, const int number, const IMAPParser::body* body)
+std::shared_ptr<IMAPPart> IMAPPart::create
+	(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body* body)
 {
 	if (body->body_type_mpart())
 	{
-		ref <IMAPPart> part = vmime::create <IMAPPart>(parent, number, body->body_type_mpart());
-		part->m_structure = vmime::create <IMAPStructure>(part, body->body_type_mpart()->list());
+		std::shared_ptr<IMAPPart> part = vmime::std::make_shared<IMAPPart>(parent, number, body->body_type_mpart());
+		part->m_structure = vmime::std::make_shared<IMAPStructure>(part, body->body_type_mpart()->list());
 
 		return part;
 	}
 	else
 	{
-		return vmime::create <IMAPPart>(parent, number, body->body_type_1part());
+		return vmime::std::make_shared<IMAPPart>(parent, number, body->body_type_1part());
 	}
 }
 
@@ -142,7 +142,7 @@ header& IMAPPart::getOrCreateHeader()
 	if (m_header != NULL)
 		return *m_header;
 	else
-		return *(m_header = vmime::create <header>());
+		return *(m_header = vmime::std::make_shared<header>());
 }
 
 

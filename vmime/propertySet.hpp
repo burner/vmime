@@ -269,7 +269,7 @@ public:
 	template <class TYPE>
 	const TYPE getProperty(const string& name) const
 	{
-		const ref <property> prop = find(name);
+		const std::shared_ptr<property> prop = find(name);
 		if (!prop) throw exceptions::no_such_property(name);
 
 		//return (prop->getValue <TYPE>());  // BUG: with g++ < 3.4
@@ -288,7 +288,7 @@ public:
 	template <class TYPE>
 	const TYPE getProperty(const string& name, const TYPE defaultValue) const
 	{
-		const ref <property> prop = find(name);
+		const std::shared_ptr<property> prop = find(name);
 		//return (prop ? prop->getValue <TYPE>() : defaultValue); // BUG: with g++ < 3.4
 		return (prop ? prop->template getValue <TYPE>() : defaultValue);
 	}
@@ -328,13 +328,13 @@ private:
 	void parse(const string& props);
 
 
-	class propFinder : public std::unary_function <ref <property>, bool>
+	class propFinder : public std::unary_function <std::shared_ptr<property>, bool>
 	{
 	public:
 
 		propFinder(const string& name) : m_name(utility::stringUtils::toLower(name)) { }
 
-		bool operator()(ref <property> p) const
+		bool operator()(std::shared_ptr<property> p) const
 		{
 			return (utility::stringUtils::toLower(p->getName()) == m_name);
 		}
@@ -344,10 +344,10 @@ private:
 		const std::string m_name;
 	};
 
-	ref <property> find(const string& name) const;
-	ref <property> findOrCreate(const string& name);
+	std::shared_ptr<property> find(const string& name) const;
+	std::shared_ptr<property> findOrCreate(const string& name);
 
-	typedef std::list <ref <property> > list_type;
+	typedef std::list <std::shared_ptr<property> > list_type;
 	list_type m_props;
 
 public:
@@ -420,13 +420,13 @@ public:
 	  *
 	  * @return list of properties
 	  */
-	const std::vector <ref <const property> > getPropertyList() const;
+	const std::vector <std::shared_ptr<const property> > getPropertyList() const;
 
 	/** Return the property list.
 	  *
 	  * @return list of properties
 	  */
-	const std::vector <ref <property> > getPropertyList();
+	const std::vector <std::shared_ptr<property> > getPropertyList();
 };
 
 

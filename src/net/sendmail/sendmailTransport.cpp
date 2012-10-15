@@ -56,7 +56,7 @@ namespace net {
 namespace sendmail {
 
 
-sendmailTransport::sendmailTransport(ref <session> sess, ref <security::authenticator> auth)
+sendmailTransport::sendmailTransport(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth)
 	: transport(sess, getInfosInstance(), auth), m_connected(false)
 {
 }
@@ -106,9 +106,9 @@ bool sendmailTransport::isSecuredConnection() const
 }
 
 
-ref <connectionInfos> sendmailTransport::getConnectionInfos() const
+std::shared_ptr<connectionInfos> sendmailTransport::getConnectionInfos() const
 {
-	return vmime::create <defaultConnectionInfos>("localhost", static_cast <port_t>(0));
+	return vmime::std::make_shared<defaultConnectionInfos>("localhost", static_cast <port_t>(0));
 }
 
 
@@ -174,7 +174,7 @@ void sendmailTransport::internalSend
 	const utility::file::path path = vmime::platform::getHandler()->
 		getFileSystemFactory()->stringToPath(m_sendmailPath);
 
-	ref <utility::childProcess> proc =
+	std::shared_ptr<utility::childProcess> proc =
 		vmime::platform::getHandler()->
 			getChildProcessFactory()->create(path);
 

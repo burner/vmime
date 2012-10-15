@@ -70,7 +70,7 @@ public:
 
 	virtual ~timeoutHandlerFactory() { }
 
-	virtual ref <timeoutHandler> create() = 0;
+	virtual std::shared_ptr<timeoutHandler> create() = 0;
 };
 
 

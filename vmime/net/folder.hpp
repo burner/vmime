@@ -175,7 +175,7 @@ public:
 	  * @return a new object referencing the specified message
 	  * @throw net_exception if an error occurs
 	  */
-	virtual ref <message> getMessage(const int num) = 0;
+	virtual std::shared_ptr<message> getMessage(const int num) = 0;
 
 	/** Get new references to messages in this folder, given their numbers.
 	  *
@@ -184,7 +184,7 @@ public:
 	  * @return new objects referencing the specified messages
 	  * @throw net_exception if an error occurs
 	  */
-	virtual std::vector <ref <message> > getMessages(const int from = 1, const int to = -1) = 0;
+	virtual std::vector <std::shared_ptr<message> > getMessages(const int from = 1, const int to = -1) = 0;
 
 	/** Get new references to messages in this folder, given their numbers.
 	  *
@@ -192,7 +192,7 @@ public:
 	  * @return new objects referencing the specified messages
 	  * @throw net_exception if an error occurs
 	  */
-	virtual std::vector <ref <message> > getMessages(const std::vector <int>& nums) = 0;
+	virtual std::vector <std::shared_ptr<message> > getMessages(const std::vector <int>& nums) = 0;
 
 	/** Get message in this folder, given its UID.
 	  *
@@ -200,7 +200,7 @@ public:
 	  * @return a new object referencing the specified message
 	  * @throw net_exception if an error occurs
 	  */
-	virtual ref <message> getMessageByUID(const message::uid& uid) = 0;
+	virtual std::shared_ptr<message> getMessageByUID(const message::uid& uid) = 0;
 
 	/** Get messages in this folder, given their UIDs.
 	  *
@@ -208,7 +208,7 @@ public:
 	  * @return new objects referencing the specified messages
 	  * @throw net_exception if an error occurs
 	  */
-	virtual std::vector <ref <message> > getMessagesByUID(const std::vector <message::uid>& uids) = 0;
+	virtual std::vector <std::shared_ptr<message> > getMessagesByUID(const std::vector <message::uid>& uids) = 0;
 
 	/** Return the number of messages in this folder.
 	  *
@@ -222,7 +222,7 @@ public:
 	  * @return a new object referencing the specified folder
 	  * @throw net_exception if an error occurs
 	  */
-	virtual ref <folder> getFolder(const folder::path::component& name) = 0;
+	virtual std::shared_ptr<folder> getFolder(const folder::path::component& name) = 0;
 
 	/** Get the list of all sub-folders in this folder.
 	  *
@@ -231,7 +231,7 @@ public:
 	  * @return list of sub-folders
 	  * @throw net_exception if an error occurs
 	  */
-	virtual std::vector <ref <folder> > getFolders(const bool recursive = false) = 0;
+	virtual std::vector <std::shared_ptr<folder> > getFolders(const bool recursive = false) = 0;
 
 	/** Rename (move) this folder to another location.
 	  *
@@ -289,7 +289,7 @@ public:
 	  * @param progress progress listener, or NULL if not used
 	  * @throw net_exception if an error occurs
 	  */
-	virtual void addMessage(ref <vmime::message> msg, const int flags = message::FLAG_UNDEFINED, vmime::datetime* date = NULL, utility::progressListener* progress = NULL) = 0;
+	virtual void addMessage(std::shared_ptr<vmime::message> msg, const int flags = message::FLAG_UNDEFINED, vmime::datetime* date = NULL, utility::progressListener* progress = NULL) = 0;
 
 	/** Add a message to this folder.
 	  *
@@ -345,19 +345,19 @@ public:
 	  *
 	  * @return parent folder object
 	  */
-	virtual ref <folder> getParent() = 0;
+	virtual std::shared_ptr<folder> getParent() = 0;
 
 	/** Return a reference to the store to which this folder belongs.
 	  *
 	  * @return the store object to which this folder is attached
 	  */
-	virtual ref <const store> getStore() const = 0;
+	virtual std::shared_ptr<const store> getStore() const = 0;
 
 	/** Return a reference to the store to which this folder belongs.
 	  *
 	  * @return the store object to which this folder is attached
 	  */
-	virtual ref <store> getStore() = 0;
+	virtual std::shared_ptr<store> getStore() = 0;
 
 	/** Fetchable objects.
 	  */
@@ -382,7 +382,7 @@ public:
 	  * @param progress progress listener, or NULL if not used
 	  * @throw net_exception if an error occurs
 	  */
-	virtual void fetchMessages(std::vector <ref <message> >& msg, const int options, utility::progressListener* progress = NULL) = 0;
+	virtual void fetchMessages(std::vector <std::shared_ptr<message> >& msg, const int options, utility::progressListener* progress = NULL) = 0;
 
 	/** Fetch objects for the specified message.
 	  *
@@ -390,7 +390,7 @@ public:
 	  * @param options objects to fetch (combination of folder::FetchOptions flags)
 	  * @throw net_exception if an error occurs
 	  */
-	virtual void fetchMessage(ref <message> msg, const int options) = 0;
+	virtual void fetchMessage(std::shared_ptr<message> msg, const int options) = 0;
 
 	/** Return the list of fetchable objects supported by
 	  * the underlying protocol (see folder::FetchOptions).

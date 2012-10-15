@@ -44,14 +44,14 @@ defaultSASLAuthenticator::~defaultSASLAuthenticator()
 }
 
 
-const std::vector <ref <SASLMechanism> >
+const std::vector <std::shared_ptr<SASLMechanism> >
 	defaultSASLAuthenticator::getAcceptableMechanisms
-		(const std::vector <ref <SASLMechanism> >& available,
-		 ref <SASLMechanism> suggested) const
+		(const std::vector <std::shared_ptr<SASLMechanism> >& available,
+		 std::shared_ptr<SASLMechanism> suggested) const
 {
 	if (suggested)
 	{
-		std::vector <ref <SASLMechanism> > res;
+		std::vector <std::shared_ptr<SASLMechanism> > res;
 
 		res.push_back(suggested);
 
@@ -100,38 +100,38 @@ const string defaultSASLAuthenticator::getServiceName() const
 }
 
 
-void defaultSASLAuthenticator::setService(ref <net::service> serv)
+void defaultSASLAuthenticator::setService(std::shared_ptr<net::service> serv)
 {
 	m_service = serv;
 	m_default.setService(serv);
 }
 
 
-weak_ref <net::service> defaultSASLAuthenticator::getService() const
+std::weak_ptr<net::service> defaultSASLAuthenticator::getService() const
 {
 	return m_service;
 }
 
 
-void defaultSASLAuthenticator::setSASLSession(ref <SASLSession> sess)
+void defaultSASLAuthenticator::setSASLSession(std::shared_ptr<SASLSession> sess)
 {
 	m_saslSession = sess;
 }
 
 
-ref <SASLSession> defaultSASLAuthenticator::getSASLSession() const
+std::shared_ptr<SASLSession> defaultSASLAuthenticator::getSASLSession() const
 {
 	return m_saslSession.acquire().constCast <SASLSession>();
 }
 
 
-void defaultSASLAuthenticator::setSASLMechanism(ref <SASLMechanism> mech)
+void defaultSASLAuthenticator::setSASLMechanism(std::shared_ptr<SASLMechanism> mech)
 {
 	m_saslMech = mech;
 }
 
 
-ref <SASLMechanism> defaultSASLAuthenticator::getSASLMechanism() const
+std::shared_ptr<SASLMechanism> defaultSASLAuthenticator::getSASLMechanism() const
 {
 	return m_saslMech;
 }

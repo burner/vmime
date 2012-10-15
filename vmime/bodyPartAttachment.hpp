@@ -46,7 +46,7 @@ class bodyPartAttachment : public attachment
 
 protected:
 
-	bodyPartAttachment(ref <const bodyPart> part);
+	bodyPartAttachment(std::shared_ptr<const bodyPart> part);
 
 public:
 
@@ -55,20 +55,20 @@ public:
 	const text getDescription() const;
 	const encoding getEncoding() const;
 
-	const ref <const contentHandler> getData() const;
+	const std::shared_ptr<const contentHandler> getData() const;
 
-	ref <const object> getPart() const;
-	ref <const header> getHeader() const;
+	std::shared_ptr<const object> getPart() const;
+	std::shared_ptr<const header> getHeader() const;
 
 private:
 
-	void generateIn(ref <bodyPart> parent) const;
+	void generateIn(std::shared_ptr<bodyPart> parent) const;
 
-	ref <const contentDispositionField> getContentDisposition() const;
-	ref <const contentTypeField> getContentType() const;
+	std::shared_ptr<const contentDispositionField> getContentDisposition() const;
+	std::shared_ptr<const contentTypeField> getContentType() const;
 
 
-	ref <const bodyPart> m_part;
+	std::shared_ptr<const bodyPart> m_part;
 };
 
 

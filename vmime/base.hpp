@@ -26,6 +26,7 @@
 
 
 #include <string>
+#include <memory>
 #include <vector>
 #include <map>
 #include <sstream>
@@ -158,6 +159,7 @@ namespace vmime
 	namespace utility { }
 
 
+#ifdef OLD_SHARED_PTR
 #ifndef VMIME_BUILDING_DOC
 	/** Work-around for friend template functions.
 	  *
@@ -169,22 +171,22 @@ namespace vmime
 	public:
 
 		template <class T>
-		static ref <T> create() { return ref <T>::fromPtr(new T); }
+		static std::shared_ptr<T> create() { return std::shared_ptr<T>::fromPtr(new T); }
 
 		template <class T, class P0>
-		static ref <T> create(const P0& p0) { return ref <T>::fromPtr(new T(p0)); }
+		static std::shared_ptr<T> create(const P0& p0) { return std::shared_ptr<T>::fromPtr(new T(p0)); }
 
 		template <class T, class P0, class P1>
-		static ref <T> create(const P0& p0, const P1& p1) { return ref <T>::fromPtr(new T(p0, p1)); }
+		static std::shared_ptr<T> create(const P0& p0, const P1& p1) { return std::shared_ptr<T>::fromPtr(new T(p0, p1)); }
 
 		template <class T, class P0, class P1, class P2>
-		static ref <T> create(const P0& p0, const P1& p1, const P2& p2) { return ref <T>::fromPtr(new T(p0, p1, p2)); }
+		static std::shared_ptr<T> create(const P0& p0, const P1& p1, const P2& p2) { return std::shared_ptr<T>::fromPtr(new T(p0, p1, p2)); }
 
 		template <class T, class P0, class P1, class P2, class P3>
-		static ref <T> create(const P0& p0, const P1& p1, const P2& p2, const P3& p3) { return ref <T>::fromPtr(new T(p0, p1, p2, p3)); }
+		static std::shared_ptr<T> create(const P0& p0, const P1& p1, const P2& p2, const P3& p3) { return std::shared_ptr<T>::fromPtr(new T(p0, p1, p2, p3)); }
 
 		template <class T, class P0, class P1, class P2, class P3, class P4>
-		static ref <T> create(const P0& p0, const P1& p1, const P2& p2, const P3& p3, const P4& p4) { return ref <T>::fromPtr(new T(p0, p1, p2, p3, p4)); }
+		static std::shared_ptr<T> create(const P0& p0, const P1& p1, const P2& p2, const P3& p3, const P4& p4) { return std::shared_ptr<T>::fromPtr(new T(p0, p1, p2, p3, p4)); }
 	};
 #endif // VMIME_BUILDING_DOC
 
@@ -192,44 +194,48 @@ namespace vmime
 	  * @return reference to the new object
 	  */
 	template <class T>
-	static ref <T> create() { return creator::create <T>(); }
+	static std::shared_ptr<T> create() { return creator::std::make_shared<T>(); }
 
 	/** Create a new object and return a reference to it.
 	  * @return reference to the new object
 	  */
 	template <class T, class P0>
-	static ref <T> create(const P0& p0) { return creator::create <T, P0>(p0); }
+	static std::shared_ptr<T> create(const P0& p0) { return creator::std::make_shared<T, P0>(p0); }
 
 	/** Create a new object and return a reference to it.
 	  * @return reference to the new object
 	  */
 	template <class T, class P0, class P1>
-	static ref <T> create(const P0& p0, const P1& p1) { return creator::create <T, P0, P1>(p0, p1); }
+	static std::shared_ptr<T> create(const P0& p0, const P1& p1) { 
+		return creator::std::make_shared<T, P0, P1>(p0, p1); }
 
 	/** Create a new object and return a reference to it.
 	  * @return reference to the new object
 	  */
 	template <class T, class P0, class P1, class P2>
-	static ref <T> create(const P0& p0, const P1& p1, const P2& p2) { return creator::create <T, P0, P1, P2>(p0, p1, p2); }
+	static std::shared_ptr<T> create(const P0& p0, const P1& p1, const P2& p2) { 
+		return creator::std::make_shared<T, P0, P1, P2>(p0, p1, p2); }
 
 	/** Create a new object and return a reference to it.
 	  * @return reference to the new object
 	  */
 	template <class T, class P0, class P1, class P2, class P3>
-	static ref <T> create(const P0& p0, const P1& p1, const P2& p2, const P3& p3) { return creator::create <T, P0, P1, P2, P3>(p0, p1, p2, p3); }
+	static std::shared_ptr<T> create(const P0& p0, const P1& p1, const P2& p2, const P3& p3) { 
+		return creator::std::make_shared<T, P0, P1, P2, P3>(p0, p1, p2, p3); }
 
 	/** Create a new object and return a reference to it.
 	  * @return reference to the new object
 	  */
 	template <class T, class P0, class P1, class P2, class P3, class P4>
-	static ref <T> create(const P0& p0, const P1& p1, const P2& p2, const P3& p3, const P4& p4) { return creator::create <T, P0, P1, P2, P3, P4>(p0, p1, p2, p3, p4); }
+	static std::shared_ptr<T> create(const P0& p0, const P1& p1, const P2& p2, const P3& p3, const P4& p4) { 
+		return creator::std::make_shared<T, P0, P1, P2, P3, P4>(p0, p1, p2, p3, p4); }
 
 
 	/** Clone helper.
 	  * Use "vmime::clone(obj)" instead of "obj->clone().cast <objtype>()".
 	  */
 	template <class T>
-	ref <T> clone(ref <const T> x)
+	std::shared_ptr<T> clone(std::shared_ptr<const T> x)
 	{
 		return x->clone().template dynamicCast <T>();
 	}
@@ -238,7 +244,7 @@ namespace vmime
 	  * Use "vmime::clone(obj)" instead of "obj.clone().cast <objtype>()".
 	  */
 	template <class T>
-	ref <T> clone(const T& x)
+	std::shared_ptr<T> clone(const T& x)
 	{
 		return x.clone().template dynamicCast <T>();
 	}
@@ -249,10 +255,11 @@ namespace vmime
 	  * type Type, and DerivedType is derived from Type.
 	  */
 	template <class X, class Y>
-	ref <X> dynamicCast(ref <Y> y)
+	std::shared_ptr<X> dynamicCast(std::shared_ptr<Y> y)
 	{
 		return y.dynamicCast <X>();
 	}
+#endif
 
 	/** Inherit from this class to indicate the subclass is not copyable,
 	  * ie. you want to prohibit copy construction and copy assignment.

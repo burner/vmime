@@ -58,8 +58,8 @@ public:
 	  * @param auth authenticator to use for this session
 	  * @param mech SASL mechanism
 	  */
-	SASLSession(const string& serviceName, ref <SASLContext> ctx,
-	        ref <authenticator> auth, ref <SASLMechanism> mech);
+	SASLSession(const string& serviceName, std::shared_ptr<SASLContext> ctx,
+	        std::shared_ptr<authenticator> auth, std::shared_ptr<SASLMechanism> mech);
 
 	/** Initialize this SASL session. This must be called before
 	  * calling any other method on this object (except accessors).
@@ -72,19 +72,19 @@ public:
 	  *
 	  * @return authenticator object
 	  */
-	ref <authenticator> getAuthenticator();
+	std::shared_ptr<authenticator> getAuthenticator();
 
 	/** Return the mechanism used for this session.
 	  *
 	  * @return SASL mechanism
 	  */
-	ref <SASLMechanism> getMechanism();
+	std::shared_ptr<SASLMechanism> getMechanism();
 
 	/** Return the SASL context.
 	  *
 	  * @return SASL context
 	  */
-	ref <SASLContext> getContext();
+	std::shared_ptr<SASLContext> getContext();
 
 	/** Perform one step of SASL authentication. Accept data from the
 	  * server (challenge), process it and return data to be returned
@@ -112,7 +112,7 @@ public:
 	  * @param sok socket to wrap
 	  * @return secured socket
 	  */
-	ref <net::socket> getSecuredSocket(ref <net::socket> sok);
+	std::shared_ptr<net::socket> getSecuredSocket(std::shared_ptr<net::socket> sok);
 
 	/** Return the name of the service which is using this
 	  * SASL session (eg. "imap"). This value should be returned
@@ -126,9 +126,9 @@ private:
 
 	const string m_serviceName;
 
-	ref <SASLContext> m_context;
-	ref <authenticator> m_auth;
-	ref <SASLMechanism> m_mech;
+	std::shared_ptr<SASLContext> m_context;
+	std::shared_ptr<authenticator> m_auth;
+	std::shared_ptr<SASLMechanism> m_mech;
 
 #ifdef GSASL_VERSION
 	Gsasl* m_gsaslContext;

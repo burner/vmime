@@ -33,15 +33,15 @@ namespace imap {
 
 
 IMAPMessagePartContentHandler::IMAPMessagePartContentHandler
-	(ref <IMAPMessage> msg, ref <class part> part, const vmime::encoding& encoding)
+	(std::shared_ptr<IMAPMessage> msg, std::shared_ptr<class part> part, const vmime::encoding& encoding)
 	: m_message(msg), m_part(part), m_encoding(encoding)
 {
 }
 
 
-ref <contentHandler> IMAPMessagePartContentHandler::clone() const
+std::shared_ptr<contentHandler> IMAPMessagePartContentHandler::clone() const
 {
-	return create <IMAPMessagePartContentHandler>
+	return std::make_shared<IMAPMessagePartContentHandler>
 		(m_message.acquire().constCast <IMAPMessage>(),
 		 m_part.acquire().constCast <part>(),
 		 m_encoding);
@@ -51,8 +51,8 @@ ref <contentHandler> IMAPMessagePartContentHandler::clone() const
 void IMAPMessagePartContentHandler::generate
 	(utility::outputStream& os, const vmime::encoding& enc, const string::size_type maxLineLength) const
 {
-	ref <IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
-	ref <part> part = m_part.acquire().constCast <class part>();
+	std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
+	std::shared_ptr<part> part = m_part.acquire().constCast <class part>();
 
 	// Data is already encoded
 	if (isEncoded())
@@ -75,14 +75,14 @@ void IMAPMessagePartContentHandler::generate
 			std::ostringstream oss2;
 			utility::outputStreamAdapter tmp2(oss2);
 
-			ref <utility::encoder::encoder> theDecoder = m_encoding.getEncoder();
+			std::shared_ptr<utility::encoder::encoder> theDecoder = m_encoding.getEncoder();
 			theDecoder->decode(in, tmp2);
 
 			// Reencode to output stream
 			string str = oss2.str();
 			utility::inputStreamStringAdapter tempIn(str);
 
-			ref <utility::encoder::encoder> theEncoder = enc.getEncoder();
+			std::shared_ptr<utility::encoder::encoder> theEncoder = enc.getEncoder();
 			theEncoder->getProperties()["maxlinelength"] = maxLineLength;
 			theEncoder->encode(tempIn, os);
 		}
@@ -102,7 +102,7 @@ void IMAPMessagePartContentHandler::generate
 		msg->extractPart(part, tmp, NULL);
 
 		// Encode temporary buffer to output stream
-		ref <utility::encoder::encoder> theEncoder = enc.getEncoder();
+		std::shared_ptr<utility::encoder::encoder> theEncoder = enc.getEncoder();
 		theEncoder->getProperties()["maxlinelength"] = maxLineLength;
 
 		utility::inputStreamStringAdapter is(oss.str());
@@ -115,8 +115,8 @@ void IMAPMessagePartContentHandler::generate
 void IMAPMessagePartContentHandler::extract
 	(utility::outputStream& os, utility::progressListener* progress) const
 {
-	ref <IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
-	ref <part> part = m_part.acquire().constCast <class part>();
+	std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
+	std::shared_ptr<part> part = m_part.acquire().constCast <class part>();
 
 	// No decoding to perform
 	if (!isEncoded())
@@ -136,7 +136,7 @@ void IMAPMessagePartContentHandler::extract
 		utility::inputStreamStringAdapter is(oss.str());
 		utility::progressListenerSizeAdapter plsa(progress, getLength());
 
-		ref <utility::encoder::encoder> theDecoder = m_encoding.getEncoder();
+		std::shared_ptr<utility::encoder::encoder> theDecoder = m_encoding.getEncoder();
 		theDecoder->decode(is, os, &plsa);
 	}
 }
@@ -145,8 +145,8 @@ void IMAPMessagePartContentHandler::extract
 void IMAPMessagePartContentHandler::extractRaw
 	(utility::outputStream& os, utility::progressListener* progress) const
 {
-	ref <IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
-	ref <part> part = m_part.acquire().constCast <class part>();
+	std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
+	std::shared_ptr<part> part = m_part.acquire().constCast <class part>();
 
 	msg->extractPart(part, os, progress);
 }

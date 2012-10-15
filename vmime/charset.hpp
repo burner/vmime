@@ -62,7 +62,7 @@ public:
 	bool operator==(const charset& value) const;
 	bool operator!=(const charset& value) const;
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 	/** Gets the recommended encoding for this charset.
 	  * Note: there may be no recommended encoding.
@@ -110,7 +110,7 @@ public:
 	  */
 	static void convert(utility::inputStream& in, utility::outputStream& out, const charset& source, const charset& dest);
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 
 private:

@@ -211,7 +211,7 @@ public:
 	  * @return value of the property
 	  */
 	template <typename TYPE>
-	const TYPE getPropertyValue(ref <session> s, const property& p) const
+	const TYPE getPropertyValue(std::shared_ptr<session> s, const property& p) const
 	{
 		if (p.getFlags() & property::FLAG_REQUIRED)
 			return s->getProperties()[getPropertyPrefix() + p.getName()].template getValue <TYPE>();
@@ -227,7 +227,7 @@ public:
 	  * @param p property to test
 	  * @return true if the property is set, false otherwise
 	  */
-	bool hasProperty(ref <session> s, const property& p) const;
+	bool hasProperty(std::shared_ptr<session> s, const property& p) const;
 };
 
 

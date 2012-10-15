@@ -126,7 +126,7 @@ static TLSGlobal g_gnutlsGlobal;
 
 
 
-TLSSession::TLSSession(ref <security::cert::certificateVerifier> cv)
+TLSSession::TLSSession(std::shared_ptr<security::cert::certificateVerifier> cv)
 	: m_certVerifier(cv)
 {
 	int res;
@@ -258,14 +258,14 @@ TLSSession::~TLSSession()
 }
 
 
-ref <TLSSocket> TLSSession::getSocket(ref <socket> sok)
+std::shared_ptr<TLSSocket> TLSSession::getSocket(std::shared_ptr<socket> sok)
 {
-	return vmime::create <TLSSocket>
+	return vmime::std::make_shared<TLSSocket>
 		(thisRef().dynamicCast <TLSSession>(), sok);
 }
 
 
-ref <security::cert::certificateVerifier> TLSSession::getCertificateVerifier()
+std::shared_ptr<security::cert::certificateVerifier> TLSSession::getCertificateVerifier()
 {
 	return m_certVerifier;
 }

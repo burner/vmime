@@ -63,7 +63,7 @@ const string message::generate(const string::size_type maxLineLength,
 
 
 void message::generate
-	(ref <utility::outputStream> os,
+	(std::shared_ptr<utility::outputStream> os,
 	 const string::size_type maxLineLength,
 	 const string::size_type curLinePos,
 	 string::size_type* newLinePos) const

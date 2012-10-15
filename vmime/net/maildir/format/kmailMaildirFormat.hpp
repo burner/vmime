@@ -41,7 +41,7 @@ class kmailMaildirFormat : public maildirFormat
 {
 public:
 
-	kmailMaildirFormat(ref <context> ctx);
+	kmailMaildirFormat(std::shared_ptr<context> ctx);
 
 
 	/* Folder types:

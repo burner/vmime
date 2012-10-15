@@ -74,7 +74,7 @@ public:
 	  * @return a X.509 certificate, or NULL if the given data does not
 	  * represent a valid certificate
 	  */
-	static ref <X509Certificate> import(utility::inputStream& is);
+	static std::shared_ptr<X509Certificate> import(utility::inputStream& is);
 
 	/** Imports a DER or PEM encoded X.509 certificate.
 	  *
@@ -83,7 +83,7 @@ public:
 	  * @return a X.509 certificate, or NULL if the given data does not
 	  * represent a valid certificate
 	  */
-	static ref <X509Certificate> import(const byte_t* data, const unsigned int length);
+	static std::shared_ptr<X509Certificate> import(const byte_t* data, const unsigned int length);
 
 	/** Exports this X.509 certificate to the specified format.
 	  *
@@ -107,14 +107,14 @@ public:
 	  * @return true if this certificate was issued by the given issuer,
 	  * false otherwise
 	  */
-	bool checkIssuer(ref <const X509Certificate> issuer) const;
+	bool checkIssuer(std::shared_ptr<const X509Certificate> issuer) const;
 
 	/** Verifies this certificate against a given trusted one.
 	  *
 	  * @param caCert a certificate that is considered to be trusted one
 	  * @return true if the verification succeeded, false otherwise
 	  */
-	bool verify(ref <const X509Certificate> caCert) const;
+	bool verify(std::shared_ptr<const X509Certificate> caCert) const;
 
 	/** Gets the expiration date of this certificate. This is the date
 	  * at which this certificate will not be valid anymore.
@@ -141,7 +141,7 @@ public:
 	const byteArray getEncoded() const;
 	const string getType() const;
 	int getVersion() const;
-	bool equals(ref <const certificate> other) const;
+	bool equals(std::shared_ptr<const certificate> other) const;
 
 private:
 

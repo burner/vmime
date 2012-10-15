@@ -66,7 +66,7 @@ word::word(const string& buffer, const charset& charset)
 }
 
 
-ref <word> word::parseNext(const string& buffer, const string::size_type position,
+std::shared_ptr<word> word::parseNext(const string& buffer, const string::size_type position,
 	const string::size_type end, string::size_type* newPosition,
 	bool prevIsEncoded, bool* isEncoded, bool isFirst)
 {
@@ -124,7 +124,7 @@ ref <word> word::parseNext(const string& buffer, const string::size_type positio
 				if (prevIsEncoded)
 					unencoded = whiteSpaces + unencoded;
 
-				ref <word> w = vmime::create <word>(unencoded, charset(charsets::US_ASCII));
+				std::shared_ptr<word> w = vmime::std::make_shared<word>(unencoded, charset(charsets::US_ASCII));
 				w->setParsedBounds(position, pos);
 
 				if (newPosition)
@@ -181,7 +181,7 @@ ref <word> word::parseNext(const string& buffer, const string::size_type positio
 
 			pos += 2; // ?=
 
-			ref <word> w = vmime::create <word>();
+			std::shared_ptr<word> w = vmime::std::make_shared<word>();
 			w->parse(buffer, wordStart, pos, NULL);
 
 			if (newPosition)
@@ -205,7 +205,7 @@ ref <word> word::parseNext(const string& buffer, const string::size_type positio
 	// Treat unencoded text at the end of the buffer
 	if (!unencoded.empty())
 	{
-		ref <word> w = vmime::create <word>(unencoded, charset(charsets::US_ASCII));
+		std::shared_ptr<word> w = vmime::std::make_shared<word>(unencoded, charset(charsets::US_ASCII));
 		w->setParsedBounds(position, end);
 
 		if (newPosition)
@@ -221,11 +221,11 @@ ref <word> word::parseNext(const string& buffer, const string::size_type positio
 }
 
 
-const std::vector <ref <word> > word::parseMultiple(const string& buffer, const string::size_type position,
+const std::vector <std::shared_ptr<word> > word::parseMultiple(const string& buffer, const string::size_type position,
 	const string::size_type end, string::size_type* newPosition)
 {
-	std::vector <ref <word> > res;
-	ref <word> w;
+	std::vector <std::shared_ptr<word> > res;
+	std::shared_ptr<word> w;
 
 	string::size_type pos = position;
 
@@ -710,9 +710,9 @@ const string word::getConvertedText(const charset& dest) const
 }
 
 
-ref <component> word::clone() const
+std::shared_ptr<component> word::clone() const
 {
-	return vmime::create <word>(m_buffer, m_charset);
+	return vmime::std::make_shared<word>(m_buffer, m_charset);
 }
 
 
@@ -752,9 +752,9 @@ void word::setBuffer(const string& buffer)
 }
 
 
-const std::vector <ref <component> > word::getChildComponents()
+const std::vector <std::shared_ptr<component> > word::getChildComponents()
 {
-	return std::vector <ref <component> >();
+	return std::vector <std::shared_ptr<component> >();
 }
 
 

@@ -41,7 +41,7 @@ IMAPStructure::IMAPStructure(const IMAPParser::body* body)
 }
 
 
-IMAPStructure::IMAPStructure(ref <IMAPPart> parent, const std::vector <IMAPParser::body*>& list)
+IMAPStructure::IMAPStructure(std::shared_ptr<IMAPPart> parent, const std::vector <IMAPParser::body*>& list)
 {
 	int number = 0;
 
@@ -53,13 +53,13 @@ IMAPStructure::IMAPStructure(ref <IMAPPart> parent, const std::vector <IMAPParse
 }
 
 
-ref <const part> IMAPStructure::getPartAt(const int x) const
+std::shared_ptr<const part> IMAPStructure::getPartAt(const int x) const
 {
 	return m_parts[x];
 }
 
 
-ref <part> IMAPStructure::getPartAt(const int x)
+std::shared_ptr<part> IMAPStructure::getPartAt(const int x)
 {
 	return m_parts[x];
 }
@@ -72,9 +72,9 @@ int IMAPStructure::getPartCount() const
 
 
 // static
-ref <IMAPStructure> IMAPStructure::emptyStructure()
+std::shared_ptr<IMAPStructure> IMAPStructure::emptyStructure()
 {
-	static ref <IMAPStructure> emptyStructure = vmime::create <IMAPStructure>();
+	static std::shared_ptr<IMAPStructure> emptyStructure = vmime::std::make_shared<IMAPStructure>();
 	return emptyStructure;
 }
 

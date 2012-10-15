@@ -51,19 +51,19 @@ serviceFactory* serviceFactory::getInstance()
 }
 
 
-ref <service> serviceFactory::create
-	(ref <session> sess, const string& protocol,
-	 ref <security::authenticator> auth)
+std::shared_ptr<service> serviceFactory::create
+	(std::shared_ptr<session> sess, const string& protocol,
+	 std::shared_ptr<security::authenticator> auth)
 {
 	return (getServiceByProtocol(protocol)->create(sess, auth));
 }
 
 
-ref <service> serviceFactory::create
-	(ref <session> sess, const utility::url& u,
-	 ref <security::authenticator> auth)
+std::shared_ptr<service> serviceFactory::create
+	(std::shared_ptr<session> sess, const utility::url& u,
+	 std::shared_ptr<security::authenticator> auth)
 {
-	ref <service> serv = create(sess, u.getProtocol(), auth);
+	std::shared_ptr<service> serv = create(sess, u.getProtocol(), auth);
 
 	sess->getProperties()[serv->getInfos().getPropertyPrefix() + "server.address"] = u.getHost();
 
@@ -85,11 +85,11 @@ ref <service> serviceFactory::create
 }
 
 
-ref <const serviceFactory::registeredService> serviceFactory::getServiceByProtocol(const string& protocol) const
+std::shared_ptr<const serviceFactory::registeredService> serviceFactory::getServiceByProtocol(const string& protocol) const
 {
 	const string name(utility::stringUtils::toLower(protocol));
 
-	for (std::vector <ref <registeredService> >::const_iterator it = m_services.begin() ;
+	for (std::vector <std::shared_ptr<registeredService> >::const_iterator it = m_services.begin() ;
 	     it != m_services.end() ; ++it)
 	{
 		if ((*it)->getName() == name)
@@ -106,17 +106,17 @@ int serviceFactory::getServiceCount() const
 }
 
 
-ref <const serviceFactory::registeredService> serviceFactory::getServiceAt(const int pos) const
+std::shared_ptr<const serviceFactory::registeredService> serviceFactory::getServiceAt(const int pos) const
 {
 	return (m_services[pos]);
 }
 
 
-const std::vector <ref <const serviceFactory::registeredService> > serviceFactory::getServiceList() const
+const std::vector <std::shared_ptr<const serviceFactory::registeredService> > serviceFactory::getServiceList() const
 {
-	std::vector <ref <const registeredService> > res;
+	std::vector <std::shared_ptr<const registeredService> > res;
 
-	for (std::vector <ref <registeredService> >::const_iterator it = m_services.begin() ;
+	for (std::vector <std::shared_ptr<registeredService> >::const_iterator it = m_services.begin() ;
 	     it != m_services.end() ; ++it)
 	{
 		res.push_back(*it);
@@ -126,7 +126,7 @@ const std::vector <ref <const serviceFactory::registeredService> > serviceFactor
 }
 
 
-void serviceFactory::registerService(ref <registeredService> reg)
+void serviceFactory::registerService(std::shared_ptr<registeredService> reg)
 {
 	m_services.push_back(reg);
 }

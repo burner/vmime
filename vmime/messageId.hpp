@@ -93,11 +93,11 @@ public:
 	  */
 	const string getId() const;
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 	messageId& operator=(const messageId& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 private:
 
@@ -127,7 +127,7 @@ protected:
 	  * @param newPosition will receive the new position in the input buffer
 	  * @return a new message-id object, or null if no more message-id can be parsed from the input buffer
 	  */
-	static ref <messageId> parseNext
+	static std::shared_ptr<messageId> parseNext
 		(const string& buffer,
 		 const string::size_type position,
 		 const string::size_type end,

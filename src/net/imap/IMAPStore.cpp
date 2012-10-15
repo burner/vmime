@@ -36,7 +36,7 @@ namespace net {
 namespace imap {
 
 
-IMAPStore::IMAPStore(ref <session> sess, ref <security::authenticator> auth, const bool secured)
+IMAPStore::IMAPStore(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth, const bool secured)
 	: store(sess, getInfosInstance(), auth), m_connection(NULL), m_isIMAPS(secured)
 {
 }
@@ -62,32 +62,32 @@ const string IMAPStore::getProtocolName() const
 }
 
 
-ref <folder> IMAPStore::getRootFolder()
+std::shared_ptr<folder> IMAPStore::getRootFolder()
 {
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::create <IMAPFolder>(folder::path(),
+	return vmime::std::make_shared<IMAPFolder>(folder::path(),
 		thisRef().dynamicCast <IMAPStore>());
 }
 
 
-ref <folder> IMAPStore::getDefaultFolder()
+std::shared_ptr<folder> IMAPStore::getDefaultFolder()
 {
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::create <IMAPFolder>(folder::path::component("INBOX"),
+	return vmime::std::make_shared<IMAPFolder>(folder::path::component("INBOX"),
 		thisRef().dynamicCast <IMAPStore>());
 }
 
 
-ref <folder> IMAPStore::getFolder(const folder::path& path)
+std::shared_ptr<folder> IMAPStore::getFolder(const folder::path& path)
 {
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::create <IMAPFolder>(path, thisRef().dynamicCast <IMAPStore>());
+	return vmime::std::make_shared<IMAPFolder>(path, thisRef().dynamicCast <IMAPStore>());
 }
 
 
@@ -102,7 +102,7 @@ void IMAPStore::connect()
 	if (isConnected())
 		throw exceptions::already_connected();
 
-	m_connection = vmime::create <IMAPConnection>
+	m_connection = vmime::std::make_shared<IMAPConnection>
 		(thisRef().dynamicCast <IMAPStore>(), getAuthenticator());
 
 	try
@@ -138,7 +138,7 @@ bool IMAPStore::isSecuredConnection() const
 }
 
 
-ref <connectionInfos> IMAPStore::getConnectionInfos() const
+std::shared_ptr<connectionInfos> IMAPStore::getConnectionInfos() const
 {
 	if (m_connection == NULL)
 		return NULL;
@@ -184,7 +184,7 @@ void IMAPStore::noop()
 }
 
 
-ref <IMAPConnection> IMAPStore::connection()
+std::shared_ptr<IMAPConnection> IMAPStore::connection()
 {
 	return (m_connection);
 }

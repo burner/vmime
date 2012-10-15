@@ -100,7 +100,7 @@ private:
 	charset m_charset;
 	Encoding m_encoding;
 
-	ref <utility::encoder::encoder> m_encoder;
+	std::shared_ptr<utility::encoder::encoder> m_encoder;
 };
 
 

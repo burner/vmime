@@ -41,30 +41,30 @@ class parsedMessageAttachment : public messageAttachment
 {
 public:
 
-	parsedMessageAttachment(ref <message> msg);
+	parsedMessageAttachment(std::shared_ptr<message> msg);
 
 	const mediaType getType() const;
 	const text getDescription() const;
 	const word getName() const;
 
-	const ref <const contentHandler> getData() const;
+	const std::shared_ptr<const contentHandler> getData() const;
 
 	const encoding getEncoding() const;
 
-	ref <const object> getPart() const;
+	std::shared_ptr<const object> getPart() const;
 
-	ref <const header> getHeader() const;
+	std::shared_ptr<const header> getHeader() const;
 
-	ref <message> getMessage() const;
+	std::shared_ptr<message> getMessage() const;
 
 protected:
 
-	void generateIn(ref <bodyPart> parent) const;
+	void generateIn(std::shared_ptr<bodyPart> parent) const;
 
 private:
 
-	ref <message> m_msg;
-	mutable ref <contentHandler> m_data;
+	std::shared_ptr<message> m_msg;
+	mutable std::shared_ptr<contentHandler> m_data;
 };
 
 

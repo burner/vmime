@@ -49,7 +49,7 @@ class sendmailTransport : public transport
 {
 public:
 
-	sendmailTransport(ref <session> sess, ref <security::authenticator> auth);
+	sendmailTransport(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth);
 	~sendmailTransport();
 
 	const string getProtocolName() const;
@@ -66,7 +66,7 @@ public:
 	void send(const mailbox& expeditor, const mailboxList& recipients, utility::inputStream& is, const utility::stream::size_type size, utility::progressListener* progress = NULL);
 
 	bool isSecuredConnection() const;
-	ref <connectionInfos> getConnectionInfos() const;
+	std::shared_ptr<connectionInfos> getConnectionInfos() const;
 
 private:
 

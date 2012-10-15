@@ -63,7 +63,7 @@ public:
 	  */
 	virtual bool isGroup() const = 0;
 
-	virtual ref <component> clone() const = 0;
+	virtual std::shared_ptr<component> clone() const = 0;
 
 protected:
 
@@ -75,7 +75,7 @@ protected:
 	  * @param newPosition will receive the new position in the input buffer
 	  * @return a new address object, or null if no more address is available in the input buffer
 	  */
-	static ref <address> parseNext(const string& buffer, const string::size_type position, const string::size_type end, string::size_type* newPosition);
+	static std::shared_ptr<address> parseNext(const string& buffer, const string::size_type position, const string::size_type end, string::size_type* newPosition);
 };
 
 

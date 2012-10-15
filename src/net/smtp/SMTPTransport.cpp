@@ -59,7 +59,7 @@ namespace net {
 namespace smtp {
 
 
-SMTPTransport::SMTPTransport(ref <session> sess, ref <security::authenticator> auth, const bool secured)
+SMTPTransport::SMTPTransport(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth, const bool secured)
 	: transport(sess, getInfosInstance(), auth), m_socket(NULL),
 	  m_authentified(false), m_extendedSMTP(false), m_timeoutHandler(NULL),
 	  m_isSMTPS(secured), m_secured(false)
@@ -107,21 +107,21 @@ void SMTPTransport::connect()
 #if VMIME_HAVE_TLS_SUPPORT
 	if (m_isSMTPS)  // dedicated port/SMTPS
 	{
-		ref <tls::TLSSession> tlsSession =
-			vmime::create <tls::TLSSession>(getCertificateVerifier());
+		std::shared_ptr<tls::TLSSession> tlsSession =
+			vmime::std::make_shared<tls::TLSSession>(getCertificateVerifier());
 
-		ref <tls::TLSSocket> tlsSocket =
+		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
 
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = vmime::create <tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
+		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
 	}
 	else
 #endif // VMIME_HAVE_TLS_SUPPORT
 	{
-		m_cntInfos = vmime::create <defaultConnectionInfos>(address, port);
+		m_cntInfos = vmime::std::make_shared<defaultConnectionInfos>(address, port);
 	}
 
 	m_socket->connect(address, port);
@@ -131,7 +131,7 @@ void SMTPTransport::connect()
 	// eg:  C: <connection to server>
 	// ---  S: 220 smtp.domain.com Service ready
 
-	ref <SMTPResponse> resp;
+	std::shared_ptr<SMTPResponse> resp;
 
 	if ((resp = readResponse())->getCode() != 220)
 	{
@@ -198,7 +198,7 @@ void SMTPTransport::helo()
 
 	sendRequest("EHLO " + platform::getHandler()->getHostName());
 
-	ref <SMTPResponse> resp;
+	std::shared_ptr<SMTPResponse> resp;
 
 	if ((resp = readResponse())->getCode() != 250)
 	{
@@ -314,10 +314,10 @@ void SMTPTransport::authenticateSASL()
 	if (saslMechs.empty())
 		throw exceptions::authentication_error("No SASL mechanism available.");
 
-	std::vector <ref <security::sasl::SASLMechanism> > mechList;
+	std::vector <std::shared_ptr<security::sasl::SASLMechanism> > mechList;
 
-	ref <security::sasl::SASLContext> saslContext =
-		vmime::create <security::sasl::SASLContext>();
+	std::shared_ptr<security::sasl::SASLContext> saslContext =
+		vmime::std::make_shared<security::sasl::SASLContext>();
 
 	for (unsigned int i = 0 ; i < saslMechs.size() ; ++i)
 	{
@@ -336,7 +336,7 @@ void SMTPTransport::authenticateSASL()
 		throw exceptions::authentication_error("No SASL mechanism available.");
 
 	// Try to suggest a mechanism among all those supported
-	ref <security::sasl::SASLMechanism> suggestedMech =
+	std::shared_ptr<security::sasl::SASLMechanism> suggestedMech =
 		saslContext->suggestMechanism(mechList);
 
 	if (!suggestedMech)
@@ -352,9 +352,9 @@ void SMTPTransport::authenticateSASL()
 	// Try each mechanism in the list in turn
 	for (unsigned int i = 0 ; i < mechList.size() ; ++i)
 	{
-		ref <security::sasl::SASLMechanism> mech = mechList[i];
+		std::shared_ptr<security::sasl::SASLMechanism> mech = mechList[i];
 
-		ref <security::sasl::SASLSession> saslSession =
+		std::shared_ptr<security::sasl::SASLSession> saslSession =
 			saslContext->createSession("smtp", getAuthenticator(), mech);
 
 		saslSession->init();
@@ -363,7 +363,7 @@ void SMTPTransport::authenticateSASL()
 
 		for (bool cont = true ; cont ; )
 		{
-			ref <SMTPResponse> response = readResponse();
+			std::shared_ptr<SMTPResponse> response = readResponse();
 
 			switch (response->getCode())
 			{
@@ -451,15 +451,15 @@ void SMTPTransport::startTLS()
 	{
 		sendRequest("STARTTLS");
 
-		ref <SMTPResponse> resp = readResponse();
+		std::shared_ptr<SMTPResponse> resp = readResponse();
 
 		if (resp->getCode() != 220)
 			throw exceptions::command_error("STARTTLS", resp->getText());
 
-		ref <tls::TLSSession> tlsSession =
-			vmime::create <tls::TLSSession>(getCertificateVerifier());
+		std::shared_ptr<tls::TLSSession> tlsSession =
+			vmime::std::make_shared<tls::TLSSession>(getCertificateVerifier());
 
-		ref <tls::TLSSocket> tlsSocket =
+		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
 
 		tlsSocket->handshake(m_timeoutHandler);
@@ -467,7 +467,7 @@ void SMTPTransport::startTLS()
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = vmime::create <tls::TLSSecuredConnectionInfos>
+		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>
 			(m_cntInfos->getHost(), m_cntInfos->getPort(), tlsSession, tlsSocket);
 	}
 	catch (exceptions::command_error&)
@@ -498,7 +498,7 @@ bool SMTPTransport::isSecuredConnection() const
 }
 
 
-ref <connectionInfos> SMTPTransport::getConnectionInfos() const
+std::shared_ptr<connectionInfos> SMTPTransport::getConnectionInfos() const
 {
 	return m_cntInfos;
 }
@@ -545,7 +545,7 @@ void SMTPTransport::noop()
 
 	sendRequest("NOOP");
 
-	ref <SMTPResponse> resp = readResponse();
+	std::shared_ptr<SMTPResponse> resp = readResponse();
 
 	if (resp->getCode() != 250)
 		throw exceptions::command_error("NOOP", resp->getText());
@@ -566,7 +566,7 @@ void SMTPTransport::send(const mailbox& expeditor, const mailboxList& recipients
 		throw exceptions::no_expeditor();
 
 	// Emit the "MAIL" command
-	ref <SMTPResponse> resp;
+	std::shared_ptr<SMTPResponse> resp;
 
 	sendRequest("MAIL FROM:<" + expeditor.getEmail() + ">");
 
@@ -627,7 +627,7 @@ void SMTPTransport::sendRequest(const string& buffer, const bool end)
 }
 
 
-ref <SMTPResponse> SMTPTransport::readResponse()
+std::shared_ptr<SMTPResponse> SMTPTransport::readResponse()
 {
 	return SMTPResponse::readResponse(m_socket, m_timeoutHandler);
 }

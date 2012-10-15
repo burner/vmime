@@ -37,7 +37,7 @@ namespace events {
 //
 
 messageCountEvent::messageCountEvent
-	(ref <folder> folder, const Types type, const std::vector <int>& nums)
+	(std::shared_ptr<folder> folder, const Types type, const std::vector <int>& nums)
 		: m_folder(folder), m_type(type)
 {
 	m_nums.resize(nums.size());
@@ -45,7 +45,7 @@ messageCountEvent::messageCountEvent
 }
 
 
-ref <folder> messageCountEvent::getFolder() const { return (m_folder); }
+std::shared_ptr<folder> messageCountEvent::getFolder() const { return (m_folder); }
 messageCountEvent::Types messageCountEvent::getType() const { return (m_type); }
 const std::vector <int>& messageCountEvent::getNumbers() const { return (m_nums); }
 
@@ -64,7 +64,7 @@ void messageCountEvent::dispatch(messageCountListener* listener) const
 //
 
 messageChangedEvent::messageChangedEvent
-	(ref <folder> folder, const Types type, const std::vector <int>& nums)
+	(std::shared_ptr<folder> folder, const Types type, const std::vector <int>& nums)
 		: m_folder(folder), m_type(type)
 {
 	m_nums.resize(nums.size());
@@ -72,7 +72,7 @@ messageChangedEvent::messageChangedEvent
 }
 
 
-ref <folder> messageChangedEvent::getFolder() const { return (m_folder); }
+std::shared_ptr<folder> messageChangedEvent::getFolder() const { return (m_folder); }
 messageChangedEvent::Types messageChangedEvent::getType() const { return (m_type); }
 const std::vector <int>& messageChangedEvent::getNumbers() const { return (m_nums); }
 
@@ -88,14 +88,14 @@ void messageChangedEvent::dispatch(messageChangedListener* listener) const
 //
 
 folderEvent::folderEvent
-	(ref <folder> folder, const Types type,
+	(std::shared_ptr<folder> folder, const Types type,
 	 const utility::path& oldPath, const utility::path& newPath)
 	: m_folder(folder), m_type(type), m_oldPath(oldPath), m_newPath(newPath)
 {
 }
 
 
-ref <folder> folderEvent::getFolder() const { return (m_folder); }
+std::shared_ptr<folder> folderEvent::getFolder() const { return (m_folder); }
 folderEvent::Types folderEvent::getType() const { return (m_type); }
 
 

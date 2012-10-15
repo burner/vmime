@@ -45,9 +45,9 @@ public:
 	fileAttachment(const string& filepath, const mediaType& type, const text& desc);
 	fileAttachment(const string& filepath, const mediaType& type, const text& desc, const encoding& enc);
 
-	fileAttachment(ref <utility::inputStream> is, const word& filename, const mediaType& type);
-	fileAttachment(ref <utility::inputStream> is, const word& filename, const mediaType& type, const text& desc);
-	fileAttachment(ref <utility::inputStream> is, const word& filename, const mediaType& type, const text& desc, const encoding& enc);
+	fileAttachment(std::shared_ptr<utility::inputStream> is, const word& filename, const mediaType& type);
+	fileAttachment(std::shared_ptr<utility::inputStream> is, const word& filename, const mediaType& type, const text& desc);
+	fileAttachment(std::shared_ptr<utility::inputStream> is, const word& filename, const mediaType& type, const text& desc, const encoding& enc);
 
 	/** Stores information about a file attachment.
 	  */
@@ -174,11 +174,11 @@ public:
 private:
 
 	void setData(const string& filepath);
-	void setData(ref <utility::inputStream> is);
+	void setData(std::shared_ptr<utility::inputStream> is);
 
 	fileInfo m_fileInfo;
 
-	void generatePart(ref <bodyPart> part) const;
+	void generatePart(std::shared_ptr<bodyPart> part) const;
 };
 
 

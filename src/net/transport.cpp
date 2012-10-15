@@ -35,7 +35,7 @@ namespace vmime {
 namespace net {
 
 
-transport::transport(ref <session> sess, const serviceInfos& infos, ref <security::authenticator> auth)
+transport::transport(std::shared_ptr<session> sess, const serviceInfos& infos, std::shared_ptr<security::authenticator> auth)
 	: service(sess, infos, auth)
 {
 }
@@ -46,7 +46,7 @@ static void extractMailboxes
 {
 	for (int i = 0 ; i < list.getAddressCount() ; ++i)
 	{
-		ref <mailbox> mbox = list.getAddressAt(i)->clone().dynamicCast <mailbox>();
+		std::shared_ptr<mailbox> mbox = list.getAddressAt(i)->clone().dynamicCast <mailbox>();
 
 		if (mbox != NULL)
 			recipients.appendMailbox(mbox);
@@ -54,7 +54,7 @@ static void extractMailboxes
 }
 
 
-void transport::send(ref <vmime::message> msg, utility::progressListener* progress)
+void transport::send(std::shared_ptr<vmime::message> msg, utility::progressListener* progress)
 {
 	// Extract expeditor
 	mailbox expeditor;
@@ -106,7 +106,7 @@ void transport::send(ref <vmime::message> msg, utility::progressListener* progre
 	// have an option for this (Exim).
 	try
 	{
-		ref <headerField> bcc = msg->getHeader()->findField(fields::BCC);
+		std::shared_ptr<headerField> bcc = msg->getHeader()->findField(fields::BCC);
 		msg->getHeader()->removeField(bcc);
 	}
 	catch (exceptions::no_such_field&) { }

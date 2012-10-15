@@ -35,7 +35,7 @@ namespace vmime
 
 
 plainTextPart::plainTextPart()
-	: m_text(vmime::create <emptyContentHandler>())
+	: m_text(vmime::std::make_shared<emptyContentHandler>())
 {
 }
 
@@ -57,10 +57,10 @@ int plainTextPart::getPartCount() const
 }
 
 
-void plainTextPart::generateIn(ref <bodyPart> /* message */, ref <bodyPart> parent) const
+void plainTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shared_ptr<bodyPart> parent) const
 {
 	// Create a new part
-	ref <bodyPart> part = vmime::create <bodyPart>();
+	std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
 	parent->getBody()->appendPart(part);
 
 	// Set contents
@@ -70,8 +70,8 @@ void plainTextPart::generateIn(ref <bodyPart> /* message */, ref <bodyPart> pare
 }
 
 
-void plainTextPart::parse(ref <const bodyPart> /* message */,
-	ref <const bodyPart> /* parent */, ref <const bodyPart> textPart)
+void plainTextPart::parse(std::shared_ptr<const bodyPart> /* message */,
+	std::shared_ptr<const bodyPart> /* parent */, std::shared_ptr<const bodyPart> textPart)
 {
 	m_text = textPart->getBody()->getContents()->clone().dynamicCast <contentHandler>();
 
@@ -105,13 +105,13 @@ void plainTextPart::setCharset(const charset& ch)
 }
 
 
-const ref <const contentHandler> plainTextPart::getText() const
+const std::shared_ptr<const contentHandler> plainTextPart::getText() const
 {
 	return (m_text);
 }
 
 
-void plainTextPart::setText(ref <contentHandler> text)
+void plainTextPart::setText(std::shared_ptr<contentHandler> text)
 {
 	m_text = text->clone().dynamicCast <contentHandler>();
 }

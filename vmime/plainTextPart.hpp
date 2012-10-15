@@ -47,17 +47,17 @@ public:
 	const charset& getCharset() const;
 	void setCharset(const charset& ch);
 
-	const ref <const contentHandler> getText() const;
-	void setText(ref <contentHandler> text);
+	const std::shared_ptr<const contentHandler> getText() const;
+	void setText(std::shared_ptr<contentHandler> text);
 
 	int getPartCount() const;
 
-	void generateIn(ref <bodyPart> message, ref <bodyPart> parent) const;
-	void parse(ref <const bodyPart> message, ref <const bodyPart> parent, ref <const bodyPart> textPart);
+	void generateIn(std::shared_ptr<bodyPart> message, std::shared_ptr<bodyPart> parent) const;
+	void parse(std::shared_ptr<const bodyPart> message, std::shared_ptr<const bodyPart> parent, std::shared_ptr<const bodyPart> textPart);
 
 private:
 
-	ref <contentHandler> m_text;
+	std::shared_ptr<contentHandler> m_text;
 	charset m_charset;
 };
 

@@ -48,10 +48,10 @@ private:
 
 	friend class IMAPFolder;
 	friend class IMAPMessagePartContentHandler;
-	friend class vmime::creator;  // vmime::create <IMAPMessage>
+	friend class vmime::creator;  // vmime::std::make_shared<IMAPMessage>
 
-	IMAPMessage(ref <IMAPFolder> folder, const int num);
-	IMAPMessage(ref <IMAPFolder> folder, const int num, const uid& uniqueId);
+	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num);
+	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num, const uid& uniqueId);
 	IMAPMessage(const IMAPMessage&) : message() { }
 
 	~IMAPMessage();
@@ -66,24 +66,24 @@ public:
 
 	bool isExpunged() const;
 
-	ref <const structure> getStructure() const;
-	ref <structure> getStructure();
+	std::shared_ptr<const structure> getStructure() const;
+	std::shared_ptr<structure> getStructure();
 
-	ref <const header> getHeader() const;
+	std::shared_ptr<const header> getHeader() const;
 
 	int getFlags() const;
 	void setFlags(const int flags, const int mode = FLAG_MODE_SET);
 
 	void extract(utility::outputStream& os, utility::progressListener* progress = NULL, const int start = 0, const int length = -1, const bool peek = false) const;
-	void extractPart(ref <const part> p, utility::outputStream& os, utility::progressListener* progress = NULL, const int start = 0, const int length = -1, const bool peek = false) const;
+	void extractPart(std::shared_ptr<const part> p, utility::outputStream& os, utility::progressListener* progress = NULL, const int start = 0, const int length = -1, const bool peek = false) const;
 
-	void fetchPartHeader(ref <part> p);
+	void fetchPartHeader(std::shared_ptr<part> p);
 
-	ref <vmime::message> getParsedMessage();
+	std::shared_ptr<vmime::message> getParsedMessage();
 
 private:
 
-	void fetch(ref <IMAPFolder> folder, const int options);
+	void fetch(std::shared_ptr<IMAPFolder> folder, const int options);
 
 	void processFetchResponse(const int options, const IMAPParser::message_data* msgData);
 
@@ -91,7 +91,7 @@ private:
 	  *
 	  * @param str structure for which to fetch parts headers
 	  */
-	void fetchPartHeaderForStructure(ref <structure> str);
+	void fetchPartHeaderForStructure(std::shared_ptr<structure> str);
 
 	/** Recursively contruct parsed message from structure.
 	  * Called by getParsedMessage().
@@ -100,7 +100,7 @@ private:
 	  * @param str structure for which to construct part
 	  * @param level current nesting level (0 is root)
 	  */
-	void constructParsedMessage(ref <bodyPart> parentPart, ref <structure> str, int level = 0);
+	void constructParsedMessage(std::shared_ptr<bodyPart> parentPart, std::shared_ptr<structure> str, int level = 0);
 
 
 	enum ExtractFlags
@@ -110,16 +110,16 @@ private:
 		EXTRACT_PEEK = 0x10
 	};
 
-	void extractImpl(ref <const part> p, utility::outputStream& os, utility::progressListener* progress,
+	void extractImpl(std::shared_ptr<const part> p, utility::outputStream& os, utility::progressListener* progress,
 		const int start, const int length, const int extractFlags) const;
 
 
-	ref <header> getOrCreateHeader();
+	std::shared_ptr<header> getOrCreateHeader();
 
 
 	void onFolderClosed();
 
-	weak_ref <IMAPFolder> m_folder;
+	std::weak_ptr<IMAPFolder> m_folder;
 
 	int m_num;
 	int m_size;
@@ -127,8 +127,8 @@ private:
 	bool m_expunged;
 	uid m_uid;
 
-	ref <header> m_header;
-	ref <structure> m_structure;
+	std::shared_ptr<header> m_header;
+	std::shared_ptr<structure> m_structure;
 };
 
 

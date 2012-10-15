@@ -73,7 +73,7 @@ fileAttachment::fileAttachment(const string& filepath, const mediaType& type,
 }
 
 
-fileAttachment::fileAttachment(ref <utility::inputStream> is, const word& filename, const mediaType& type)
+fileAttachment::fileAttachment(std::shared_ptr<utility::inputStream> is, const word& filename, const mediaType& type)
 {
 	if (!filename.isEmpty())
 		m_fileInfo.setFilename(filename);
@@ -86,7 +86,7 @@ fileAttachment::fileAttachment(ref <utility::inputStream> is, const word& filena
 }
 
 
-fileAttachment::fileAttachment(ref <utility::inputStream> is, const word& filename,
+fileAttachment::fileAttachment(std::shared_ptr<utility::inputStream> is, const word& filename,
 	const mediaType& type, const text& desc)
 {
 	if (!filename.isEmpty())
@@ -101,7 +101,7 @@ fileAttachment::fileAttachment(ref <utility::inputStream> is, const word& filena
 }
 
 
-fileAttachment::fileAttachment(ref <utility::inputStream> is, const word& filename,
+fileAttachment::fileAttachment(std::shared_ptr<utility::inputStream> is, const word& filename,
 	const mediaType& type, const text& desc, const encoding& enc)
 {
 	if (!filename.isEmpty())
@@ -126,7 +126,7 @@ void fileAttachment::setData(const string& filepath)
 		throw exceptions::open_file_error();
 	}
 
-	ref <utility::inputStream> is = vmime::create <utility::inputStreamPointerAdapter>(file, true);
+	std::shared_ptr<utility::inputStream> is = vmime::std::make_shared<utility::inputStreamPointerAdapter>(file, true);
 
 	setData(is);
 
@@ -135,17 +135,17 @@ void fileAttachment::setData(const string& filepath)
 }
 
 
-void fileAttachment::setData(ref <utility::inputStream> is)
+void fileAttachment::setData(std::shared_ptr<utility::inputStream> is)
 {
-	m_data = vmime::create <streamContentHandler>(is, 0);
+	m_data = vmime::std::make_shared<streamContentHandler>(is, 0);
 }
 
 
-void fileAttachment::generatePart(ref <bodyPart> part) const
+void fileAttachment::generatePart(std::shared_ptr<bodyPart> part) const
 {
 	defaultAttachment::generatePart(part);
 
-	ref <contentDispositionField> cdf = part->getHeader()->ContentDisposition().
+	std::shared_ptr<contentDispositionField> cdf = part->getHeader()->ContentDisposition().
 		dynamicCast <contentDispositionField>();
 
 	if (m_fileInfo.hasSize()) cdf->setSize(utility::stringUtils::toString(m_fileInfo.getSize()));

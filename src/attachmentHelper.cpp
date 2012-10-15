@@ -37,7 +37,7 @@ namespace vmime
 
 // static
 bool attachmentHelper::isBodyPartAnAttachment
-	(ref <const bodyPart> part, const unsigned int options)
+	(std::shared_ptr<const bodyPart> part, const unsigned int options)
 {
 	try
 	{
@@ -114,8 +114,8 @@ bool attachmentHelper::isBodyPartAnAttachment
 
 
 // static
-ref <const attachment> attachmentHelper::getBodyPartAttachment
-	(ref <const bodyPart> part, const unsigned int options)
+std::shared_ptr<const attachment> attachmentHelper::getBodyPartAttachment
+	(std::shared_ptr<const bodyPart> part, const unsigned int options)
 {
 	if (!isBodyPartAnAttachment(part, options))
 		return NULL;
@@ -124,10 +124,11 @@ ref <const attachment> attachmentHelper::getBodyPartAttachment
 
 	try
 	{
-		const contentTypeField& ctf = dynamic_cast<contentTypeField&>
+		const contentTypeField& ctf = dynamic_cast<const contentTypeField&>
 			(*part->getHeader()->findField(fields::CONTENT_TYPE));
 
-		type = *ctf.getValue().dynamicCast <const mediaType>();
+		//type = *ctf.getValue().dynamicCast <const mediaType>(); TODO shared_ptr
+		type = *dynamic_cast<const mediaType*>(ctf.getValue().get());
 	}
 	catch (exceptions::no_such_field&)
 	{
@@ -139,30 +140,30 @@ ref <const attachment> attachmentHelper::getBodyPartAttachment
 	if (type.getType() == mediaTypes::MESSAGE &&
 	    type.getSubType() == mediaTypes::MESSAGE_RFC822)
 	{
-		return vmime::create <generatedMessageAttachment>(part);
+		return std::make_shared<generatedMessageAttachment>(part);
 	}
 	else
 	{
-		return vmime::create <bodyPartAttachment>(part);
+		return std::make_shared<bodyPartAttachment>(part);
 	}
 }
 
 
 // static
-const std::vector <ref <const attachment> >
+const std::vector <std::shared_ptr<const attachment> >
 	attachmentHelper::findAttachmentsInMessage
-		(ref <const message> msg, const unsigned int options)
+		(std::shared_ptr<const message> msg, const unsigned int options)
 {
 	return findAttachmentsInBodyPart(msg, options);
 }
 
 
 // static
-const std::vector <ref <const attachment> >
+const std::vector <std::shared_ptr<const attachment> >
 	attachmentHelper::findAttachmentsInBodyPart
-		(ref <const bodyPart> part, const unsigned int options)
+		(std::shared_ptr<const bodyPart> part, const unsigned int options)
 {
-	std::vector <ref <const attachment> > atts;
+	std::vector <std::shared_ptr<const attachment> > atts;
 
 	// Test this part
 	if (isBodyPartAnAttachment(part, options))
@@ -172,11 +173,11 @@ const std::vector <ref <const attachment> >
 	// Find in sub-parts
 	else
 	{
-		ref <const body> bdy = part->getBody();
+		std::shared_ptr<const body> bdy = part->getBody();
 
 		for (int i = 0 ; i < bdy->getPartCount() ; ++i)
 		{
-			std::vector <ref <const attachment> > partAtts =
+			std::vector <std::shared_ptr<const attachment> > partAtts =
 				findAttachmentsInBodyPart(bdy->getPartAt(i), options);
 
 			std::copy(partAtts.begin(), partAtts.end(), std::back_inserter(atts));
@@ -188,7 +189,7 @@ const std::vector <ref <const attachment> >
 
 
 // static
-void attachmentHelper::addAttachment(ref <message> msg, ref <attachment> att)
+void attachmentHelper::addAttachment(std::shared_ptr<message> msg, std::shared_ptr<attachment> att)
 {
 	// We simply search for a "multipart/mixed" part. If no one exists,
 	// create it in the root part. This (very simple) algorithm should
@@ -197,7 +198,7 @@ void attachmentHelper::addAttachment(ref <message> msg, ref <attachment> att)
 	vmime::mediaType mpMixed(vmime::mediaTypes::MULTIPART,
 	                         vmime::mediaTypes::MULTIPART_MIXED);
 
-	ref <bodyPart> part = findBodyPart(msg, mpMixed);
+	std::shared_ptr<bodyPart> part = findBodyPart(msg, mpMixed);
 
 	if (part == NULL)  // create it
 	{
@@ -205,7 +206,7 @@ void attachmentHelper::addAttachment(ref <message> msg, ref <attachment> att)
 		{
 			// Create a new container part for the parts that were in
 			// the root part of the message
-			ref <bodyPart> container = vmime::create <bodyPart>();
+			std::shared_ptr<bodyPart> container = std::make_shared<bodyPart>();
 
 			try
 			{
@@ -227,7 +228,7 @@ void attachmentHelper::addAttachment(ref <message> msg, ref <attachment> att)
 			}
 
 			// Move parts from the root part to this new part
-			const std::vector <ref <bodyPart> > partList =
+			const std::vector <std::shared_ptr<bodyPart> > partList =
 				msg->getBody()->getPartList();
 
 			msg->getBody()->removeAllParts();
@@ -242,7 +243,7 @@ void attachmentHelper::addAttachment(ref <message> msg, ref <attachment> att)
 			// The message is a simple (RFC-822) message, and do not
 			// contains any MIME part. Move the contents from the
 			// root to a new child part.
-			ref <bodyPart> child = vmime::create <bodyPart>();
+			std::shared_ptr<bodyPart> child = std::make_shared<bodyPart>();
 
 			if (msg->getHeader()->hasField(fields::CONTENT_TYPE))
 			{
@@ -257,7 +258,7 @@ void attachmentHelper::addAttachment(ref <message> msg, ref <attachment> att)
 			}
 
 			child->getBody()->setContents(msg->getBody()->getContents());
-			msg->getBody()->setContents(vmime::create <emptyContentHandler>());
+			msg->getBody()->setContents(std::make_shared<emptyContentHandler>());
 
 			msg->getBody()->appendPart(child);
 		}
@@ -277,18 +278,18 @@ void attachmentHelper::addAttachment(ref <message> msg, ref <attachment> att)
 
 
 // static
-ref <bodyPart> attachmentHelper::findBodyPart
-	(ref <bodyPart> part, const mediaType& type)
+std::shared_ptr<bodyPart> attachmentHelper::findBodyPart
+	(std::shared_ptr<bodyPart> part, const mediaType& type)
 {
 	if (part->getBody()->getContentType() == type)
 		return part;
 
 	// Try in sub-parts
-	ref <body> bdy = part->getBody();
+	std::shared_ptr<body> bdy = part->getBody();
 
 	for (int i = 0 ; i < bdy->getPartCount() ; ++i)
 	{
-		ref <bodyPart> found =
+		std::shared_ptr<bodyPart> found =
 			findBodyPart(bdy->getPartAt(i), type);
 
 		if (found != NULL)
@@ -300,9 +301,9 @@ ref <bodyPart> attachmentHelper::findBodyPart
 
 
 // static
-void attachmentHelper::addAttachment(ref <message> msg, ref <message> amsg)
+void attachmentHelper::addAttachment(std::shared_ptr<message> msg, std::shared_ptr<message> amsg)
 {
-	ref <attachment> att = vmime::create <parsedMessageAttachment>(amsg);
+	std::shared_ptr<attachment> att = std::make_shared<parsedMessageAttachment>(amsg);
 	addAttachment(msg, att);
 }
 

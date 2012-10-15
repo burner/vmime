@@ -32,7 +32,7 @@ namespace tls {
 
 TLSSecuredConnectionInfos::TLSSecuredConnectionInfos
 	(const string& host, const port_t port,
-	 ref <TLSSession> tlsSession, ref <TLSSocket> tlsSocket)
+	 std::shared_ptr<TLSSession> tlsSession, std::shared_ptr<TLSSocket> tlsSocket)
 	: m_host(host), m_port(port),
 	  m_tlsSession(tlsSession), m_tlsSocket(tlsSocket)
 {
@@ -51,7 +51,7 @@ port_t TLSSecuredConnectionInfos::getPort() const
 }
 
 
-ref <const security::cert::certificateChain> TLSSecuredConnectionInfos::getPeerCertificates() const
+std::shared_ptr<const security::cert::certificateChain> TLSSecuredConnectionInfos::getPeerCertificates() const
 {
 	return m_tlsSocket->getPeerCertificates();
 }

@@ -57,7 +57,7 @@ public:
 
 	public:
 
-		virtual ref <encoder> create() const = 0;
+		virtual std::shared_ptr<encoder> create() const = 0;
 
 		virtual const string& getName() const = 0;
 	};
@@ -75,9 +75,9 @@ private:
 
 	public:
 
-		ref <encoder> create() const
+		std::shared_ptr<encoder> create() const
 		{
-			return vmime::create <E>();
+			return vmime::std::make_shared<E>();
 		}
 
 		const string& getName() const
@@ -91,7 +91,7 @@ private:
 	};
 
 
-	std::vector <ref <registeredEncoder> > m_encoders;
+	std::vector <std::shared_ptr<registeredEncoder> > m_encoders;
 
 public:
 
@@ -102,7 +102,7 @@ public:
 	template <class E>
 	void registerName(const string& name)
 	{
-		m_encoders.push_back(vmime::create <registeredEncoderImpl <E> >(utility::stringUtils::toLower(name)));
+		m_encoders.push_back(vmime::std::make_shared<registeredEncoderImpl <E> >(utility::stringUtils::toLower(name)));
 	}
 
 	/** Create a new encoder instance from an encoding name.
@@ -112,7 +112,7 @@ public:
 	  * @throw exceptions::no_encoder_available if no encoder is registered
 	  * for this encoding
 	  */
-	ref <encoder> create(const string& name);
+	std::shared_ptr<encoder> create(const string& name);
 
 	/** Return information about a registered encoder.
 	  *
@@ -121,7 +121,7 @@ public:
 	  * @throw exceptions::no_encoder_available if no encoder is registered
 	  * for this encoding
 	  */
-	const ref <const registeredEncoder> getEncoderByName(const string& name) const;
+	const std::shared_ptr<const registeredEncoder> getEncoderByName(const string& name) const;
 
 	/** Return the number of registered encoders.
 	  *
@@ -134,13 +134,13 @@ public:
 	  * @param pos position of the registered encoder to return
 	  * @return registered encoder at the specified position
 	  */
-	const ref <const registeredEncoder> getEncoderAt(const int pos) const;
+	const std::shared_ptr<const registeredEncoder> getEncoderAt(const int pos) const;
 
 	/** Return a list of all registered encoders.
 	  *
 	  * @return list of registered encoders
 	  */
-	const std::vector <ref <const registeredEncoder> > getEncoderList() const;
+	const std::vector <std::shared_ptr<const registeredEncoder> > getEncoderList() const;
 };
 
 

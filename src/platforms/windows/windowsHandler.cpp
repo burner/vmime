@@ -46,10 +46,10 @@ windowsHandler::windowsHandler()
 	WSAStartup(MAKEWORD(1, 1), &wsaData);
 
 #if VMIME_HAVE_MESSAGING_FEATURES
-	m_socketFactory = vmime::create <windowsSocketFactory>();
+	m_socketFactory = vmime::std::make_shared<windowsSocketFactory>();
 #endif
 #if VMIME_HAVE_FILESYSTEM_FEATURES
-	m_fileSysFactory = vmime::create <windowsFileSystemFactory>();
+	m_fileSysFactory = vmime::std::make_shared<windowsFileSystemFactory>();
 #endif
 }
 
@@ -236,7 +236,7 @@ unsigned int windowsHandler::getProcessId() const
 
 #if VMIME_HAVE_MESSAGING_FEATURES
 
-ref <vmime::net::socketFactory> windowsHandler::getSocketFactory()
+std::shared_ptr<vmime::net::socketFactory> windowsHandler::getSocketFactory()
 {
 	return m_socketFactory;
 }
@@ -246,13 +246,13 @@ ref <vmime::net::socketFactory> windowsHandler::getSocketFactory()
 
 #if VMIME_HAVE_FILESYSTEM_FEATURES
 
-ref <vmime::utility::fileSystemFactory> windowsHandler::getFileSystemFactory()
+std::shared_ptr<vmime::utility::fileSystemFactory> windowsHandler::getFileSystemFactory()
 {
 	return m_fileSysFactory;
 }
 
 
-ref <vmime::utility::childProcessFactory> windowsHandler::getChildProcessFactory()
+std::shared_ptr<vmime::utility::childProcessFactory> windowsHandler::getChildProcessFactory()
 {
 	// TODO: Not implemented
 	return (NULL);

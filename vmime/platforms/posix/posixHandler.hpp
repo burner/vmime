@@ -61,13 +61,13 @@ public:
 	unsigned int getProcessId() const;
 
 #if VMIME_HAVE_MESSAGING_FEATURES
-	ref <vmime::net::socketFactory> getSocketFactory();
+	std::shared_ptr<vmime::net::socketFactory> getSocketFactory();
 #endif
 
 #if VMIME_HAVE_FILESYSTEM_FEATURES
-	ref <vmime::utility::fileSystemFactory> getFileSystemFactory();
+	std::shared_ptr<vmime::utility::fileSystemFactory> getFileSystemFactory();
 
-	ref <vmime::utility::childProcessFactory> getChildProcessFactory();
+	std::shared_ptr<vmime::utility::childProcessFactory> getChildProcessFactory();
 #endif
 
 	void wait() const;
@@ -75,12 +75,12 @@ public:
 private:
 
 #if VMIME_HAVE_MESSAGING_FEATURES
-	ref <posixSocketFactory> m_socketFactory;
+	std::shared_ptr<posixSocketFactory> m_socketFactory;
 #endif
 
 #if VMIME_HAVE_FILESYSTEM_FEATURES
-	ref <posixFileSystemFactory> m_fileSysFactory;
-	ref <posixChildProcessFactory> m_childProcFactory;
+	std::shared_ptr<posixFileSystemFactory> m_fileSysFactory;
+	std::shared_ptr<posixChildProcessFactory> m_childProcFactory;
 #endif
 };
 

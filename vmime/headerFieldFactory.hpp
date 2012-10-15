@@ -43,12 +43,12 @@ protected:
 	headerFieldFactory();
 	~headerFieldFactory();
 
-	typedef ref <headerField> (*AllocFunc)(void);
+	typedef std::shared_ptr<headerField> (*AllocFunc)(void);
 	typedef std::map <string, AllocFunc> NameMap;
 
 	NameMap m_nameMap;
 
-	typedef ref <headerFieldValue> (*ValueAllocFunc)(void);
+	typedef std::shared_ptr<headerFieldValue> (*ValueAllocFunc)(void);
 	typedef std::map <string, ValueAllocFunc> ValueMap;
 
 	ValueMap m_valueMap;
@@ -64,10 +64,10 @@ public:
 	{
 	public:
 
-		static ref <BASE_TYPE> creator()
+		static std::shared_ptr<BASE_TYPE> creator()
 		{
 			// Allocate a new object
-			return vmime::create <TYPE>();
+			return vmime::std::make_shared<TYPE>();
 		}
 	};
 #endif // VMIME_BUILDING_DOC
@@ -108,14 +108,14 @@ public:
 	  * the value of the field
 	  * @return a new field object
 	  */
-	ref <headerField> create(const string& name, const string& body = NULL_STRING);
+	std::shared_ptr<headerField> create(const string& name, const string& body = NULL_STRING);
 
 	/** Create a new field value for the specified field.
 	  *
 	  * @param fieldName name of the field for which to create value
 	  * @return a new value object for the field
 	  */
-	ref <headerFieldValue> createValue(const string& fieldName);
+	std::shared_ptr<headerFieldValue> createValue(const string& fieldName);
 };
 
 

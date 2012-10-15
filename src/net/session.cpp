@@ -54,17 +54,17 @@ session::~session()
 }
 
 
-ref <transport> session::getTransport(ref <security::authenticator> auth)
+std::shared_ptr<transport> session::getTransport(std::shared_ptr<security::authenticator> auth)
 {
 	return (getTransport(m_props["transport.protocol"], auth));
 }
 
 
-ref <transport> session::getTransport
-	(const string& protocol, ref <security::authenticator> auth)
+std::shared_ptr<transport> session::getTransport
+	(const string& protocol, std::shared_ptr<security::authenticator> auth)
 {
-	ref <session> sess = thisRef().dynamicCast <session>();
-	ref <service> sv = serviceFactory::getInstance()->create(sess, protocol, auth);
+	std::shared_ptr<session> sess = thisRef().dynamicCast <session>();
+	std::shared_ptr<service> sv = serviceFactory::getInstance()->create(sess, protocol, auth);
 
 	if (sv->getType() != service::TYPE_TRANSPORT)
 		throw exceptions::no_service_available();
@@ -73,11 +73,11 @@ ref <transport> session::getTransport
 }
 
 
-ref <transport> session::getTransport
-	(const utility::url& url, ref <security::authenticator> auth)
+std::shared_ptr<transport> session::getTransport
+	(const utility::url& url, std::shared_ptr<security::authenticator> auth)
 {
-	ref <session> sess = thisRef().dynamicCast <session>();
-	ref <service> sv = serviceFactory::getInstance()->create(sess, url, auth);
+	std::shared_ptr<session> sess = thisRef().dynamicCast <session>();
+	std::shared_ptr<service> sv = serviceFactory::getInstance()->create(sess, url, auth);
 
 	if (sv->getType() != service::TYPE_TRANSPORT)
 		throw exceptions::no_service_available();
@@ -86,17 +86,17 @@ ref <transport> session::getTransport
 }
 
 
-ref <store> session::getStore(ref <security::authenticator> auth)
+std::shared_ptr<store> session::getStore(std::shared_ptr<security::authenticator> auth)
 {
 	return (getStore(m_props["store.protocol"], auth));
 }
 
 
-ref <store> session::getStore
-	(const string& protocol, ref <security::authenticator> auth)
+std::shared_ptr<store> session::getStore
+	(const string& protocol, std::shared_ptr<security::authenticator> auth)
 {
-	ref <session> sess = thisRef().dynamicCast <session>();
-	ref <service> sv = serviceFactory::getInstance()->create(sess, protocol, auth);
+	std::shared_ptr<session> sess = thisRef().dynamicCast <session>();
+	std::shared_ptr<service> sv = serviceFactory::getInstance()->create(sess, protocol, auth);
 
 	if (sv->getType() != service::TYPE_STORE)
 		throw exceptions::no_service_available();
@@ -105,11 +105,11 @@ ref <store> session::getStore
 }
 
 
-ref <store> session::getStore
-	(const utility::url& url, ref <security::authenticator> auth)
+std::shared_ptr<store> session::getStore
+	(const utility::url& url, std::shared_ptr<security::authenticator> auth)
 {
-	ref <session> sess = thisRef().dynamicCast <session>();
-	ref <service> sv = serviceFactory::getInstance()->create(sess, url, auth);
+	std::shared_ptr<session> sess = thisRef().dynamicCast <session>();
+	std::shared_ptr<service> sv = serviceFactory::getInstance()->create(sess, url, auth);
 
 	if (sv->getType() != service::TYPE_STORE)
 		throw exceptions::no_service_available();

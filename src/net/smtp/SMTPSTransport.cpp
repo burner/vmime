@@ -29,7 +29,7 @@ namespace net {
 namespace smtp {
 
 
-SMTPSTransport::SMTPSTransport(ref <session> sess, ref <security::authenticator> auth)
+SMTPSTransport::SMTPSTransport(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth)
 	: SMTPTransport(sess, auth, true)
 {
 }

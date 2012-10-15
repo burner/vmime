@@ -29,17 +29,17 @@ namespace vmime
 
 
 bodyPart::bodyPart()
-	: m_header(vmime::create <header>()),
-	  m_body(vmime::create <body>()),
+	: m_header(vmime::std::make_shared<header>()),
+	  m_body(vmime::std::make_shared<body>()),
 	  m_parent(NULL)
 {
 	m_body->setParentPart(thisRef().dynamicCast <bodyPart>());
 }
 
 
-bodyPart::bodyPart(weak_ref <vmime::bodyPart> parentPart)
-	: m_header(vmime::create <header>()),
-	  m_body(vmime::create <body>()),
+bodyPart::bodyPart(std::weak_ptr<vmime::bodyPart> parentPart)
+	: m_header(vmime::std::make_shared<header>()),
+	  m_body(vmime::std::make_shared<body>()),
 	  m_parent(parentPart)
 {
 	m_body->setParentPart(thisRef().dynamicCast <bodyPart>());
@@ -47,7 +47,7 @@ bodyPart::bodyPart(weak_ref <vmime::bodyPart> parentPart)
 
 
 void bodyPart::parseImpl
-	(ref <utility::parserInputStreamAdapter> parser,
+	(std::shared_ptr<utility::parserInputStreamAdapter> parser,
 	 const utility::stream::size_type position,
 	 const utility::stream::size_type end,
 	 utility::stream::size_type* newPosition)
@@ -80,9 +80,9 @@ void bodyPart::generateImpl(utility::outputStream& os, const string::size_type m
 }
 
 
-ref <component> bodyPart::clone() const
+std::shared_ptr<component> bodyPart::clone() const
 {
-	ref <bodyPart> p = vmime::create <bodyPart>();
+	std::shared_ptr<bodyPart> p = vmime::std::make_shared<bodyPart>();
 
 	p->m_parent = null;
 
@@ -109,45 +109,45 @@ bodyPart& bodyPart::operator=(const bodyPart& other)
 }
 
 
-const ref <const header> bodyPart::getHeader() const
+const std::shared_ptr<const header> bodyPart::getHeader() const
 {
 	return (m_header);
 }
 
 
-ref <header> bodyPart::getHeader()
+std::shared_ptr<header> bodyPart::getHeader()
 {
 	return (m_header);
 }
 
 
-const ref <const body> bodyPart::getBody() const
+const std::shared_ptr<const body> bodyPart::getBody() const
 {
 	return (m_body);
 }
 
 
-ref <body> bodyPart::getBody()
+std::shared_ptr<body> bodyPart::getBody()
 {
 	return (m_body);
 }
 
 
-ref <bodyPart> bodyPart::getParentPart()
+std::shared_ptr<bodyPart> bodyPart::getParentPart()
 {
 	return m_parent.acquire();
 }
 
 
-ref <const bodyPart> bodyPart::getParentPart() const
+std::shared_ptr<const bodyPart> bodyPart::getParentPart() const
 {
 	return m_parent.acquire();
 }
 
 
-const std::vector <ref <component> > bodyPart::getChildComponents()
+const std::vector <std::shared_ptr<component> > bodyPart::getChildComponents()
 {
-	std::vector <ref <component> > list;
+	std::vector <std::shared_ptr<component> > list;
 
 	list.push_back(m_header);
 	list.push_back(m_body);

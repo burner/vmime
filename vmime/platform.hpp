@@ -108,7 +108,7 @@ public:
 		  *
 		  * @return socket factory
 		  */
-		virtual ref <net::socketFactory> getSocketFactory() = 0;
+		virtual std::shared_ptr<net::socketFactory> getSocketFactory() = 0;
 #endif
 
 #if VMIME_HAVE_FILESYSTEM_FEATURES
@@ -116,14 +116,14 @@ public:
 		  *
 		  * @return file-system factory
 		  */
-		virtual ref <utility::fileSystemFactory> getFileSystemFactory() = 0;
+		virtual std::shared_ptr<utility::fileSystemFactory> getFileSystemFactory() = 0;
 
 		/** Return a pointer to a factory that creates child process objects,
 		  * which are used to spawn processes (run executable files).
 		  *
 		  * @return child process factory
 		  */
-		virtual ref <utility::childProcessFactory> getChildProcessFactory() = 0;
+		virtual std::shared_ptr<utility::childProcessFactory> getChildProcessFactory() = 0;
 #endif
 
 	};
@@ -132,10 +132,10 @@ public:
 	template <class TYPE>
 	static void setHandler()
 	{
-		sm_handler = vmime::create <TYPE>();
+		sm_handler = vmime::std::make_shared<TYPE>();
 	}
 
-	static ref <handler> getHandler()
+	static std::shared_ptr<handler> getHandler()
 	{
 		if (!sm_handler)
 			throw exceptions::no_platform_handler();
@@ -145,7 +145,7 @@ public:
 
 private:
 
-	static ref <handler> sm_handler;
+	static std::shared_ptr<handler> sm_handler;
 };
 
 

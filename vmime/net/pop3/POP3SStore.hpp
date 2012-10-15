@@ -40,7 +40,7 @@ class POP3SStore : public POP3Store
 {
 public:
 
-	POP3SStore(ref <session> sess, ref <security::authenticator> auth);
+	POP3SStore(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth);
 	~POP3SStore();
 
 	const string getProtocolName() const;

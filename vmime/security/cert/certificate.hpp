@@ -64,7 +64,7 @@ public:
 	  * @return true if the two certificates are the same,
 	  * false otherwise
 	  */
-	virtual bool equals(ref <const certificate> other) const = 0;
+	virtual bool equals(std::shared_ptr<const certificate> other) const = 0;
 };
 
 

@@ -55,7 +55,7 @@ private:
 	{
 	public:
 
-		virtual ref <messageDigest> create() const = 0;
+		virtual std::shared_ptr<messageDigest> create() const = 0;
 	};
 
 	template <class E>
@@ -63,14 +63,14 @@ private:
 	{
 	public:
 
-		ref <messageDigest> create() const
+		std::shared_ptr<messageDigest> create() const
 		{
-			return vmime::create <E>();
+			return vmime::std::make_shared<E>();
 		}
 	};
 
 
-	typedef std::map <std::string, ref <digestAlgorithmFactory> > MapType;
+	typedef std::map <std::string, std::shared_ptr<digestAlgorithmFactory> > MapType;
 	MapType m_algos;
 
 public:
@@ -83,7 +83,7 @@ public:
 	void registerAlgorithm(const string& name)
 	{
 		m_algos.insert(MapType::value_type(utility::stringUtils::toLower(name),
-			vmime::create <digestAlgorithmFactoryImpl <E> >()));
+			vmime::std::make_shared<digestAlgorithmFactoryImpl <E> >()));
 	}
 
 	/** Create a new algorithm instance from its name.
@@ -93,7 +93,7 @@ public:
 	  * @throw exceptions::no_digest_algorithm_available if no algorithm is
 	  * registered with this name
 	  */
-	ref <messageDigest> create(const string& name);
+	std::shared_ptr<messageDigest> create(const string& name);
 
 	/** Return a list of supported digest algorithms.
 	  *

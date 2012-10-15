@@ -174,70 +174,70 @@ public:
 
 	// dynamic_cast
 	template <class U>
-	ref <U> dynamicCast() const
+	std::shared_ptr<U> dynamicCast() const
 	{
 		U* p = dynamic_cast <U*>(const_cast <T*>(m_ptr));
-		if (!p) return ref <U>();
+		if (!p) return std::shared_ptr<U>();
 
 		if (m_ptr)
 			m_ptr->getRefManager()->addStrong();
 
-		return ref <U>::fromPtrImpl(p);
+		return std::shared_ptr<U>::fromPtrImpl(p);
 	}
 
 	// static_cast
 	template <class U>
-	ref <U> staticCast() const
+	std::shared_ptr<U> staticCast() const
 	{
 		U* p = static_cast <U*>(const_cast <T*>(m_ptr));
-		if (!p) return ref <U>();
+		if (!p) return std::shared_ptr<U>();
 
 		if (m_ptr)
 			m_ptr->getRefManager()->addStrong();
 
-		return ref <U>::fromPtrImpl(p);
+		return std::shared_ptr<U>::fromPtrImpl(p);
 	}
 
 	// const_cast
 	template <class U>
-	ref <U> constCast() const
+	std::shared_ptr<U> constCast() const
 	{
 		U* p = const_cast <U*>(m_ptr);
-		if (!p) return ref <U>();
+		if (!p) return std::shared_ptr<U>();
 
 		if (m_ptr)
 			m_ptr->getRefManager()->addStrong();
 
-		return ref <U>::fromPtrImpl(p);
+		return std::shared_ptr<U>::fromPtrImpl(p);
 	}
 
 	// Implicit downcast
 	template <class U>
-	operator ref <const U>() const
+	operator std::shared_ptr<const U>() const
 	{
 		if (m_ptr)
 			m_ptr->getRefManager()->addStrong();
 
-		ref <const U> r;
+		std::shared_ptr<const U> r;
 		r.m_ptr = m_ptr; // will type check at compile-time (prevent from implicit upcast)
 
 		return r;
 	}
 
 	template <class U>
-	operator ref <U>()
+	operator std::shared_ptr<U>()
 	{
 		if (m_ptr)
 			m_ptr->getRefManager()->addStrong();
 
-		ref <U> r;
+		std::shared_ptr<U> r;
 		r.m_ptr = m_ptr; // will type check at compile-time (prevent from implicit upcast)
 
 		return r;
 	}
 
 	template <class U>
-	ref <T>& operator=(const ref <U>& other)
+	std::shared_ptr<T>& operator=(const std::shared_ptr<U>& other)
 	{
 		U* ptr = other.m_ptr;   // will type check at compile-time (prevent from implicit upcast)
 
@@ -252,17 +252,17 @@ public:
 	}
 
 	// Implicit non-const => const conversion
-	operator ref <const T>() const
+	operator std::shared_ptr<const T>() const
 	{
 		if (m_ptr)
 			m_ptr->getRefManager()->addStrong();
 
 #if defined(_MSC_VER) // VC++ compiler bug (stack overflow)
-		ref <const T> r;
+		std::shared_ptr<const T> r;
 		r.m_ptr = m_ptr;
 		return r;
 #else
-		return ref <const T>::fromPtrImpl(m_ptr);
+		return std::shared_ptr<const T>::fromPtrImpl(m_ptr);
 #endif // defined(_MSC_VER)
 
 	}
@@ -281,7 +281,7 @@ public:
 	bool operator==(const null_ref&) const { return m_ptr == 0; }
 	bool operator!=(const null_ref&) const { return m_ptr != 0; }
 
-	/** Create a ref<> from a raw pointer.
+	/** Create a std::shared_ptr<> from a raw pointer.
 	  *
 	  * WARNING: you should use this function only if you know what
 	  * you are doing. In general, you should create ref objects using
@@ -293,42 +293,42 @@ public:
 	  * @param ptr raw pointer to encapsulate
 	  * @return a ref which encapsulates the specified raw pointer
 	  */
-	static ref <T> fromPtr(T* const ptr)
+	static std::shared_ptr<T> fromPtr(T* const ptr)
 	{
-		return ref <T>::fromPtrImpl(ptr);
+		return std::shared_ptr<T>::fromPtrImpl(ptr);
 	}
 
-	static ref <const T> fromPtrConst(const T* const ptr)
+	static std::shared_ptr<const T> fromPtrConst(const T* const ptr)
 	{
-		return ref <const T>::fromPtrImpl(ptr);
+		return std::shared_ptr<const T>::fromPtrImpl(ptr);
 	}
 
-	static ref <T> fromWeak(weak_ref <T> wr)
+	static std::shared_ptr<T> fromWeak(std::weak_ptr<T> wr)
 	{
 		refManager* mgr = wr.getManager();
 
 		if (mgr && mgr->addStrong())
-			return ref <T>::fromPtrImpl(dynamic_cast <T*>(mgr->getObject()));
+			return std::shared_ptr<T>::fromPtrImpl(dynamic_cast <T*>(mgr->getObject()));
 		else
-			return ref <T>();
+			return std::shared_ptr<T>();
 	}
 
-	static ref <const T> fromWeakConst(weak_ref <const T> wr)
+	static std::shared_ptr<const T> fromWeakConst(std::weak_ptr<const T> wr)
 	{
 		refManager* mgr = wr.getManager();
 
 		if (mgr && mgr->addStrong())
-			return ref <const T>::fromPtrImpl(dynamic_cast <const T*>(mgr->getObject()));
+			return std::shared_ptr<const T>::fromPtrImpl(dynamic_cast <const T*>(mgr->getObject()));
 		else
-			return ref <const T>();
+			return std::shared_ptr<const T>();
 	}
 
 protected:
 
 	template <class U>
-	static ref <U> fromPtrImpl(U* ptr)
+	static std::shared_ptr<U> fromPtrImpl(U* ptr)
 	{
-		ref <U> r;
+		std::shared_ptr<U> r;
 		r.m_ptr = ptr;
 
 		return r;
@@ -357,7 +357,7 @@ protected:
 	}
 
 	template <class U>
-	void attach(const ref <U>& r)
+	void attach(const std::shared_ptr<U>& r)
 	{
 		if (r.m_ptr)
 			r.m_ptr->getRefManager()->addStrong();
@@ -375,49 +375,49 @@ private:
 
 
 template <class T, class U>
-bool operator==(const ref <T>& a, const ref <U>& b)
+bool operator==(const std::shared_ptr<T>& a, const std::shared_ptr<U>& b)
 {
 	return (a.get() == b.get());
 }
 
 template <class T, class U>
-bool operator!=(const ref <T>& a, const ref <U>& b)
+bool operator!=(const std::shared_ptr<T>& a, const std::shared_ptr<U>& b)
 {
 	return (a.get() != b.get());
 }
 
 template <class T>
-bool operator==(const ref <T>& a, T* const p)
+bool operator==(const std::shared_ptr<T>& a, T* const p)
 {
 	return (a.get() == p);
 }
 
 template <class T>
-bool operator!=(const ref <T>& a, T* const p)
+bool operator!=(const std::shared_ptr<T>& a, T* const p)
 {
 	return (a.get() != p);
 }
 
 template <class T>
-bool operator==(T* const p, const ref <T>& a)
+bool operator==(T* const p, const std::shared_ptr<T>& a)
 {
 	return (a.get() == p);
 }
 
 template <class T>
-bool operator!=(T* const p, const ref <T>& a)
+bool operator!=(T* const p, const std::shared_ptr<T>& a)
 {
 	return (a.get() != p);
 }
 
 template <class T>
-bool operator==(const null_ref&, const ref <T>& r)
+bool operator==(const null_ref&, const std::shared_ptr<T>& r)
 {
 	return (r.get() == 0);
 }
 
 template <class T>
-bool operator!=(const null_ref&, const ref <T>& r)
+bool operator!=(const null_ref&, const std::shared_ptr<T>& r)
 {
 	return (r.get() != 0);
 }
@@ -437,7 +437,7 @@ public:
 
 
 	weak_ref() : m_mgr(0) { }
-	weak_ref(const ref <T>& r) : m_mgr(0) { attach(r); }
+	weak_ref(const std::shared_ptr<T>& r) : m_mgr(0) { attach(r); }
 	weak_ref(const weak_ref& r) : m_mgr(0) { attach(r); }
 	weak_ref(const null_ref&) : m_mgr(0) { }
 	weak_ref(class null_pointer*) : m_mgr(0) { }
@@ -459,9 +459,9 @@ public:
 	  * @return strong reference or null reference if the
 	  * object is not available anymore
 	  */
-	ref <const T> acquire() const
+	std::shared_ptr<const T> acquire() const
 	{
-		return ref <const T>::fromWeakConst(*this);
+		return std::shared_ptr<const T>::fromWeakConst(*this);
 	}
 
 	/** Try to acquire a strong reference to the object.
@@ -469,30 +469,30 @@ public:
 	  * @return strong reference or null reference if the
 	  * object is not available anymore
 	  */
-	ref <T> acquire()
+	std::shared_ptr<T> acquire()
 	{
-		return ref <T>::fromWeak(*this);
+		return std::shared_ptr<T>::fromWeak(*this);
 	}
 
 	// Implicit non-const => const conversion
-	operator weak_ref <const T>() const
+	operator std::weak_ptr<const T>() const
 	{
 		if (m_mgr)
 			m_mgr->addWeak();
 
-		weak_ref <const T> r;
+		std::weak_ptr<const T> r;
 		r.m_mgr = m_mgr;
 
 		return r;
 	}
 
 	template <class U>
-	operator weak_ref <const U>() const
+	operator std::weak_ptr<const U>() const
 	{
 		if (m_mgr)
 			m_mgr->addWeak();
 
-		weak_ref <const U> r;
+		std::weak_ptr<const U> r;
 		r.m_mgr = m_mgr;
 
 		return r;
@@ -516,7 +516,7 @@ private:
 		}
 	}
 
-	void attach(const ref <T>& r)
+	void attach(const std::shared_ptr<T>& r)
 	{
 		if (r.m_ptr)
 			r.m_ptr->getRefManager()->addWeak();

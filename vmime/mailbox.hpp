@@ -24,6 +24,8 @@
 #ifndef VMIME_MAILBOX_HPP_INCLUDED
 #define VMIME_MAILBOX_HPP_INCLUDED
 
+#include <memory>
+
 
 #include "vmime/address.hpp"
 #include "vmime/text.hpp"
@@ -78,14 +80,14 @@ public:
 
 	// Assignment
 	void copyFrom(const component& other);
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	mailbox& operator=(const mailbox& other);
 
 	bool isEmpty() const;
 
 	void clear();
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 
 	bool isGroup() const;

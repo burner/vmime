@@ -124,9 +124,9 @@ mediaType& mediaType::operator=(const string& type)
 }
 
 
-ref <component> mediaType::clone() const
+std::shared_ptr<component> mediaType::clone() const
 {
-	return vmime::create <mediaType>(m_type, m_subType);
+	return vmime::std::make_shared<mediaType>(m_type, m_subType);
 }
 
 
@@ -176,9 +176,9 @@ void mediaType::setFromString(const string& type)
 }
 
 
-const std::vector <ref <component> > mediaType::getChildComponents()
+const std::vector <std::shared_ptr<component> > mediaType::getChildComponents()
 {
-	return std::vector <ref <component> >();
+	return std::vector <std::shared_ptr<component> >();
 }
 
 

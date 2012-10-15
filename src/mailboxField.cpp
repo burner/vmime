@@ -46,12 +46,12 @@ mailboxField::mailboxField(const mailboxField&)
 void mailboxField::parse(const string& buffer, const string::size_type position,
 	const string::size_type end, string::size_type* newPosition)
 {
-	ref <mailbox> mbox = vmime::create <mailbox>();
+	std::shared_ptr<mailbox> mbox = vmime::std::make_shared<mailbox>();
 
 	// Here, we cannot simply call "m_mailbox.parse()" because it
 	// may have more than one address specified (even if this field
 	// should contain only one). We are never too much careful...
-	ref <address> parsedAddress = address::parseNext(buffer, position, end, newPosition);
+	std::shared_ptr<address> parsedAddress = address::parseNext(buffer, position, end, newPosition);
 
 	if (parsedAddress)
 	{
@@ -59,7 +59,7 @@ void mailboxField::parse(const string& buffer, const string::size_type position,
 		{
 			// If it is a group of mailboxes, take the first
 			// mailbox of the group
-			ref <mailboxGroup> group = parsedAddress.staticCast <mailboxGroup>();
+			std::shared_ptr<mailboxGroup> group = parsedAddress.staticCast <mailboxGroup>();
 
 			if (!group->isEmpty())
 				mbox = group->getMailboxAt(0);

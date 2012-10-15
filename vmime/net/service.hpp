@@ -54,7 +54,7 @@ class service : public object
 {
 protected:
 
-	service(ref <session> sess, const serviceInfos& infos, ref <security::authenticator> auth);
+	service(std::shared_ptr<session> sess, const serviceInfos& infos, std::shared_ptr<security::authenticator> auth);
 
 public:
 
@@ -83,13 +83,13 @@ public:
 	  *
 	  * @return session object
 	  */
-	ref <const session> getSession() const;
+	std::shared_ptr<const session> getSession() const;
 
 	/** Return the session object associated with this service instance.
 	  *
 	  * @return session object
 	  */
-	ref <session> getSession();
+	std::shared_ptr<session> getSession();
 
 	/** Return information about this service.
 	  *
@@ -121,31 +121,31 @@ public:
 	  *
 	  * @return authenticator object
 	  */
-	ref <const security::authenticator> getAuthenticator() const;
+	std::shared_ptr<const security::authenticator> getAuthenticator() const;
 
 	/** Return the authenticator object used with this service instance.
 	  *
 	  * @return authenticator object
 	  */
-	ref <security::authenticator> getAuthenticator();
+	std::shared_ptr<security::authenticator> getAuthenticator();
 
 	/** Set the authenticator object used with this service instance.
 	  *
 	  * @param auth authenticator object
 	  */
-	void setAuthenticator(ref <security::authenticator> auth);
+	void setAuthenticator(std::shared_ptr<security::authenticator> auth);
 
 #if VMIME_HAVE_TLS_SUPPORT
 
 	/** Set the object responsible for verifying certificates when
 	  * using secured connections (TLS/SSL).
 	  */
-	void setCertificateVerifier(ref <security::cert::certificateVerifier> cv);
+	void setCertificateVerifier(std::shared_ptr<security::cert::certificateVerifier> cv);
 
 	/** Get the object responsible for verifying certificates when
 	  * using secured connections (TLS/SSL).
 	  */
-	ref <security::cert::certificateVerifier> getCertificateVerifier();
+	std::shared_ptr<security::cert::certificateVerifier> getCertificateVerifier();
 
 #endif // VMIME_HAVE_TLS_SUPPORT
 
@@ -154,14 +154,14 @@ public:
 	  *
 	  * @param sf socket factory
 	  */
-	void setSocketFactory(ref <socketFactory> sf);
+	void setSocketFactory(std::shared_ptr<socketFactory> sf);
 
 	/** Return the factory used to create socket objects for this
 	  * service.
 	  *
 	  * @return socket factory
 	  */
-	ref <socketFactory> getSocketFactory();
+	std::shared_ptr<socketFactory> getSocketFactory();
 
 	/** Set the factory used to create timeoutHandler objects for
 	  * this service. By default, no timeout handler is used. Not all
@@ -169,14 +169,14 @@ public:
 	  *
 	  * @param thf timeoutHandler factory
 	  */
-	void setTimeoutHandlerFactory(ref <timeoutHandlerFactory> thf);
+	void setTimeoutHandlerFactory(std::shared_ptr<timeoutHandlerFactory> thf);
 
 	/** Return the factory used to create timeoutHandler objects for
 	  * this service.
 	  *
 	  * @return timeoutHandler factory
 	  */
-	ref <timeoutHandlerFactory> getTimeoutHandlerFactory();
+	std::shared_ptr<timeoutHandlerFactory> getTimeoutHandlerFactory();
 
 	/** Set a property for this service (service prefix is added automatically).
 	  *
@@ -202,20 +202,20 @@ public:
 	  *
 	  * @return information about the connection
 	  */
-	virtual ref <connectionInfos> getConnectionInfos() const = 0;
+	virtual std::shared_ptr<connectionInfos> getConnectionInfos() const = 0;
 
 private:
 
-	ref <session> m_session;
-	ref <security::authenticator> m_auth;
+	std::shared_ptr<session> m_session;
+	std::shared_ptr<security::authenticator> m_auth;
 
 #if VMIME_HAVE_TLS_SUPPORT
-	ref <security::cert::certificateVerifier> m_certVerifier;
+	std::shared_ptr<security::cert::certificateVerifier> m_certVerifier;
 #endif // VMIME_HAVE_TLS_SUPPORT
 
-	ref <socketFactory> m_socketFactory;
+	std::shared_ptr<socketFactory> m_socketFactory;
 
-	ref <timeoutHandlerFactory> m_toHandlerFactory;
+	std::shared_ptr<timeoutHandlerFactory> m_toHandlerFactory;
 };
 
 

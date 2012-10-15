@@ -44,9 +44,9 @@ disposition::disposition(const string& actionMode, const string& sendingMode,
 }
 
 
-ref <component> disposition::clone() const
+std::shared_ptr<component> disposition::clone() const
 {
-	ref <disposition> disp = vmime::create <disposition>();
+	std::shared_ptr<disposition> disp = vmime::std::make_shared<disposition>();
 
 	disp->m_actionMode = m_actionMode;
 	disp->m_sendingMode = m_sendingMode;
@@ -79,9 +79,9 @@ disposition& disposition::operator=(const disposition& other)
 }
 
 
-const std::vector <ref <component> > disposition::getChildComponents()
+const std::vector <std::shared_ptr<component> > disposition::getChildComponents()
 {
-	return std::vector <ref <component> >();
+	return std::vector <std::shared_ptr<component> >();
 }
 
 

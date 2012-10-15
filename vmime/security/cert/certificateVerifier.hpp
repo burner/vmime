@@ -47,7 +47,7 @@ public:
 	  * @throw exceptions::certificate_verification_exception if one
 	  * or more certificates can not be trusted
 	  */
-	virtual void verify(ref <certificateChain> chain) = 0;
+	virtual void verify(std::shared_ptr<certificateChain> chain) = 0;
 };
 
 

@@ -63,11 +63,11 @@ public:
 
 #endif // VMIME_BUILDING_DOC
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 	parameter& operator=(const parameter& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 	/** Return the name of this parameter.
 	  *
@@ -91,7 +91,7 @@ public:
 	  * is equivalent to:
 	  *
 	  * <pre>
-	  *    ref <vmime::word> rawValue = getParameter("creation-date");
+	  *    std::shared_ptr<vmime::word> rawValue = getParameter("creation-date");
 	  *
 	  *    vmime::dateTime theDate;
 	  *    theDate.parse(rawValue->getBuffer());
@@ -142,7 +142,7 @@ private:
 
 
 	string m_name;
-	ref <word> m_value;
+	std::shared_ptr<word> m_value;
 };
 
 

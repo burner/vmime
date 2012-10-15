@@ -40,7 +40,7 @@ class IMAPSStore : public IMAPStore
 {
 public:
 
-	IMAPSStore(ref <session> sess, ref <security::authenticator> auth);
+	IMAPSStore(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth);
 	~IMAPSStore();
 
 	const string getProtocolName() const;

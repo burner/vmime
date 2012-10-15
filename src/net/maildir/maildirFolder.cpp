@@ -44,7 +44,7 @@ namespace net {
 namespace maildir {
 
 
-maildirFolder::maildirFolder(const folder::path& path, ref <maildirStore> store)
+maildirFolder::maildirFolder(const folder::path& path, std::shared_ptr<maildirStore> store)
 	: m_store(store), m_path(path),
 	  m_name(path.isEmpty() ? folder::path::component("") : path.getLastComponent()),
 	  m_mode(-1), m_open(false), m_unreadMessageCount(0), m_messageCount(0)
@@ -55,7 +55,7 @@ maildirFolder::maildirFolder(const folder::path& path, ref <maildirStore> store)
 
 maildirFolder::~maildirFolder()
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (store)
 	{
@@ -120,7 +120,7 @@ const folder::path maildirFolder::getFullPath() const
 
 void maildirFolder::open(const int mode, bool /* failIfModeIsNotAvailable */)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -138,7 +138,7 @@ void maildirFolder::open(const int mode, bool /* failIfModeIsNotAvailable */)
 
 void maildirFolder::close(const bool expunge)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -186,7 +186,7 @@ void maildirFolder::unregisterMessage(maildirMessage* msg)
 
 void maildirFolder::create(const int /* type */)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -218,7 +218,7 @@ void maildirFolder::create(const int /* type */)
 
 void maildirFolder::destroy()
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -246,7 +246,7 @@ void maildirFolder::destroy()
 
 bool maildirFolder::exists()
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	return store->getFormat()->folderExists(m_path);
 }
@@ -260,42 +260,42 @@ bool maildirFolder::isOpen() const
 
 void maildirFolder::scanFolder()
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	try
 	{
 		m_messageCount = 0;
 		m_unreadMessageCount = 0;
 
-		ref <utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
+		std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
 		utility::file::path newDirPath = store->getFormat()->folderPathToFileSystemPath
 			(m_path, maildirFormat::NEW_DIRECTORY);
-		ref <utility::file> newDir = fsf->create(newDirPath);
+		std::shared_ptr<utility::file> newDir = fsf->create(newDirPath);
 
 		utility::file::path curDirPath = store->getFormat()->folderPathToFileSystemPath
 			(m_path, maildirFormat::CUR_DIRECTORY);
-		ref <utility::file> curDir = fsf->create(curDirPath);
+		std::shared_ptr<utility::file> curDir = fsf->create(curDirPath);
 
 		// New received messages (new/)
-		ref <utility::fileIterator> nit = newDir->getFiles();
+		std::shared_ptr<utility::fileIterator> nit = newDir->getFiles();
 		std::vector <utility::file::path::component> newMessageFilenames;
 
 		while (nit->hasMoreElements())
 		{
-			ref <utility::file> file = nit->nextElement();
+			std::shared_ptr<utility::file> file = nit->nextElement();
 
 			if (maildirUtils::isMessageFile(*file))
 				newMessageFilenames.push_back(file->getFullPath().getLastComponent());
 		}
 
 		// Current messages (cur/)
-		ref <utility::fileIterator> cit = curDir->getFiles();
+		std::shared_ptr<utility::fileIterator> cit = curDir->getFiles();
 		std::vector <utility::file::path::component> curMessageFilenames;
 
 		while (cit->hasMoreElements())
 		{
-			ref <utility::file> file = cit->nextElement();
+			std::shared_ptr<utility::file> file = cit->nextElement();
 
 			if (maildirUtils::isMessageFile(*file))
 				curMessageFilenames.push_back(file->getFullPath().getLastComponent());
@@ -345,7 +345,7 @@ void maildirFolder::scanFolder()
 				maildirUtils::buildFilename(maildirUtils::extractId(*it), 0);
 
 			// Move messages from 'new' to 'cur'
-			ref <utility::file> file = fsf->create(newDirPath / *it);
+			std::shared_ptr<utility::file> file = fsf->create(newDirPath / *it);
 			file->rename(curDirPath / newFilename);
 
 			// Append to message list
@@ -397,7 +397,7 @@ void maildirFolder::scanFolder()
 }
 
 
-ref <message> maildirFolder::getMessage(const int num)
+std::shared_ptr<message> maildirFolder::getMessage(const int num)
 {
 	if (!isOpen())
 		throw exceptions::illegal_state("Folder not open");
@@ -405,12 +405,12 @@ ref <message> maildirFolder::getMessage(const int num)
 	if (num < 1 || num > m_messageCount)
 		throw exceptions::message_not_found();
 
-	return vmime::create <maildirMessage>
+	return vmime::std::make_shared<maildirMessage>
 		(thisRef().dynamicCast <maildirFolder>(), num);
 }
 
 
-std::vector <ref <message> > maildirFolder::getMessages(const int from, const int to)
+std::vector <std::shared_ptr<message> > maildirFolder::getMessages(const int from, const int to)
 {
 	const int to2 = (to == -1 ? m_messageCount : to);
 
@@ -419,38 +419,38 @@ std::vector <ref <message> > maildirFolder::getMessages(const int from, const in
 	else if (to2 < from || from < 1 || to2 < 1 || from > m_messageCount || to2 > m_messageCount)
 		throw exceptions::message_not_found();
 
-	std::vector <ref <message> > v;
-	ref <maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
+	std::vector <std::shared_ptr<message> > v;
+	std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
 
 	for (int i = from ; i <= to2 ; ++i)
-		v.push_back(vmime::create <maildirMessage>(thisFolder, i));
+		v.push_back(vmime::std::make_shared<maildirMessage>(thisFolder, i));
 
 	return (v);
 }
 
 
-std::vector <ref <message> > maildirFolder::getMessages(const std::vector <int>& nums)
+std::vector <std::shared_ptr<message> > maildirFolder::getMessages(const std::vector <int>& nums)
 {
 	if (!isOpen())
 		throw exceptions::illegal_state("Folder not open");
 
-	std::vector <ref <message> > v;
-	ref <maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
+	std::vector <std::shared_ptr<message> > v;
+	std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
 
 	for (std::vector <int>::const_iterator it = nums.begin() ; it != nums.end() ; ++it)
-		v.push_back(vmime::create <maildirMessage>(thisFolder, *it));
+		v.push_back(vmime::std::make_shared<maildirMessage>(thisFolder, *it));
 
 	return (v);
 }
 
 
-ref <message> maildirFolder::getMessageByUID(const message::uid& /* uid */)
+std::shared_ptr<message> maildirFolder::getMessageByUID(const message::uid& /* uid */)
 {
 	throw exceptions::operation_not_supported();
 }
 
 
-std::vector <ref <message> > maildirFolder::getMessagesByUID(const std::vector <message::uid>& /* uids */)
+std::vector <std::shared_ptr<message> > maildirFolder::getMessagesByUID(const std::vector <message::uid>& /* uids */)
 {
 	throw exceptions::operation_not_supported();
 }
@@ -462,25 +462,25 @@ int maildirFolder::getMessageCount()
 }
 
 
-ref <folder> maildirFolder::getFolder(const folder::path::component& name)
+std::shared_ptr<folder> maildirFolder::getFolder(const folder::path::component& name)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 
-	return vmime::create <maildirFolder>(m_path / name, store);
+	return vmime::std::make_shared<maildirFolder>(m_path / name, store);
 }
 
 
-std::vector <ref <folder> > maildirFolder::getFolders(const bool recursive)
+std::vector <std::shared_ptr<folder> > maildirFolder::getFolders(const bool recursive)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!isOpen() && !store)
 		throw exceptions::illegal_state("Store disconnected");
 
-	std::vector <ref <folder> > list;
+	std::vector <std::shared_ptr<folder> > list;
 
 	listFolders(list, recursive);
 
@@ -488,9 +488,9 @@ std::vector <ref <folder> > maildirFolder::getFolders(const bool recursive)
 }
 
 
-void maildirFolder::listFolders(std::vector <ref <folder> >& list, const bool recursive)
+void maildirFolder::listFolders(std::vector <std::shared_ptr<folder> >& list, const bool recursive)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	try
 	{
@@ -501,8 +501,8 @@ void maildirFolder::listFolders(std::vector <ref <folder> >& list, const bool re
 
 		for (unsigned int i = 0, n = pathList.size() ; i < n ; ++i)
 		{
-			ref <maildirFolder> subFolder =
-				vmime::create <maildirFolder>(pathList[i], store);
+			std::shared_ptr<maildirFolder> subFolder =
+				vmime::std::make_shared<maildirFolder>(pathList[i], store);
 
 			list.push_back(subFolder);
 		}
@@ -516,7 +516,7 @@ void maildirFolder::listFolders(std::vector <ref <folder> >& list, const bool re
 
 void maildirFolder::rename(const folder::path& newPath)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -602,7 +602,7 @@ void maildirFolder::deleteMessages(const std::vector <int>& nums)
 void maildirFolder::setMessageFlags
 	(const int from, const int to, const int flags, const int mode)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (from < 1 || (to < from && to != -1))
 		throw exceptions::invalid_argument();
@@ -690,7 +690,7 @@ void maildirFolder::setMessageFlags
 void maildirFolder::setMessageFlags
 	(const std::vector <int>& nums, const int flags, const int mode)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -773,9 +773,9 @@ void maildirFolder::setMessageFlags
 void maildirFolder::setMessageFlagsImpl
 	(const std::vector <int>& nums, const int flags, const int mode)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
-	ref <utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
+	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
 	utility::file::path curDirPath = store->getFormat()->
 		folderPathToFileSystemPath(m_path, maildirFormat::CUR_DIRECTORY);
@@ -788,7 +788,7 @@ void maildirFolder::setMessageFlagsImpl
 		try
 		{
 			const utility::file::path::component path = m_messageInfos[num].path;
-			ref <utility::file> file = fsf->create(curDirPath / path);
+			std::shared_ptr<utility::file> file = fsf->create(curDirPath / path);
 
 			int newFlags = maildirUtils::extractFlags(path);
 
@@ -820,7 +820,7 @@ void maildirFolder::setMessageFlagsImpl
 }
 
 
-void maildirFolder::addMessage(ref <vmime::message> msg, const int flags,
+void maildirFolder::addMessage(std::shared_ptr<vmime::message> msg, const int flags,
 	vmime::datetime* date, utility::progressListener* progress)
 {
 	std::ostringstream oss;
@@ -838,7 +838,7 @@ void maildirFolder::addMessage(ref <vmime::message> msg, const int flags,
 void maildirFolder::addMessage(utility::inputStream& is, const int size,
 	const int flags, vmime::datetime* /* date */, utility::progressListener* progress)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -847,7 +847,7 @@ void maildirFolder::addMessage(utility::inputStream& is, const int size,
 	else if (m_mode == MODE_READ_ONLY)
 		throw exceptions::illegal_state("Folder is read-only");
 
-	ref <utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
+	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
 	utility::file::path tmpDirPath = store->getFormat()->
 		folderPathToFileSystemPath(m_path,maildirFormat::TMP_DIRECTORY);
@@ -863,7 +863,7 @@ void maildirFolder::addMessage(utility::inputStream& is, const int size,
 
 	try
 	{
-		ref <utility::file> tmpDir = fsf->create(tmpDirPath);
+		std::shared_ptr<utility::file> tmpDir = fsf->create(tmpDirPath);
 		tmpDir->createDirectory(true);
 	}
 	catch (exceptions::filesystem_exception&)
@@ -873,7 +873,7 @@ void maildirFolder::addMessage(utility::inputStream& is, const int size,
 
 	try
 	{
-		ref <utility::file> curDir = fsf->create(dstDirPath);
+		std::shared_ptr<utility::file> curDir = fsf->create(dstDirPath);
 		curDir->createDirectory(true);
 	}
 	catch (exceptions::filesystem_exception&)
@@ -933,9 +933,9 @@ void maildirFolder::copyMessageImpl(const utility::file::path& tmpDirPath,
 	utility::inputStream& is, const utility::stream::size_type size,
 	utility::progressListener* progress)
 {
-	ref <utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
+	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
-	ref <utility::file> file = fsf->create(tmpDirPath / filename);
+	std::shared_ptr<utility::file> file = fsf->create(tmpDirPath / filename);
 
 	if (progress)
 		progress->start(size);
@@ -945,8 +945,8 @@ void maildirFolder::copyMessageImpl(const utility::file::path& tmpDirPath,
 	{
 		file->createFile();
 
-		ref <utility::fileWriter> fw = file->getFileWriter();
-		ref <utility::outputStream> os = fw->getOutputStream();
+		std::shared_ptr<utility::fileWriter> fw = file->getFileWriter();
+		std::shared_ptr<utility::outputStream> os = fw->getOutputStream();
 
 		utility::stream::value_type buffer[65536];
 		utility::stream::size_type total = 0;
@@ -975,7 +975,7 @@ void maildirFolder::copyMessageImpl(const utility::file::path& tmpDirPath,
 		// Delete temporary file
 		try
 		{
-			ref <utility::file> file = fsf->create(tmpDirPath / filename);
+			std::shared_ptr<utility::file> file = fsf->create(tmpDirPath / filename);
 			file->remove();
 		}
 		catch (exceptions::filesystem_exception&)
@@ -1000,7 +1000,7 @@ void maildirFolder::copyMessageImpl(const utility::file::path& tmpDirPath,
 		try
 		{
 			file->remove();
-			ref <utility::file> file = fsf->create(dstDirPath / filename);
+			std::shared_ptr<utility::file> file = fsf->create(dstDirPath / filename);
 			file->remove();
 		}
 		catch (exceptions::filesystem_exception&)
@@ -1018,7 +1018,7 @@ void maildirFolder::copyMessageImpl(const utility::file::path& tmpDirPath,
 
 void maildirFolder::copyMessage(const folder::path& dest, const int num)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1031,7 +1031,7 @@ void maildirFolder::copyMessage(const folder::path& dest, const int num)
 
 void maildirFolder::copyMessages(const folder::path& dest, const int from, const int to)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1057,7 +1057,7 @@ void maildirFolder::copyMessages(const folder::path& dest, const int from, const
 
 void maildirFolder::copyMessages(const folder::path& dest, const std::vector <int>& nums)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1071,9 +1071,9 @@ void maildirFolder::copyMessages(const folder::path& dest, const std::vector <in
 
 void maildirFolder::copyMessagesImpl(const folder::path& dest, const std::vector <int>& nums)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
-	ref <utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
+	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
 	utility::file::path curDirPath = store->getFormat()->folderPathToFileSystemPath
 		(m_path, maildirFormat::CUR_DIRECTORY);
@@ -1086,7 +1086,7 @@ void maildirFolder::copyMessagesImpl(const folder::path& dest, const std::vector
 	// Create destination directories
 	try
 	{
-		ref <utility::file> destTmpDir = fsf->create(destTmpDirPath);
+		std::shared_ptr<utility::file> destTmpDir = fsf->create(destTmpDirPath);
 		destTmpDir->createDirectory(true);
 	}
 	catch (exceptions::filesystem_exception&)
@@ -1096,7 +1096,7 @@ void maildirFolder::copyMessagesImpl(const folder::path& dest, const std::vector
 
 	try
 	{
-		ref <utility::file> destCurDir = fsf->create(destCurDirPath);
+		std::shared_ptr<utility::file> destCurDir = fsf->create(destCurDirPath);
 		destCurDir->createDirectory(true);
 	}
 	catch (exceptions::filesystem_exception&)
@@ -1117,9 +1117,9 @@ void maildirFolder::copyMessagesImpl(const folder::path& dest, const std::vector
 			const utility::file::path::component filename =
 				maildirUtils::buildFilename(maildirUtils::generateId(), flags);
 
-			ref <utility::file> file = fsf->create(curDirPath / msg.path);
-			ref <utility::fileReader> fr = file->getFileReader();
-			ref <utility::inputStream> is = fr->getInputStream();
+			std::shared_ptr<utility::file> file = fsf->create(curDirPath / msg.path);
+			std::shared_ptr<utility::fileReader> fr = file->getFileReader();
+			std::shared_ptr<utility::inputStream> is = fr->getInputStream();
 
 			copyMessageImpl(destTmpDirPath, destCurDirPath,
 				filename, *is, file->getLength(), NULL);
@@ -1137,7 +1137,7 @@ void maildirFolder::copyMessagesImpl(const folder::path& dest, const std::vector
 
 void maildirFolder::notifyMessagesCopied(const folder::path& dest)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	for (std::list <maildirFolder*>::iterator it = store->m_folders.begin() ;
 	     it != store->m_folders.end() ; ++it)
@@ -1157,7 +1157,7 @@ void maildirFolder::notifyMessagesCopied(const folder::path& dest)
 
 void maildirFolder::status(int& count, int& unseen)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	const int oldCount = m_messageCount;
 
@@ -1206,7 +1206,7 @@ void maildirFolder::status(int& count, int& unseen)
 
 void maildirFolder::expunge()
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1215,7 +1215,7 @@ void maildirFolder::expunge()
 	else if (m_mode == MODE_READ_ONLY)
 		throw exceptions::illegal_state("Folder is read-only");
 
-	ref <utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
+	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
 	utility::file::path curDirPath = store->getFormat()->
 		folderPathToFileSystemPath(m_path, maildirFormat::CUR_DIRECTORY);
@@ -1246,7 +1246,7 @@ void maildirFolder::expunge()
 			// Delete file from file system
 			try
 			{
-				ref <utility::file> file = fsf->create(curDirPath / infos.path);
+				std::shared_ptr<utility::file> file = fsf->create(curDirPath / infos.path);
 				file->remove();
 			}
 			catch (exceptions::filesystem_exception& e)
@@ -1294,31 +1294,31 @@ void maildirFolder::expunge()
 }
 
 
-ref <folder> maildirFolder::getParent()
+std::shared_ptr<folder> maildirFolder::getParent()
 {
 	if (m_path.isEmpty())
 		return NULL;
 	else
-		return vmime::create <maildirFolder>(m_path.getParent(), m_store.acquire());
+		return vmime::std::make_shared<maildirFolder>(m_path.getParent(), m_store.acquire());
 }
 
 
-ref <const store> maildirFolder::getStore() const
+std::shared_ptr<const store> maildirFolder::getStore() const
 {
 	return m_store.acquire();
 }
 
 
-ref <store> maildirFolder::getStore()
+std::shared_ptr<store> maildirFolder::getStore()
 {
 	return m_store.acquire();
 }
 
 
-void maildirFolder::fetchMessages(std::vector <ref <message> >& msg,
+void maildirFolder::fetchMessages(std::vector <std::shared_ptr<message> >& msg,
 	const int options, utility::progressListener* progress)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1331,9 +1331,9 @@ void maildirFolder::fetchMessages(std::vector <ref <message> >& msg,
 	if (progress)
 		progress->start(total);
 
-	ref <maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
+	std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
 
-	for (std::vector <ref <message> >::iterator it = msg.begin() ;
+	for (std::vector <std::shared_ptr<message> >::iterator it = msg.begin() ;
 	     it != msg.end() ; ++it)
 	{
 		(*it).dynamicCast <maildirMessage>()->fetch(thisFolder, options);
@@ -1347,9 +1347,9 @@ void maildirFolder::fetchMessages(std::vector <ref <message> >& msg,
 }
 
 
-void maildirFolder::fetchMessage(ref <message> msg, const int options)
+void maildirFolder::fetchMessage(std::shared_ptr<message> msg, const int options)
 {
-	ref <maildirStore> store = m_store.acquire();
+	std::shared_ptr<maildirStore> store = m_store.acquire();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");

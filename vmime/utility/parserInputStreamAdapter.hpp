@@ -43,9 +43,9 @@ public:
 
 	/** @param is input stream to wrap
 	  */
-	parserInputStreamAdapter(ref <seekableInputStream> inputStream);
+	parserInputStreamAdapter(std::shared_ptr<seekableInputStream> inputStream);
 
-	ref <seekableInputStream> getUnderlyingStream();
+	std::shared_ptr<seekableInputStream> getUnderlyingStream();
 
 	bool eof() const;
 	void reset();
@@ -161,7 +161,7 @@ public:
 
 private:
 
-	mutable ref <seekableInputStream> m_stream;
+	mutable std::shared_ptr<seekableInputStream> m_stream;
 };
 
 

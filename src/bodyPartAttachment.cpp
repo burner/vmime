@@ -28,7 +28,7 @@ namespace vmime
 {
 
 
-bodyPartAttachment::bodyPartAttachment(ref <const bodyPart> part)
+bodyPartAttachment::bodyPartAttachment(std::shared_ptr<const bodyPart> part)
 	: m_part(part)
 {
 }
@@ -76,7 +76,7 @@ const word bodyPartAttachment::getName() const
 	{
 		try
 		{
-			ref <parameter> prm = getContentType()->findParameter("name");
+			std::shared_ptr<parameter> prm = getContentType()->findParameter("name");
 
 			if (prm != NULL)
 				name = prm->getValue();
@@ -101,7 +101,7 @@ const text bodyPartAttachment::getDescription() const
 
 	try
 	{
-		ref <const headerField> cd =
+		std::shared_ptr<const headerField> cd =
 			getHeader()->findField(fields::CONTENT_DESCRIPTION);
 
 		description = *cd->getValue().dynamicCast <const text>();
@@ -121,39 +121,39 @@ const encoding bodyPartAttachment::getEncoding() const
 }
 
 
-const ref <const contentHandler> bodyPartAttachment::getData() const
+const std::shared_ptr<const contentHandler> bodyPartAttachment::getData() const
 {
 	return m_part->getBody()->getContents();
 }
 
 
-ref <const object> bodyPartAttachment::getPart() const
+std::shared_ptr<const object> bodyPartAttachment::getPart() const
 {
 	return m_part;
 }
 
 
-ref <const header> bodyPartAttachment::getHeader() const
+std::shared_ptr<const header> bodyPartAttachment::getHeader() const
 {
 	return m_part->getHeader();
 }
 
 
-ref <const contentDispositionField> bodyPartAttachment::getContentDisposition() const
+std::shared_ptr<const contentDispositionField> bodyPartAttachment::getContentDisposition() const
 {
 	return getHeader()->findField(fields::CONTENT_DISPOSITION).
 		dynamicCast <const contentDispositionField>();
 }
 
 
-ref <const contentTypeField> bodyPartAttachment::getContentType() const
+std::shared_ptr<const contentTypeField> bodyPartAttachment::getContentType() const
 {
 	return getHeader()->findField(fields::CONTENT_TYPE).
 		dynamicCast <const contentTypeField>();
 }
 
 
-void bodyPartAttachment::generateIn(ref <bodyPart> /* parent */) const
+void bodyPartAttachment::generateIn(std::shared_ptr<bodyPart> /* parent */) const
 {
 	// Not used
 }

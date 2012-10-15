@@ -59,20 +59,20 @@ public:
 	  *
 	  * @return structure of the part
 	  */
-	virtual ref <const structure> getStructure() const = 0;
+	virtual std::shared_ptr<const structure> getStructure() const = 0;
 
 	/** Return the structure of this part.
 	  *
 	  * @return structure of the part
 	  */
-	virtual ref <structure> getStructure() = 0;
+	virtual std::shared_ptr<structure> getStructure() = 0;
 
 	/** Return the header section for this part (you must fetch header
 	  * before using this function: see message::fetchPartHeader).
 	  *
 	  * @return header section
 	  */
-	virtual ref <const header> getHeader() const = 0;
+	virtual std::shared_ptr<const header> getHeader() const = 0;
 
 	/** Return the media-type of the content in this part.
 	  *
@@ -99,7 +99,7 @@ public:
 	  * @param pos index of the sub-part
 	  * @return sub-part at position 'pos'
 	  */
-	ref <const part> getPartAt(const int pos) const;
+	std::shared_ptr<const part> getPartAt(const int pos) const;
 
 	/** Return the sub-part at the specified position (zero is the
 	  * first part).
@@ -107,7 +107,7 @@ public:
 	  * @param pos index of the sub-part
 	  * @return sub-part at position 'pos'
 	  */
-	ref <part> getPartAt(const int pos);
+	std::shared_ptr<part> getPartAt(const int pos);
 
 	/** Return the number of sub-parts in this part.
 	  *
@@ -137,7 +137,7 @@ public:
 	  * @param pos position
 	  * @return part at position 'pos'
 	  */
-	virtual ref <const part> getPartAt(const int pos) const = 0;
+	virtual std::shared_ptr<const part> getPartAt(const int pos) const = 0;
 
 	/** Return the part at the specified position (first
 	  * part is at position 0).
@@ -145,7 +145,7 @@ public:
 	  * @param pos position
 	  * @return part at position 'pos'
 	  */
-	virtual ref <part> getPartAt(const int pos) = 0;
+	virtual std::shared_ptr<part> getPartAt(const int pos) = 0;
 
 	/** Return the number of parts in this part.
 	  *
@@ -177,19 +177,19 @@ public:
 	  *
 	  * @return MIME structure of the message
 	  */
-	virtual ref <const structure> getStructure() const = 0;
+	virtual std::shared_ptr<const structure> getStructure() const = 0;
 
 	/** Return the MIME structure of the message (must fetch before).
 	  *
 	  * @return MIME structure of the message
 	  */
-	virtual ref <structure> getStructure() = 0;
+	virtual std::shared_ptr<structure> getStructure() = 0;
 
 	/** Return a reference to the header fields of the message (must fetch before).
 	  *
 	  * @return header section of the message
 	  */
-	virtual ref <const header> getHeader() const = 0;
+	virtual std::shared_ptr<const header> getHeader() const = 0;
 
 	/** Return the sequence number of this message. This number is
 	  * used to reference the message in the folder.
@@ -282,13 +282,13 @@ public:
 	  * be supported by the protocol (IMAP supports this), but it will NOT throw
 	  * an exception if not supported.
 	  */
-	virtual void extractPart(ref <const part> p, utility::outputStream& os, utility::progressListener* progress = NULL, const int start = 0, const int length = -1, const bool peek = false) const = 0;
+	virtual void extractPart(std::shared_ptr<const part> p, utility::outputStream& os, utility::progressListener* progress = NULL, const int start = 0, const int length = -1, const bool peek = false) const = 0;
 
 	/** Fetch the MIME header for the specified part.
 	  *
 	  * @param p the part for which to fetch the header
 	  */
-	virtual void fetchPartHeader(ref <part> p) = 0;
+	virtual void fetchPartHeader(std::shared_ptr<part> p) = 0;
 
 	/** Get the RFC-822 message for this abstract message.
 	  * Warning: This may require getting some data (ie: structure and headers) from
@@ -298,7 +298,7 @@ public:
 	  *
 	  * @return a RFC-822-parsed message
 	  */
-	virtual ref <vmime::message> getParsedMessage() = 0;
+	virtual std::shared_ptr<vmime::message> getParsedMessage() = 0;
 };
 
 

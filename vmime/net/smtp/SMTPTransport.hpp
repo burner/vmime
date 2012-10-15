@@ -49,7 +49,7 @@ class SMTPTransport : public transport
 {
 public:
 
-	SMTPTransport(ref <session> sess, ref <security::authenticator> auth, const bool secured = false);
+	SMTPTransport(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth, const bool secured = false);
 	~SMTPTransport();
 
 	const string getProtocolName() const;
@@ -66,12 +66,12 @@ public:
 	void send(const mailbox& expeditor, const mailboxList& recipients, utility::inputStream& is, const utility::stream::size_type size, utility::progressListener* progress = NULL);
 
 	bool isSecuredConnection() const;
-	ref <connectionInfos> getConnectionInfos() const;
+	std::shared_ptr<connectionInfos> getConnectionInfos() const;
 
 private:
 
 	void sendRequest(const string& buffer, const bool end = true);
-	ref <SMTPResponse> readResponse();
+	std::shared_ptr<SMTPResponse> readResponse();
 
 	void internalDisconnect();
 
@@ -85,18 +85,18 @@ private:
 	void startTLS();
 #endif // VMIME_HAVE_TLS_SUPPORT
 
-	ref <socket> m_socket;
+	std::shared_ptr<socket> m_socket;
 	bool m_authentified;
 
 	bool m_extendedSMTP;
 	std::map <string, std::vector <string> > m_extensions;
 
-	ref <timeoutHandler> m_timeoutHandler;
+	std::shared_ptr<timeoutHandler> m_timeoutHandler;
 
 	const bool m_isSMTPS;
 
 	bool m_secured;
-	ref <connectionInfos> m_cntInfos;
+	std::shared_ptr<connectionInfos> m_cntInfos;
 
 
 	// Service infos

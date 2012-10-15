@@ -41,7 +41,7 @@ class courierMaildirFormat : public maildirFormat
 {
 public:
 
-	courierMaildirFormat(ref <context> ctx);
+	courierMaildirFormat(std::shared_ptr<context> ctx);
 
 
 	/* Folder types:

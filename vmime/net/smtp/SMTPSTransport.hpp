@@ -40,7 +40,7 @@ class SMTPSTransport : public SMTPTransport
 {
 public:
 
-	SMTPSTransport(ref <session> sess, ref <security::authenticator> auth);
+	SMTPSTransport(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth);
 	~SMTPSTransport();
 
 	const string getProtocolName() const;

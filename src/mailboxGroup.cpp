@@ -80,13 +80,13 @@ void mailboxGroup::parseImpl(const string& buffer, const string::size_type posit
 
 	while (pos < end)
 	{
-		ref <address> parsedAddress = address::parseNext(buffer, pos, end, &pos);
+		std::shared_ptr<address> parsedAddress = address::parseNext(buffer, pos, end, &pos);
 
 		if (parsedAddress)
 		{
 			if (parsedAddress->isGroup())
 			{
-				ref <mailboxGroup> group = parsedAddress.staticCast <mailboxGroup>();
+				std::shared_ptr<mailboxGroup> group = parsedAddress.staticCast <mailboxGroup>();
 
 				// Sub-groups are not allowed in mailbox groups: so, we add all
 				// the contents of the sub-group into this group...
@@ -162,7 +162,7 @@ void mailboxGroup::generateImpl(utility::outputStream& os, const string::size_ty
 	os << ":";
 	++pos;
 
-	for (std::vector <ref <mailbox> >::const_iterator it = m_list.begin() ;
+	for (std::vector <std::shared_ptr<mailbox> >::const_iterator it = m_list.begin() ;
 	     it != m_list.end() ; ++it)
 	{
 		if (it != m_list.begin())
@@ -195,7 +195,7 @@ void mailboxGroup::copyFrom(const component& other)
 
 	removeAllMailboxes();
 
-	for (std::vector <ref <mailbox> >::const_iterator it = source.m_list.begin() ;
+	for (std::vector <std::shared_ptr<mailbox> >::const_iterator it = source.m_list.begin() ;
 	     it != source.m_list.end() ; ++it)
 	{
 		m_list.push_back((*it)->clone().staticCast <mailbox>());
@@ -203,9 +203,9 @@ void mailboxGroup::copyFrom(const component& other)
 }
 
 
-ref <component> mailboxGroup::clone() const
+std::shared_ptr<component> mailboxGroup::clone() const
 {
-	return vmime::create <mailboxGroup>(*this);
+	return vmime::std::make_shared<mailboxGroup>(*this);
 }
 
 
@@ -240,15 +240,15 @@ bool mailboxGroup::isEmpty() const
 }
 
 
-void mailboxGroup::appendMailbox(ref <mailbox> mbox)
+void mailboxGroup::appendMailbox(std::shared_ptr<mailbox> mbox)
 {
 	m_list.push_back(mbox);
 }
 
 
-void mailboxGroup::insertMailboxBefore(ref <mailbox> beforeMailbox, ref <mailbox> mbox)
+void mailboxGroup::insertMailboxBefore(std::shared_ptr<mailbox> beforeMailbox, std::shared_ptr<mailbox> mbox)
 {
-	const std::vector <ref <mailbox> >::iterator it = std::find
+	const std::vector <std::shared_ptr<mailbox> >::iterator it = std::find
 		(m_list.begin(), m_list.end(), beforeMailbox);
 
 	if (it == m_list.end())
@@ -258,15 +258,15 @@ void mailboxGroup::insertMailboxBefore(ref <mailbox> beforeMailbox, ref <mailbox
 }
 
 
-void mailboxGroup::insertMailboxBefore(const int pos, ref <mailbox> mbox)
+void mailboxGroup::insertMailboxBefore(const int pos, std::shared_ptr<mailbox> mbox)
 {
 	m_list.insert(m_list.begin() + pos, mbox);
 }
 
 
-void mailboxGroup::insertMailboxAfter(ref <mailbox> afterMailbox, ref <mailbox> mbox)
+void mailboxGroup::insertMailboxAfter(std::shared_ptr<mailbox> afterMailbox, std::shared_ptr<mailbox> mbox)
 {
-	const std::vector <ref <mailbox> >::iterator it = std::find
+	const std::vector <std::shared_ptr<mailbox> >::iterator it = std::find
 		(m_list.begin(), m_list.end(), afterMailbox);
 
 	if (it == m_list.end())
@@ -276,15 +276,15 @@ void mailboxGroup::insertMailboxAfter(ref <mailbox> afterMailbox, ref <mailbox> 
 }
 
 
-void mailboxGroup::insertMailboxAfter(const int pos, ref <mailbox> mbox)
+void mailboxGroup::insertMailboxAfter(const int pos, std::shared_ptr<mailbox> mbox)
 {
 	m_list.insert(m_list.begin() + pos + 1, mbox);
 }
 
 
-void mailboxGroup::removeMailbox(ref <mailbox> mbox)
+void mailboxGroup::removeMailbox(std::shared_ptr<mailbox> mbox)
 {
-	const std::vector <ref <mailbox> >::iterator it = std::find
+	const std::vector <std::shared_ptr<mailbox> >::iterator it = std::find
 		(m_list.begin(), m_list.end(), mbox);
 
 	if (it == m_list.end())
@@ -296,7 +296,7 @@ void mailboxGroup::removeMailbox(ref <mailbox> mbox)
 
 void mailboxGroup::removeMailbox(const int pos)
 {
-	const std::vector <ref <mailbox> >::iterator it = m_list.begin() + pos;
+	const std::vector <std::shared_ptr<mailbox> >::iterator it = m_list.begin() + pos;
 
 	m_list.erase(it);
 }
@@ -314,25 +314,25 @@ int mailboxGroup::getMailboxCount() const
 }
 
 
-ref <mailbox> mailboxGroup::getMailboxAt(const int pos)
+std::shared_ptr<mailbox> mailboxGroup::getMailboxAt(const int pos)
 {
 	return (m_list[pos]);
 }
 
 
-const ref <const mailbox> mailboxGroup::getMailboxAt(const int pos) const
+const std::shared_ptr<const mailbox> mailboxGroup::getMailboxAt(const int pos) const
 {
 	return (m_list[pos]);
 }
 
 
-const std::vector <ref <const mailbox> > mailboxGroup::getMailboxList() const
+const std::vector <std::shared_ptr<const mailbox> > mailboxGroup::getMailboxList() const
 {
-	std::vector <ref <const mailbox> > list;
+	std::vector <std::shared_ptr<const mailbox> > list;
 
 	list.reserve(m_list.size());
 
-	for (std::vector <ref <mailbox> >::const_iterator it = m_list.begin() ;
+	for (std::vector <std::shared_ptr<mailbox> >::const_iterator it = m_list.begin() ;
 	     it != m_list.end() ; ++it)
 	{
 		list.push_back(*it);
@@ -342,15 +342,15 @@ const std::vector <ref <const mailbox> > mailboxGroup::getMailboxList() const
 }
 
 
-const std::vector <ref <mailbox> > mailboxGroup::getMailboxList()
+const std::vector <std::shared_ptr<mailbox> > mailboxGroup::getMailboxList()
 {
 	return (m_list);
 }
 
 
-const std::vector <ref <component> > mailboxGroup::getChildComponents()
+const std::vector <std::shared_ptr<component> > mailboxGroup::getChildComponents()
 {
-	std::vector <ref <component> > list;
+	std::vector <std::shared_ptr<component> > list;
 
 	copy_vector(m_list, list);
 

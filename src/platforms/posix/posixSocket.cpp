@@ -49,7 +49,7 @@ namespace posix {
 // posixSocket
 //
 
-posixSocket::posixSocket(ref <vmime::net::timeoutHandler> th)
+posixSocket::posixSocket(std::shared_ptr<vmime::net::timeoutHandler> th)
 	: m_timeoutHandler(th), m_desc(-1)
 {
 }
@@ -475,16 +475,16 @@ void posixSocket::throwSocketError(const int err)
 // posixSocketFactory
 //
 
-ref <vmime::net::socket> posixSocketFactory::create()
+std::shared_ptr<vmime::net::socket> posixSocketFactory::create()
 {
-	ref <vmime::net::timeoutHandler> th = NULL;
-	return vmime::create <posixSocket>(th);
+	std::shared_ptr<vmime::net::timeoutHandler> th = NULL;
+	return vmime::std::make_shared<posixSocket>(th);
 }
 
 
-ref <vmime::net::socket> posixSocketFactory::create(ref <vmime::net::timeoutHandler> th)
+std::shared_ptr<vmime::net::socket> posixSocketFactory::create(std::shared_ptr<vmime::net::timeoutHandler> th)
 {
-	return vmime::create <posixSocket>(th);
+	return vmime::std::make_shared<posixSocket>(th);
 }
 
 

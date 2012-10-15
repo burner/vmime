@@ -64,8 +64,8 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new transport service
 	  */
-	ref <transport> getTransport
-		(ref <security::authenticator> auth = NULL);
+	std::shared_ptr<transport> getTransport
+		(std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a transport service instance for the specified protocol.
 	  *
@@ -75,9 +75,9 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new transport service
 	  */
-	ref <transport> getTransport
+	std::shared_ptr<transport> getTransport
 		(const string& protocol,
-		 ref <security::authenticator> auth = NULL);
+		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a transport service instance for the specified URL.
 	  *
@@ -87,9 +87,9 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new transport service
 	  */
-	ref <transport> getTransport
+	std::shared_ptr<transport> getTransport
 		(const utility::url& url,
-		 ref <security::authenticator> auth = NULL);
+		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a transport service instance for the protocol specified
 	  * in the session properties.
@@ -101,7 +101,7 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new store service
 	  */
-	ref <store> getStore(ref <security::authenticator> auth = NULL);
+	std::shared_ptr<store> getStore(std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a store service instance for the specified protocol.
 	  *
@@ -111,9 +111,9 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new store service
 	  */
-	ref <store> getStore
+	std::shared_ptr<store> getStore
 		(const string& protocol,
-		 ref <security::authenticator> auth = NULL);
+		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a store service instance for the specified URL.
 	  *
@@ -123,9 +123,9 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new store service
 	  */
-	ref <store> getStore
+	std::shared_ptr<store> getStore
 		(const utility::url& url,
-		 ref <security::authenticator> auth = NULL);
+		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Properties for the session and for the services.
 	  */

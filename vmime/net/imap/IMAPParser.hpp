@@ -136,19 +136,19 @@ class IMAPParser : public object
 {
 public:
 
-	IMAPParser(weak_ref <IMAPTag> tag, weak_ref <socket> sok, weak_ref <timeoutHandler> _timeoutHandler)
+	IMAPParser(std::weak_ptr<IMAPTag> tag, std::weak_ptr<socket> sok, std::weak_ptr<timeoutHandler> _timeoutHandler)
 		: m_tag(tag), m_socket(sok), m_progress(NULL), m_strict(false),
 		  m_literalHandler(NULL), m_timeoutHandler(_timeoutHandler)
 	{
 	}
 
 
-	ref <const IMAPTag> getTag() const
+	std::shared_ptr<const IMAPTag> getTag() const
 	{
 		return m_tag.acquire();
 	}
 
-	void setSocket(ref <socket> sok)
+	void setSocket(std::shared_ptr<socket> sok)
 	{
 		m_socket = sok;
 	}
@@ -5022,8 +5022,8 @@ public:
 
 private:
 
-	weak_ref <IMAPTag> m_tag;
-	weak_ref <socket> m_socket;
+	std::weak_ptr<IMAPTag> m_tag;
+	std::weak_ptr<socket> m_socket;
 
 	utility::progressListener* m_progress;
 
@@ -5031,7 +5031,7 @@ private:
 
 	literalHandler* m_literalHandler;
 
-	weak_ref <timeoutHandler> m_timeoutHandler;
+	std::weak_ptr<timeoutHandler> m_timeoutHandler;
 
 
 	string m_buffer;
@@ -5078,8 +5078,8 @@ public:
 	{
 		string receiveBuffer;
 
-		ref <timeoutHandler> toh = m_timeoutHandler.acquire();
-		ref <socket> sok = m_socket.acquire();
+		std::shared_ptr<timeoutHandler> toh = m_timeoutHandler.acquire();
+		std::shared_ptr<socket> sok = m_socket.acquire();
 
 		if (toh)
 			toh->resetTimeOut();
@@ -5116,8 +5116,8 @@ public:
 		string::size_type len = 0;
 		string receiveBuffer;
 
-		ref <timeoutHandler> toh = m_timeoutHandler.acquire();
-		ref <socket> sok = m_socket.acquire();
+		std::shared_ptr<timeoutHandler> toh = m_timeoutHandler.acquire();
+		std::shared_ptr<socket> sok = m_socket.acquire();
 
 		if (m_progress)
 			m_progress->start(count);

@@ -44,13 +44,13 @@ class receivedMDNInfos : public MDNInfos
 {
 public:
 
-	receivedMDNInfos(const ref <const message> msg);
+	receivedMDNInfos(const std::shared_ptr<const message> msg);
 	receivedMDNInfos(const receivedMDNInfos& other);
 
 	receivedMDNInfos& operator=(const receivedMDNInfos& other);
 
 
-	const ref <const message> getMessage() const;
+	const std::shared_ptr<const message> getMessage() const;
 
 	/** Return the identifier of the message for which this MDN
 	  * has been generated.
@@ -72,7 +72,7 @@ private:
 	void extract();
 
 
-	ref <const message> m_msg;
+	std::shared_ptr<const message> m_msg;
 
 	disposition m_disp;
 	messageId m_omid;

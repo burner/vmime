@@ -37,8 +37,8 @@ namespace security {
 namespace sasl {
 
 
-SASLSession::SASLSession(const string& serviceName, ref <SASLContext> ctx,
-                 ref <authenticator> auth, ref <SASLMechanism> mech)
+SASLSession::SASLSession(const string& serviceName, std::shared_ptr<SASLContext> ctx,
+                 std::shared_ptr<authenticator> auth, std::shared_ptr<SASLMechanism> mech)
 	: m_serviceName(serviceName), m_context(ctx), m_auth(auth),
 	  m_mech(mech), m_gsaslContext(0), m_gsaslSession(0)
 {
@@ -64,7 +64,7 @@ SASLSession::~SASLSession()
 
 void SASLSession::init()
 {
-	ref <SASLAuthenticator> saslAuth = m_auth.dynamicCast <SASLAuthenticator>();
+	std::shared_ptr<SASLAuthenticator> saslAuth = m_auth.dynamicCast <SASLAuthenticator>();
 
 	if (saslAuth)
 	{
@@ -74,19 +74,19 @@ void SASLSession::init()
 }
 
 
-ref <authenticator> SASLSession::getAuthenticator()
+std::shared_ptr<authenticator> SASLSession::getAuthenticator()
 {
 	return m_auth;
 }
 
 
-ref <SASLMechanism> SASLSession::getMechanism()
+std::shared_ptr<SASLMechanism> SASLSession::getMechanism()
 {
 	return m_mech;
 }
 
 
-ref <SASLContext> SASLSession::getContext()
+std::shared_ptr<SASLContext> SASLSession::getContext()
 {
 	return m_context;
 }
@@ -101,9 +101,9 @@ bool SASLSession::evaluateChallenge
 }
 
 
-ref <net::socket> SASLSession::getSecuredSocket(ref <net::socket> sok)
+std::shared_ptr<net::socket> SASLSession::getSecuredSocket(std::shared_ptr<net::socket> sok)
 {
-	return vmime::create <SASLSocket>(thisRef().dynamicCast <SASLSession>(), sok);
+	return vmime::std::make_shared<SASLSocket>(thisRef().dynamicCast <SASLSession>(), sok);
 }
 
 
@@ -120,7 +120,7 @@ int SASLSession::gsaslCallback
 	SASLSession* sess = reinterpret_cast <SASLSession*>(gsasl_callback_hook_get(ctx));
 	if (!sess) return GSASL_AUTHENTICATION_ERROR;
 
-	ref <authenticator> auth = sess->getAuthenticator();
+	std::shared_ptr<authenticator> auth = sess->getAuthenticator();
 
 	try
 	{

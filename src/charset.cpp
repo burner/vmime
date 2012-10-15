@@ -124,9 +124,9 @@ bool charset::operator!=(const charset& value) const
 }
 
 
-ref <component> charset::clone() const
+std::shared_ptr<component> charset::clone() const
 {
-	return vmime::create <charset>(m_name);
+	return vmime::std::make_shared<charset>(m_name);
 }
 
 
@@ -142,9 +142,9 @@ void charset::copyFrom(const component& other)
 }
 
 
-const std::vector <ref <component> > charset::getChildComponents()
+const std::vector <std::shared_ptr<component> > charset::getChildComponents()
 {
-	return std::vector <ref <component> >();
+	return std::vector <std::shared_ptr<component> >();
 }
 
 

@@ -57,7 +57,7 @@ namespace net {
 namespace imap {
 
 
-IMAPConnection::IMAPConnection(ref <IMAPStore> store, ref <security::authenticator> auth)
+IMAPConnection::IMAPConnection(std::shared_ptr<IMAPStore> store, std::shared_ptr<security::authenticator> auth)
 	: m_store(store), m_auth(auth), m_socket(NULL), m_parser(NULL), m_tag(NULL),
 	  m_hierarchySeparator('\0'), m_state(STATE_NONE), m_timeoutHandler(NULL),
 	  m_secured(false)
@@ -92,7 +92,7 @@ void IMAPConnection::connect()
 	const string address = GET_PROPERTY(string, PROPERTY_SERVER_ADDRESS);
 	const port_t port = GET_PROPERTY(port_t, PROPERTY_SERVER_PORT);
 
-	ref <IMAPStore> store = m_store.acquire();
+	std::shared_ptr<IMAPStore> store = m_store.acquire();
 
 	// Create the time-out handler
 	if (store->getTimeoutHandlerFactory())
@@ -104,28 +104,28 @@ void IMAPConnection::connect()
 #if VMIME_HAVE_TLS_SUPPORT
 	if (store->isIMAPS())  // dedicated port/IMAPS
 	{
-		ref <tls::TLSSession> tlsSession =
-			vmime::create <tls::TLSSession>(store->getCertificateVerifier());
+		std::shared_ptr<tls::TLSSession> tlsSession =
+			vmime::std::make_shared<tls::TLSSession>(store->getCertificateVerifier());
 
-		ref <tls::TLSSocket> tlsSocket =
+		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
 
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = vmime::create <tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
+		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
 	}
 	else
 #endif // VMIME_HAVE_TLS_SUPPORT
 	{
-		m_cntInfos = vmime::create <defaultConnectionInfos>(address, port);
+		m_cntInfos = vmime::std::make_shared<defaultConnectionInfos>(address, port);
 	}
 
 	m_socket->connect(address, port);
 
 
-	m_tag = vmime::create <IMAPTag>();
-	m_parser = vmime::create <IMAPParser>(m_tag, m_socket, m_timeoutHandler);
+	m_tag = vmime::std::make_shared<IMAPTag>();
+	m_parser = vmime::std::make_shared<IMAPParser>(m_tag, m_socket, m_timeoutHandler);
 
 
 	setState(STATE_NON_AUTHENTICATED);
@@ -291,10 +291,10 @@ void IMAPConnection::authenticateSASL()
 	if (saslMechs.empty())
 		throw exceptions::authentication_error("No SASL mechanism available.");
 
-	std::vector <ref <security::sasl::SASLMechanism> > mechList;
+	std::vector <std::shared_ptr<security::sasl::SASLMechanism> > mechList;
 
-	ref <security::sasl::SASLContext> saslContext =
-		vmime::create <security::sasl::SASLContext>();
+	std::shared_ptr<security::sasl::SASLContext> saslContext =
+		vmime::std::make_shared<security::sasl::SASLContext>();
 
 	for (unsigned int i = 0 ; i < saslMechs.size() ; ++i)
 	{
@@ -313,7 +313,7 @@ void IMAPConnection::authenticateSASL()
 		throw exceptions::authentication_error("No SASL mechanism available.");
 
 	// Try to suggest a mechanism among all those supported
-	ref <security::sasl::SASLMechanism> suggestedMech =
+	std::shared_ptr<security::sasl::SASLMechanism> suggestedMech =
 		saslContext->suggestMechanism(mechList);
 
 	if (!suggestedMech)
@@ -329,9 +329,9 @@ void IMAPConnection::authenticateSASL()
 	// Try each mechanism in the list in turn
 	for (unsigned int i = 0 ; i < mechList.size() ; ++i)
 	{
-		ref <security::sasl::SASLMechanism> mech = mechList[i];
+		std::shared_ptr<security::sasl::SASLMechanism> mech = mechList[i];
 
-		ref <security::sasl::SASLSession> saslSession =
+		std::shared_ptr<security::sasl::SASLSession> saslSession =
 			saslContext->createSession("imap", getAuthenticator(), mech);
 
 		saslSession->init();
@@ -453,10 +453,10 @@ void IMAPConnection::startTLS()
 				("STARTTLS", m_parser->lastLine(), "bad response");
 		}
 
-		ref <tls::TLSSession> tlsSession =
-			vmime::create <tls::TLSSession>(m_store.acquire()->getCertificateVerifier());
+		std::shared_ptr<tls::TLSSession> tlsSession =
+			vmime::std::make_shared<tls::TLSSession>(m_store.acquire()->getCertificateVerifier());
 
-		ref <tls::TLSSocket> tlsSocket =
+		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
 
 		tlsSocket->handshake(m_timeoutHandler);
@@ -465,7 +465,7 @@ void IMAPConnection::startTLS()
 		m_parser->setSocket(m_socket);
 
 		m_secured = true;
-		m_cntInfos = vmime::create <tls::TLSSecuredConnectionInfos>
+		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>
 			(m_cntInfos->getHost(), m_cntInfos->getPort(), tlsSession, tlsSocket);
 	}
 	catch (exceptions::command_error&)
@@ -525,7 +525,7 @@ const std::vector <string> IMAPConnection::getCapabilities()
 }
 
 
-ref <security::authenticator> IMAPConnection::getAuthenticator()
+std::shared_ptr<security::authenticator> IMAPConnection::getAuthenticator()
 {
 	return m_auth;
 }
@@ -544,7 +544,7 @@ bool IMAPConnection::isSecuredConnection() const
 }
 
 
-ref <connectionInfos> IMAPConnection::getConnectionInfos() const
+std::shared_ptr<connectionInfos> IMAPConnection::getConnectionInfos() const
 {
 	return m_cntInfos;
 }
@@ -688,37 +688,37 @@ char IMAPConnection::hierarchySeparator() const
 }
 
 
-ref <const IMAPTag> IMAPConnection::getTag() const
+std::shared_ptr<const IMAPTag> IMAPConnection::getTag() const
 {
 	return (m_tag);
 }
 
 
-ref <const IMAPParser> IMAPConnection::getParser() const
+std::shared_ptr<const IMAPParser> IMAPConnection::getParser() const
 {
 	return (m_parser);
 }
 
 
-ref <const IMAPStore> IMAPConnection::getStore() const
+std::shared_ptr<const IMAPStore> IMAPConnection::getStore() const
 {
 	return m_store.acquire();
 }
 
 
-ref <IMAPStore> IMAPConnection::getStore()
+std::shared_ptr<IMAPStore> IMAPConnection::getStore()
 {
 	return m_store.acquire();
 }
 
 
-ref <session> IMAPConnection::getSession()
+std::shared_ptr<session> IMAPConnection::getSession()
 {
 	return m_store.acquire()->getSession();
 }
 
 
-ref <const socket> IMAPConnection::getSocket() const
+std::shared_ptr<const socket> IMAPConnection::getSocket() const
 {
 	return m_socket;
 }

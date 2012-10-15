@@ -617,6 +617,7 @@ env.Append(CXXFLAGS = ['-Wpointer-arith'])
 env.Append(CXXFLAGS = ['-Wold-style-cast'])
 env.Append(CXXFLAGS = ['-Wconversion'])
 env.Append(CXXFLAGS = ['-Wcast-align'])
+env.Append(CXXFLAGS = ['-std=c++0x'])
 #env.Append(CXXFLAGS = ['-Wshadow'])
 
 env.Append(TARFLAGS = ['-c'])

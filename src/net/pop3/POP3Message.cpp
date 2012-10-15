@@ -35,7 +35,7 @@ namespace net {
 namespace pop3 {
 
 
-POP3Message::POP3Message(ref <POP3Folder> folder, const int num)
+POP3Message::POP3Message(std::shared_ptr<POP3Folder> folder, const int num)
 	: m_folder(folder), m_num(num), m_size(-1), m_deleted(false)
 {
 	folder->registerMessage(this);
@@ -44,7 +44,7 @@ POP3Message::POP3Message(ref <POP3Folder> folder, const int num)
 
 POP3Message::~POP3Message()
 {
-	ref <POP3Folder> folder = m_folder.acquire();
+	std::shared_ptr<POP3Folder> folder = m_folder.acquire();
 
 	if (folder)
 		folder->unregisterMessage(this);
@@ -95,19 +95,19 @@ int POP3Message::getFlags() const
 }
 
 
-ref <const structure> POP3Message::getStructure() const
+std::shared_ptr<const structure> POP3Message::getStructure() const
 {
 	throw exceptions::operation_not_supported();
 }
 
 
-ref <structure> POP3Message::getStructure()
+std::shared_ptr<structure> POP3Message::getStructure()
 {
 	throw exceptions::operation_not_supported();
 }
 
 
-ref <const header> POP3Message::getHeader() const
+std::shared_ptr<const header> POP3Message::getHeader() const
 {
 	if (m_header == NULL)
 		throw exceptions::unfetched_object();
@@ -120,7 +120,7 @@ void POP3Message::extract(utility::outputStream& os,
 	utility::progressListener* progress, const int start,
 	const int length, const bool /* peek */) const
 {
-	ref <const POP3Folder> folder = m_folder.acquire();
+	std::shared_ptr<const POP3Folder> folder = m_folder.acquire();
 
 	if (!folder)
 		throw exceptions::illegal_state("Folder closed");
@@ -155,7 +155,7 @@ void POP3Message::extract(utility::outputStream& os,
 
 
 void POP3Message::extractPart
-	(ref <const part> /* p */, utility::outputStream& /* os */,
+	(std::shared_ptr<const part> /* p */, utility::outputStream& /* os */,
 	 utility::progressListener* /* progress */,
 	 const int /* start */, const int /* length */,
 	 const bool /* peek */) const
@@ -164,15 +164,15 @@ void POP3Message::extractPart
 }
 
 
-void POP3Message::fetchPartHeader(ref <part> /* p */)
+void POP3Message::fetchPartHeader(std::shared_ptr<part> /* p */)
 {
 	throw exceptions::operation_not_supported();
 }
 
 
-void POP3Message::fetch(ref <POP3Folder> msgFolder, const int options)
+void POP3Message::fetch(std::shared_ptr<POP3Folder> msgFolder, const int options)
 {
-	ref <POP3Folder> folder = m_folder.acquire();
+	std::shared_ptr<POP3Folder> folder = m_folder.acquire();
 
 	if (folder != msgFolder)
 		throw exceptions::folder_not_found();
@@ -204,7 +204,7 @@ void POP3Message::fetch(ref <POP3Folder> msgFolder, const int options)
 		string buffer;
 		folder->m_store.acquire()->readResponse(buffer, true);
 
-		m_header = vmime::create <header>();
+		m_header = vmime::std::make_shared<header>();
 		m_header->parse(buffer);
 	}
 	catch (exceptions::command_error& e)
@@ -220,14 +220,14 @@ void POP3Message::setFlags(const int /* flags */, const int /* mode */)
 }
 
 
-ref <vmime::message> POP3Message::getParsedMessage()
+std::shared_ptr<vmime::message> POP3Message::getParsedMessage()
 {
 	std::ostringstream oss;
 	utility::outputStreamAdapter os(oss);
 
 	extract(os);
 
-	vmime::ref <vmime::message> msg = vmime::create <vmime::message>();
+	vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
 	msg->parse(oss.str());
 
 	return msg;

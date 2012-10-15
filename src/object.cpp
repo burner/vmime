@@ -58,29 +58,29 @@ object::~object()
 }
 
 
-ref <object> object::thisRef()
+std::shared_ptr<object> object::thisRef()
 {
 	m_refMgr->addStrong();
-	return ref <object>::fromPtr(this);
+	return std::shared_ptr<object>::fromPtr(this);
 }
 
 
-ref <const object> object::thisRef() const
+std::shared_ptr<const object> object::thisRef() const
 {
 	m_refMgr->addStrong();
-	return ref <const object>::fromPtr(this);
+	return std::shared_ptr<const object>::fromPtr(this);
 }
 
 
-weak_ref <object> object::thisWeakRef()
+std::weak_ptr<object> object::thisWeakRef()
 {
-	return weak_ref <object>(thisRef());
+	return std::weak_ptr<object>(thisRef());
 }
 
 
-weak_ref <const object> object::thisWeakRef() const
+std::weak_ptr<const object> object::thisWeakRef() const
 {
-	return weak_ref <const object>(thisRef());
+	return std::weak_ptr<const object>(thisRef());
 }
 
 

@@ -122,7 +122,7 @@ public:
 	  *
 	  * @param dir directory to delete
 	  */
-	static void recursiveFSDelete(ref <utility::file> dir);
+	static void recursiveFSDelete(std::shared_ptr<utility::file> dir);
 };
 
 

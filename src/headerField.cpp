@@ -48,9 +48,9 @@ headerField::~headerField()
 }
 
 
-ref <component> headerField::clone() const
+std::shared_ptr<component> headerField::clone() const
 {
-	ref <headerField> field = headerFieldFactory::getInstance()->create(m_name);
+	std::shared_ptr<headerField> field = headerFieldFactory::getInstance()->create(m_name);
 
 	field->copyFrom(*this);
 
@@ -73,7 +73,7 @@ headerField& headerField::operator=(const headerField& other)
 }
 
 
-ref <headerField> headerField::parseNext(const string& buffer, const string::size_type position,
+std::shared_ptr<headerField> headerField::parseNext(const string& buffer, const string::size_type position,
 	const string::size_type end, string::size_type* newPosition)
 {
 	string::size_type pos = position;
@@ -213,7 +213,7 @@ ref <headerField> headerField::parseNext(const string& buffer, const string::siz
 				}
 
 				// Return a new field
-				ref <headerField> field = headerFieldFactory::getInstance()->create(name);
+				std::shared_ptr<headerField> field = headerFieldFactory::getInstance()->create(name);
 
 				field->parse(buffer, contentsStart, contentsEnd, NULL);
 				field->setParsedBounds(nameStart, pos);
@@ -296,9 +296,9 @@ bool headerField::isCustom() const
 }
 
 
-const std::vector <ref <component> > headerField::getChildComponents()
+const std::vector <std::shared_ptr<component> > headerField::getChildComponents()
 {
-	std::vector <ref <component> > list;
+	std::vector <std::shared_ptr<component> > list;
 
 	if (m_value)
 		list.push_back(m_value);
@@ -307,26 +307,26 @@ const std::vector <ref <component> > headerField::getChildComponents()
 }
 
 
-ref <const headerFieldValue> headerField::getValue() const
+std::shared_ptr<const headerFieldValue> headerField::getValue() const
 {
 	return m_value;
 }
 
 
-ref <headerFieldValue> headerField::getValue()
+std::shared_ptr<headerFieldValue> headerField::getValue()
 {
 	return m_value;
 }
 
 
-void headerField::setValue(ref <headerFieldValue> value)
+void headerField::setValue(std::shared_ptr<headerFieldValue> value)
 {
 	if (value != NULL)
 		m_value = value;
 }
 
 
-void headerField::setValueConst(ref <const headerFieldValue> value)
+void headerField::setValueConst(std::shared_ptr<const headerFieldValue> value)
 {
 	m_value = value->clone().dynamicCast <headerFieldValue>();
 }

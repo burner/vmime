@@ -47,19 +47,19 @@ component::~component()
 
 
 void component::parse
-	(ref <utility::inputStream> inputStream, const utility::stream::size_type length)
+	(std::shared_ptr<utility::inputStream> inputStream, const utility::stream::size_type length)
 {
 	parse(inputStream, 0, length, NULL);
 }
 
 
 void component::parse
-	(ref <utility::inputStream> inputStream, const utility::stream::size_type position,
+	(std::shared_ptr<utility::inputStream> inputStream, const utility::stream::size_type position,
 	 const utility::stream::size_type end, utility::stream::size_type* newPosition)
 {
 	m_parsedOffset = m_parsedLength = 0;
 
-	ref <utility::seekableInputStream> seekableStream =
+	std::shared_ptr<utility::seekableInputStream> seekableStream =
 		inputStream.dynamicCast <utility::seekableInputStream>();
 
 	if (seekableStream == NULL || end == 0)
@@ -75,8 +75,8 @@ void component::parse
 	}
 	else
 	{
-		ref <utility::parserInputStreamAdapter> parser =
-			vmime::create <utility::parserInputStreamAdapter>(seekableStream);
+		std::shared_ptr<utility::parserInputStreamAdapter> parser =
+			vmime::std::make_shared<utility::parserInputStreamAdapter>(seekableStream);
 
 		parseImpl(parser, position, end, newPosition);
 	}
@@ -108,7 +108,7 @@ void component::offsetParsedBounds(const utility::stream::size_type offset)
 		m_parsedOffset += offset;
 
 	// Offset parsed bounds of our children
-	std::vector <ref <component> > children = getChildComponents();
+	std::vector <std::shared_ptr<component> > children = getChildComponents();
 
 	for (unsigned int i = 0, n = children.size() ; i < n ; ++i)
 		children[i]->offsetParsedBounds(offset);
@@ -116,7 +116,7 @@ void component::offsetParsedBounds(const utility::stream::size_type offset)
 
 
 void component::parseImpl
-	(ref <utility::parserInputStreamAdapter> parser, const utility::stream::size_type position,
+	(std::shared_ptr<utility::parserInputStreamAdapter> parser, const utility::stream::size_type position,
 	 const utility::stream::size_type end, utility::stream::size_type* newPosition)
 {
 	const std::string buffer = parser->extract(position, end);
@@ -135,11 +135,11 @@ void component::parseImpl
 	(const string& buffer, const string::size_type position,
 	 const string::size_type end, string::size_type* newPosition)
 {
-	ref <utility::seekableInputStream> stream =
-		vmime::create <utility::inputStreamStringAdapter>(buffer);
+	std::shared_ptr<utility::seekableInputStream> stream =
+		vmime::std::make_shared<utility::inputStreamStringAdapter>(buffer);
 
-	ref <utility::parserInputStreamAdapter> parser =
-		vmime::create <utility::parserInputStreamAdapter>(stream);
+	std::shared_ptr<utility::parserInputStreamAdapter> parser =
+		vmime::std::make_shared<utility::parserInputStreamAdapter>(stream);
 
 	parseImpl(parser, position, end, newPosition);
 }
@@ -168,7 +168,7 @@ void component::generate
 
 
 void component::generate
-	(ref <utility::outputStream> os,
+	(std::shared_ptr<utility::outputStream> os,
 	 const string::size_type maxLineLength,
 	 const string::size_type curLinePos,
 	 string::size_type* newLinePos) const

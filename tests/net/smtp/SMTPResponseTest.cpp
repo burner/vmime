@@ -45,13 +45,13 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testSingleLineResponse()
 	{
-		vmime::ref <testSocket> socket = vmime::create <testSocket>();
-		vmime::ref <vmime::net::timeoutHandler> toh =
-			vmime::create <testTimeoutHandler>();
+		vmime::std::shared_ptr<testSocket> socket = vmime::std::make_shared<testSocket>();
+		vmime::std::shared_ptr<vmime::net::timeoutHandler> toh =
+			vmime::std::make_shared<testTimeoutHandler>();
 
 		socket->localSend("123 Response Text\r\n");
 
-		vmime::ref <vmime::net::smtp::SMTPResponse> resp =
+		vmime::std::shared_ptr<vmime::net::smtp::SMTPResponse> resp =
 			vmime::net::smtp::SMTPResponse::readResponse(socket, toh);
 
 		VASSERT_EQ("Code", 123, resp->getCode());
@@ -61,13 +61,13 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testSingleLineResponseLF()
 	{
-		vmime::ref <testSocket> socket = vmime::create <testSocket>();
-		vmime::ref <vmime::net::timeoutHandler> toh =
-			vmime::create <testTimeoutHandler>();
+		vmime::std::shared_ptr<testSocket> socket = vmime::std::make_shared<testSocket>();
+		vmime::std::shared_ptr<vmime::net::timeoutHandler> toh =
+			vmime::std::make_shared<testTimeoutHandler>();
 
 		socket->localSend("123 Response Text\n");
 
-		vmime::ref <vmime::net::smtp::SMTPResponse> resp =
+		vmime::std::shared_ptr<vmime::net::smtp::SMTPResponse> resp =
 			vmime::net::smtp::SMTPResponse::readResponse(socket, toh);
 
 		VASSERT_EQ("Code", 123, resp->getCode());
@@ -77,9 +77,9 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testMultiLineResponse()
 	{
-		vmime::ref <testSocket> socket = vmime::create <testSocket>();
-		vmime::ref <vmime::net::timeoutHandler> toh =
-			vmime::create <testTimeoutHandler>();
+		vmime::std::shared_ptr<testSocket> socket = vmime::std::make_shared<testSocket>();
+		vmime::std::shared_ptr<vmime::net::timeoutHandler> toh =
+			vmime::std::make_shared<testTimeoutHandler>();
 
 		socket->localSend
 		(
@@ -87,7 +87,7 @@ VMIME_TEST_SUITE_BEGIN
 			"123 Text\r\n"
 		);
 
-		vmime::ref <vmime::net::smtp::SMTPResponse> resp =
+		vmime::std::shared_ptr<vmime::net::smtp::SMTPResponse> resp =
 			vmime::net::smtp::SMTPResponse::readResponse(socket, toh);
 
 		VASSERT_EQ("Code", 123, resp->getCode());
@@ -103,9 +103,9 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testMultiLineResponseDifferentCode()
 	{
-		vmime::ref <testSocket> socket = vmime::create <testSocket>();
-		vmime::ref <vmime::net::timeoutHandler> toh =
-			vmime::create <testTimeoutHandler>();
+		vmime::std::shared_ptr<testSocket> socket = vmime::std::make_shared<testSocket>();
+		vmime::std::shared_ptr<vmime::net::timeoutHandler> toh =
+			vmime::std::make_shared<testTimeoutHandler>();
 
 		socket->localSend
 		(
@@ -113,7 +113,7 @@ VMIME_TEST_SUITE_BEGIN
 			"456 Text\r\n"
 		);
 
-		vmime::ref <vmime::net::smtp::SMTPResponse> resp =
+		vmime::std::shared_ptr<vmime::net::smtp::SMTPResponse> resp =
 			vmime::net::smtp::SMTPResponse::readResponse(socket, toh);
 
 		VASSERT_EQ("Code", 0, resp->getCode());
@@ -129,9 +129,9 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testIncompleteMultiLineResponse()
 	{
-		vmime::ref <testSocket> socket = vmime::create <testSocket>();
-		vmime::ref <vmime::net::timeoutHandler> toh =
-			vmime::create <testTimeoutHandler>(1);
+		vmime::std::shared_ptr<testSocket> socket = vmime::std::make_shared<testSocket>();
+		vmime::std::shared_ptr<vmime::net::timeoutHandler> toh =
+			vmime::std::make_shared<testTimeoutHandler>(1);
 
 		socket->localSend
 		(
@@ -147,9 +147,9 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testIntermediateResponse()
 	{
-		vmime::ref <testSocket> socket = vmime::create <testSocket>();
-		vmime::ref <vmime::net::timeoutHandler> toh =
-			vmime::create <testTimeoutHandler>(1);
+		vmime::std::shared_ptr<testSocket> socket = vmime::std::make_shared<testSocket>();
+		vmime::std::shared_ptr<vmime::net::timeoutHandler> toh =
+			vmime::std::make_shared<testTimeoutHandler>(1);
 
 		socket->localSend
 		(
@@ -157,7 +157,7 @@ VMIME_TEST_SUITE_BEGIN
 			"More information\r\n"
 		);
 
-		vmime::ref <vmime::net::smtp::SMTPResponse> resp =
+		vmime::std::shared_ptr<vmime::net::smtp::SMTPResponse> resp =
 			vmime::net::smtp::SMTPResponse::readResponse(socket, toh);
 
 		VASSERT_EQ("Code", 334, resp->getCode());
@@ -167,16 +167,16 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testNoResponseText()
 	{
-		vmime::ref <testSocket> socket = vmime::create <testSocket>();
-		vmime::ref <vmime::net::timeoutHandler> toh =
-			vmime::create <testTimeoutHandler>(1);
+		vmime::std::shared_ptr<testSocket> socket = vmime::std::make_shared<testSocket>();
+		vmime::std::shared_ptr<vmime::net::timeoutHandler> toh =
+			vmime::std::make_shared<testTimeoutHandler>(1);
 
 		socket->localSend
 		(
 			"250\r\n"
 		);
 
-		vmime::ref <vmime::net::smtp::SMTPResponse> resp =
+		vmime::std::shared_ptr<vmime::net::smtp::SMTPResponse> resp =
 			vmime::net::smtp::SMTPResponse::readResponse(socket, toh);
 
 		VASSERT_EQ("Code", 250, resp->getCode());

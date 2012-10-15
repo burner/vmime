@@ -58,9 +58,9 @@ public:
 	  * @param mech SASL mechanism
 	  * @return a new SASL session
 	  */
-	ref <SASLSession> createSession
+	std::shared_ptr<SASLSession> createSession
 		(const string& serviceName,
-		 ref <authenticator> auth, ref <SASLMechanism> mech);
+		 std::shared_ptr<authenticator> auth, std::shared_ptr<SASLMechanism> mech);
 
 	/** Create an instance of an SASL mechanism.
 	  *
@@ -69,7 +69,7 @@ public:
 	  * @throw exceptions::no_such_mechanism if no mechanism is
 	  * registered for the specified name
 	  */
-	ref <SASLMechanism> createMechanism(const string& name);
+	std::shared_ptr<SASLMechanism> createMechanism(const string& name);
 
 	/** Suggests an SASL mechanism among a set of mechanisms
 	  * supported by the server.
@@ -78,8 +78,8 @@ public:
 	  * @return suggested mechanism (usually the safest mechanism
 	  * supported by both the client and the server)
 	  */
-	ref <SASLMechanism> suggestMechanism
-		(const std::vector <ref <SASLMechanism> >& mechs);
+	std::shared_ptr<SASLMechanism> suggestMechanism
+		(const std::vector <std::shared_ptr<SASLMechanism> >& mechs);
 
 	/** Helper function for decoding Base64-encoded challenge.
 	  *

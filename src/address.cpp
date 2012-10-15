@@ -20,6 +20,9 @@
 // a combined work based on this library.  Thus, the terms and conditions of
 // the GNU General Public License cover the whole combination.
 //
+//
+
+#include <memory>
 
 #include "vmime/address.hpp"
 
@@ -66,7 +69,7 @@ address-list    =       (address *("," address)) / obs-addr-list
 
 */
 
-ref <address> address::parseNext(const string& buffer, const string::size_type position,
+std::shared_ptr<address> address::parseNext(const string& buffer, const string::size_type position,
 	const string::size_type end, string::size_type* newPosition)
 {
 	bool escaped = false;
@@ -175,9 +178,13 @@ ref <address> address::parseNext(const string& buffer, const string::size_type p
 	// Parse extracted address (mailbox or group)
 	if (pos != start)
 	{
-		ref <address> parsedAddress = isGroup
-			? create <mailboxGroup>().dynamicCast <address>()
-			: create <mailbox>().dynamicCast <address>();
+		std::shared_ptr<address> parsedAddress = isGroup ? 
+			std::dynamic_pointer_cast<address>(std::make_shared<mailboxGroup>()) :
+			std::dynamic_pointer_cast<address>(std::make_shared<mailbox>());
+		/*std::shared_ptr<address> parsedAddress = isGroup TODO: check if above line do the expected
+			? std::make_shared<mailboxGroup>().dynamicCast <address>()
+			: std::make_shared<mailbox>().dynamicCast <address>();
+		*/
 
 		parsedAddress->parse(buffer, start, pos, NULL);
 		parsedAddress->setParsedBounds(start, pos);

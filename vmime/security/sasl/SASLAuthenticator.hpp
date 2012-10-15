@@ -58,15 +58,15 @@ public:
 	  * @return ordered list of mechanism to use among the available
 	  * mechanisms (from the first to try to the last)
 	  */
-	virtual const std::vector <ref <SASLMechanism> > getAcceptableMechanisms
-		(const std::vector <ref <SASLMechanism> >& available,
-	         ref <SASLMechanism> suggested) const = 0;
+	virtual const std::vector <std::shared_ptr<SASLMechanism> > getAcceptableMechanisms
+		(const std::vector <std::shared_ptr<SASLMechanism> >& available,
+	         std::shared_ptr<SASLMechanism> suggested) const = 0;
 
 	/** Set the SASL session which is using this authenticator.
 	  *
 	  * @param sess SASL session
 	  */
-	virtual void setSASLSession(ref <SASLSession> sess) = 0;
+	virtual void setSASLSession(std::shared_ptr<SASLSession> sess) = 0;
 
 	/** Set the SASL mechanism which has been selected for the
 	  * SASL authentication process. This may be called several times
@@ -75,7 +75,7 @@ public:
 	  *
 	  * @param mech SASL mechanism
 	  */
-	virtual void setSASLMechanism(ref <SASLMechanism> mech) = 0;
+	virtual void setSASLMechanism(std::shared_ptr<SASLMechanism> mech) = 0;
 };
 
 

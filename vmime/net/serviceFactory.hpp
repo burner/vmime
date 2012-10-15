@@ -74,9 +74,9 @@ public:
 
 	public:
 
-		virtual ref <service> create
-			(ref <session> sess,
-			 ref <security::authenticator> auth) const = 0;
+		virtual std::shared_ptr<service> create
+			(std::shared_ptr<session> sess,
+			 std::shared_ptr<security::authenticator> auth) const = 0;
 
 		virtual int getType() const = 0;
 		virtual const string& getName() const = 0;
@@ -88,7 +88,7 @@ public:
 	  *
 	  * @param reg service registration infos
 	  */
-	void registerService(ref <registeredService> reg);
+	void registerService(std::shared_ptr<registeredService> reg);
 
 	/** Create a new service instance from a protocol name.
 	  *
@@ -99,10 +99,10 @@ public:
 	  * @throw exceptions::no_service_available if no service is registered
 	  * for this protocol
 	  */
-	ref <service> create
-		(ref <session> sess,
+	std::shared_ptr<service> create
+		(std::shared_ptr<session> sess,
 		 const string& protocol,
-		 ref <security::authenticator> auth = NULL);
+		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Create a new service instance from a URL.
 	  *
@@ -114,10 +114,10 @@ public:
 	  * @throw exceptions::no_service_available if no service is registered
 	  * for this protocol
 	  */
-	ref <service> create
-		(ref <session> sess,
+	std::shared_ptr<service> create
+		(std::shared_ptr<session> sess,
 		 const utility::url& u,
-		 ref <security::authenticator> auth = NULL);
+		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return information about a registered protocol.
 	  *
@@ -126,7 +126,7 @@ public:
 	  * @throw exceptions::no_service_available if no service is registered
 	  * for this protocol
 	  */
-	ref <const registeredService> getServiceByProtocol(const string& protocol) const;
+	std::shared_ptr<const registeredService> getServiceByProtocol(const string& protocol) const;
 
 	/** Return the number of registered services.
 	  *
@@ -139,17 +139,17 @@ public:
 	  * @param pos position of the registered service to return
 	  * @return registered service at the specified position
 	  */
-	ref <const registeredService> getServiceAt(const int pos) const;
+	std::shared_ptr<const registeredService> getServiceAt(const int pos) const;
 
 	/** Return a list of all registered services.
 	  *
 	  * @return list of registered services
 	  */
-	const std::vector <ref <const registeredService> > getServiceList() const;
+	const std::vector <std::shared_ptr<const registeredService> > getServiceList() const;
 
 private:
 
-	std::vector <ref <registeredService> > m_services;
+	std::vector <std::shared_ptr<registeredService> > m_services;
 };
 
 

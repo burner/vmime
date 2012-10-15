@@ -30,7 +30,7 @@ namespace vmime {
 namespace mdn {
 
 
-receivedMDNInfos::receivedMDNInfos(const ref <const message> msg)
+receivedMDNInfos::receivedMDNInfos(const std::shared_ptr<const message> msg)
 	: m_msg(msg)
 {
 	extract();
@@ -51,7 +51,7 @@ receivedMDNInfos& receivedMDNInfos::operator=(const receivedMDNInfos& other)
 }
 
 
-const ref <const message> receivedMDNInfos::getMessage() const
+const std::shared_ptr<const message> receivedMDNInfos::getMessage() const
 {
 	return (m_msg);
 }
@@ -79,11 +79,11 @@ void receivedMDNInfos::copyFrom(const receivedMDNInfos& other)
 
 void receivedMDNInfos::extract()
 {
-	const ref <const body> bdy = m_msg->getBody();
+	const std::shared_ptr<const body> bdy = m_msg->getBody();
 
 	for (int i = 0 ; i < bdy->getPartCount() ; ++i)
 	{
-		const ref <const bodyPart> part = bdy->getPartAt(i);
+		const std::shared_ptr<const bodyPart> part = bdy->getPartAt(i);
 
 		if (!part->getHeader()->hasField(fields::CONTENT_TYPE))
 			continue;

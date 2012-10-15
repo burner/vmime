@@ -44,17 +44,17 @@ public:
 
 	IMAPStructure();
 	IMAPStructure(const IMAPParser::body* body);
-	IMAPStructure(ref <IMAPPart> parent, const std::vector <IMAPParser::body*>& list);
+	IMAPStructure(std::shared_ptr<IMAPPart> parent, const std::vector <IMAPParser::body*>& list);
 
-	ref <const part> getPartAt(const int x) const;
-	ref <part> getPartAt(const int x);
+	std::shared_ptr<const part> getPartAt(const int x) const;
+	std::shared_ptr<part> getPartAt(const int x);
 	int getPartCount() const;
 
-	static ref <IMAPStructure> emptyStructure();
+	static std::shared_ptr<IMAPStructure> emptyStructure();
 
 private:
 
-	std::vector <ref <IMAPPart> > m_parts;
+	std::vector <std::shared_ptr<IMAPPart> > m_parts;
 };
 
 

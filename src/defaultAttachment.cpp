@@ -37,14 +37,14 @@ defaultAttachment::defaultAttachment()
 }
 
 
-defaultAttachment::defaultAttachment(ref <const contentHandler> data,
+defaultAttachment::defaultAttachment(std::shared_ptr<const contentHandler> data,
 	const encoding& enc, const mediaType& type, const text& desc, const word& name)
 	: m_type(type), m_desc(desc), m_data(data), m_encoding(enc), m_name(name)
 {
 }
 
 
-defaultAttachment::defaultAttachment(ref <const contentHandler> data,
+defaultAttachment::defaultAttachment(std::shared_ptr<const contentHandler> data,
 	const mediaType& type, const text& desc, const word& name)
 	: m_type(type), m_desc(desc), m_data(data),
 	  m_encoding(encoding::decide(data)), m_name(name)
@@ -77,17 +77,17 @@ defaultAttachment& defaultAttachment::operator=(const defaultAttachment& attach)
 }
 
 
-void defaultAttachment::generateIn(ref <bodyPart> parent) const
+void defaultAttachment::generateIn(std::shared_ptr<bodyPart> parent) const
 {
 	// Create and append a new part for this attachment
-	ref <bodyPart> part = vmime::create <bodyPart>();
+	std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
 	parent->getBody()->appendPart(part);
 
 	generatePart(part);
 }
 
 
-void defaultAttachment::generatePart(ref <bodyPart> part) const
+void defaultAttachment::generatePart(std::shared_ptr<bodyPart> part) const
 {
 	// Set header fields
 	part->getHeader()->ContentType()->setValue(m_type);
@@ -119,7 +119,7 @@ const word defaultAttachment::getName() const
 }
 
 
-const ref <const contentHandler> defaultAttachment::getData() const
+const std::shared_ptr<const contentHandler> defaultAttachment::getData() const
 {
 	return m_data;
 }
@@ -131,13 +131,13 @@ const encoding defaultAttachment::getEncoding() const
 }
 
 
-ref <const object> defaultAttachment::getPart() const
+std::shared_ptr<const object> defaultAttachment::getPart() const
 {
 	return NULL;
 }
 
 
-ref <const header> defaultAttachment::getHeader() const
+std::shared_ptr<const header> defaultAttachment::getHeader() const
 {
 	return NULL;
 }

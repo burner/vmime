@@ -43,9 +43,9 @@ namespace posix {
 
 // posixChildProcessFactory
 
-ref <utility::childProcess> posixChildProcessFactory::create(const utility::file::path& path) const
+std::shared_ptr<utility::childProcess> posixChildProcessFactory::create(const utility::file::path& path) const
 {
-	return vmime::create <posixChildProcess>(path);
+	return vmime::std::make_shared<posixChildProcess>(path);
 }
 
 
@@ -313,7 +313,7 @@ void posixChildProcess::start(const std::vector <string> args, const int flags)
 
 	if (flags & FLAG_REDIRECT_STDIN)
 	{
-		m_stdIn = vmime::create <outputStreamPosixPipeAdapter>(m_pipe[1]);
+		m_stdIn = vmime::std::make_shared<outputStreamPosixPipeAdapter>(m_pipe[1]);
 	}
 	else
 	{
@@ -323,7 +323,7 @@ void posixChildProcess::start(const std::vector <string> args, const int flags)
 
 	if (flags & FLAG_REDIRECT_STDOUT)
 	{
-		m_stdOut = vmime::create <inputStreamPosixPipeAdapter>(m_pipe[0]);
+		m_stdOut = vmime::std::make_shared<inputStreamPosixPipeAdapter>(m_pipe[0]);
 	}
 	else
 	{
@@ -336,13 +336,13 @@ void posixChildProcess::start(const std::vector <string> args, const int flags)
 }
 
 
-ref <utility::outputStream> posixChildProcess::getStdIn()
+std::shared_ptr<utility::outputStream> posixChildProcess::getStdIn()
 {
 	return (m_stdIn);
 }
 
 
-ref <utility::inputStream> posixChildProcess::getStdOut()
+std::shared_ptr<utility::inputStream> posixChildProcess::getStdOut()
 {
 	return (m_stdOut);
 }

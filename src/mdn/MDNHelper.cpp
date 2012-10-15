@@ -38,15 +38,15 @@ namespace vmime {
 namespace mdn {
 
 
-void MDNHelper::attachMDNRequest(ref <message> msg, const mailboxList& mailboxes)
+void MDNHelper::attachMDNRequest(std::shared_ptr<message> msg, const mailboxList& mailboxes)
 {
-	ref <header> hdr = msg->getHeader();
+	std::shared_ptr<header> hdr = msg->getHeader();
 
 	hdr->DispositionNotificationTo()->setValue(mailboxes);
 }
 
 
-void MDNHelper::attachMDNRequest(ref <message> msg, const mailbox& mbox)
+void MDNHelper::attachMDNRequest(std::shared_ptr<message> msg, const mailbox& mbox)
 {
 	mailboxList mboxList;
 	mboxList.appendMailbox(mbox.clone().dynamicCast <mailbox>());
@@ -55,11 +55,11 @@ void MDNHelper::attachMDNRequest(ref <message> msg, const mailbox& mbox)
 }
 
 
-const std::vector <sendableMDNInfos> MDNHelper::getPossibleMDNs(const ref <const message> msg)
+const std::vector <sendableMDNInfos> MDNHelper::getPossibleMDNs(const std::shared_ptr<const message> msg)
 {
 	std::vector <sendableMDNInfos> result;
 
-	const ref <const header> hdr = msg->getHeader();
+	const std::shared_ptr<const header> hdr = msg->getHeader();
 
 	if (hdr->hasField(fields::DISPOSITION_NOTIFICATION_TO))
 	{
@@ -74,9 +74,9 @@ const std::vector <sendableMDNInfos> MDNHelper::getPossibleMDNs(const ref <const
 }
 
 
-bool MDNHelper::isMDN(const ref <const message> msg)
+bool MDNHelper::isMDN(const std::shared_ptr<const message> msg)
 {
-	const ref <const header> hdr = msg->getHeader();
+	const std::shared_ptr<const header> hdr = msg->getHeader();
 
 	// A MDN message implies the following:
 	//   - a Content-Type field is present and its value is "multipart/report"
@@ -104,7 +104,7 @@ bool MDNHelper::isMDN(const ref <const message> msg)
 }
 
 
-receivedMDNInfos MDNHelper::getReceivedMDN(const ref <const message> msg)
+receivedMDNInfos MDNHelper::getReceivedMDN(const std::shared_ptr<const message> msg)
 {
 	if (!isMDN(msg))
 		throw exceptions::invalid_argument();
@@ -113,9 +113,9 @@ receivedMDNInfos MDNHelper::getReceivedMDN(const ref <const message> msg)
 }
 
 
-bool MDNHelper::needConfirmation(const ref <const message> msg)
+bool MDNHelper::needConfirmation(const std::shared_ptr<const message> msg)
 {
-	ref <const header> hdr = msg->getHeader();
+	std::shared_ptr<const header> hdr = msg->getHeader();
 
 	// No "Return-Path" field
 	if (!hdr->hasField(fields::RETURN_PATH))
@@ -145,7 +145,7 @@ bool MDNHelper::needConfirmation(const ref <const message> msg)
 }
 
 
-ref <message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
+std::shared_ptr<message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
                                   const string& text,
                                   const charset& ch,
                                   const mailbox& expeditor,
@@ -154,10 +154,10 @@ ref <message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
                                   const std::vector <string>& reportingUAProducts)
 {
 	// Create a new message
-	ref <message> msg = vmime::create <message>();
+	std::shared_ptr<message> msg = vmime::std::make_shared<message>();
 
 	// Fill-in header fields
-	ref <header> hdr = msg->getHeader();
+	std::shared_ptr<header> hdr = msg->getHeader();
 
 	hdr->ContentType()->setValue(mediaType(vmime::mediaTypes::MULTIPART,
 	                                       vmime::mediaTypes::MULTIPART_REPORT));
@@ -166,7 +166,7 @@ ref <message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
 	hdr->Disposition()->setValue(dispo);
 
 	addressList to;
-	to.appendAddress(vmime::create <mailbox>(mdnInfos.getRecipient()));
+	to.appendAddress(vmime::std::make_shared<mailbox>(mdnInfos.getRecipient()));
 	hdr->To()->setValue(to);
 
 	hdr->From()->setValue(expeditor);
@@ -185,13 +185,13 @@ ref <message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
 }
 
 
-ref <bodyPart> MDNHelper::createFirstMDNPart(const sendableMDNInfos& /* mdnInfos */,
+std::shared_ptr<bodyPart> MDNHelper::createFirstMDNPart(const sendableMDNInfos& /* mdnInfos */,
                                              const string& text, const charset& ch)
 {
-	ref <bodyPart> part = vmime::create <bodyPart>();
+	std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
 
 	// Header
-	ref <header> hdr = part->getHeader();
+	std::shared_ptr<header> hdr = part->getHeader();
 
 	hdr->ContentType()->setValue(mediaType(vmime::mediaTypes::TEXT,
 	                                       vmime::mediaTypes::TEXT_PLAIN));
@@ -199,21 +199,21 @@ ref <bodyPart> MDNHelper::createFirstMDNPart(const sendableMDNInfos& /* mdnInfos
 	hdr->ContentType().dynamicCast <contentTypeField>()->setCharset(ch);
 
 	// Body
-	part->getBody()->setContents(vmime::create <stringContentHandler>(text));
+	part->getBody()->setContents(vmime::std::make_shared<stringContentHandler>(text));
 
 	return (part);
 }
 
 
-ref <bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos& mdnInfos,
+std::shared_ptr<bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos& mdnInfos,
                                               const disposition& dispo,
                                               const string& reportingUA,
                                               const std::vector <string>& reportingUAProducts)
 {
-	ref <bodyPart> part = vmime::create <bodyPart>();
+	std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
 
 	// Header
-	ref <header> hdr = part->getHeader();
+	std::shared_ptr<header> hdr = part->getHeader();
 
 	hdr->ContentDisposition()->setValue(vmime::contentDispositionTypes::INLINE);
 	hdr->ContentType()->setValue(mediaType(vmime::mediaTypes::MESSAGE,
@@ -255,7 +255,7 @@ ref <bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos& mdnInfos,
 			ruaText += reportingUAProducts[i];
 		}
 
-		ref <headerField> rua = headerFieldFactory::getInstance()->
+		std::shared_ptr<headerField> rua = headerFieldFactory::getInstance()->
 			create(vmime::fields::REPORTING_UA);
 
 		rua->setValue(ruaText);
@@ -264,7 +264,7 @@ ref <bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos& mdnInfos,
 	}
 
 	// -- Final-Recipient
-	ref <headerField> fr = headerFieldFactory::getInstance()->
+	std::shared_ptr<headerField> fr = headerFieldFactory::getInstance()->
 		create(vmime::fields::FINAL_RECIPIENT);
 
 	fr->setValue("rfc822; " + mdnInfos.getRecipient().getEmail());
@@ -287,18 +287,18 @@ ref <bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos& mdnInfos,
 
 	fields.generate(vos);
 
-	part->getBody()->setContents(vmime::create <stringContentHandler>(oss.str()));
+	part->getBody()->setContents(vmime::std::make_shared<stringContentHandler>(oss.str()));
 
 	return (part);
 }
 
 
-ref <bodyPart> MDNHelper::createThirdMDNPart(const sendableMDNInfos& mdnInfos)
+std::shared_ptr<bodyPart> MDNHelper::createThirdMDNPart(const sendableMDNInfos& mdnInfos)
 {
-	ref <bodyPart> part = vmime::create <bodyPart>();
+	std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
 
 	// Header
-	ref <header> hdr = part->getHeader();
+	std::shared_ptr<header> hdr = part->getHeader();
 
 	hdr->ContentDisposition()->setValue(vmime::contentDispositionTypes::INLINE);
 	hdr->ContentType()->setValue(mediaType(vmime::mediaTypes::TEXT,
@@ -310,7 +310,7 @@ ref <bodyPart> MDNHelper::createThirdMDNPart(const sendableMDNInfos& mdnInfos)
 
 	mdnInfos.getMessage()->getHeader()->generate(vos);
 
-	part->getBody()->setContents(vmime::create <stringContentHandler>(oss.str()));
+	part->getBody()->setContents(vmime::std::make_shared<stringContentHandler>(oss.str()));
 
 	return (part);
 }

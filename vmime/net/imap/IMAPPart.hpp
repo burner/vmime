@@ -44,34 +44,34 @@ private:
 
 	friend class vmime::creator;
 
-	IMAPPart(ref <IMAPPart> parent, const int number, const IMAPParser::body_type_mpart* mpart);
-	IMAPPart(ref <IMAPPart> parent, const int number, const IMAPParser::body_type_1part* part);
+	IMAPPart(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body_type_mpart* mpart);
+	IMAPPart(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body_type_1part* part);
 
 public:
 
-	ref <const structure> getStructure() const;
-	ref <structure> getStructure();
+	std::shared_ptr<const structure> getStructure() const;
+	std::shared_ptr<structure> getStructure();
 
-	ref <const IMAPPart> getParent() const;
+	std::shared_ptr<const IMAPPart> getParent() const;
 
 	const mediaType& getType() const;
 	int getSize() const;
 	int getNumber() const;
 
-	ref <const header> getHeader() const;
+	std::shared_ptr<const header> getHeader() const;
 
 
-	static ref <IMAPPart> create
-		(ref <IMAPPart> parent, const int number, const IMAPParser::body* body);
+	static std::shared_ptr<IMAPPart> create
+		(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body* body);
 
 
 	header& getOrCreateHeader();
 
 private:
 
-	ref <IMAPStructure> m_structure;
-	weak_ref <IMAPPart> m_parent;
-	ref <header> m_header;
+	std::shared_ptr<IMAPStructure> m_structure;
+	std::weak_ptr<IMAPPart> m_parent;
+	std::shared_ptr<header> m_header;
 
 	int m_number;
 	int m_size;

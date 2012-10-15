@@ -55,14 +55,14 @@ class POP3Store : public store
 
 public:
 
-	POP3Store(ref <session> sess, ref <security::authenticator> auth, const bool secured = false);
+	POP3Store(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth, const bool secured = false);
 	~POP3Store();
 
 	const string getProtocolName() const;
 
-	ref <folder> getDefaultFolder();
-	ref <folder> getRootFolder();
-	ref <folder> getFolder(const folder::path& path);
+	std::shared_ptr<folder> getDefaultFolder();
+	std::shared_ptr<folder> getRootFolder();
+	std::shared_ptr<folder> getFolder(const folder::path& path);
 
 	bool isValidFolderName(const folder::path::component& name) const;
 
@@ -78,7 +78,7 @@ public:
 	int getCapabilities() const;
 
 	bool isSecuredConnection() const;
-	ref <connectionInfos> getConnectionInfos() const;
+	std::shared_ptr<connectionInfos> getConnectionInfos() const;
 
 private:
 
@@ -121,15 +121,15 @@ private:
 	std::list <POP3Folder*> m_folders;
 
 
-	ref <socket> m_socket;
+	std::shared_ptr<socket> m_socket;
 	bool m_authentified;
 
-	ref <timeoutHandler> m_timeoutHandler;
+	std::shared_ptr<timeoutHandler> m_timeoutHandler;
 
 	const bool m_isPOP3S;
 
 	bool m_secured;
-	ref <connectionInfos> m_cntInfos;
+	std::shared_ptr<connectionInfos> m_cntInfos;
 
 
 	// Service infos

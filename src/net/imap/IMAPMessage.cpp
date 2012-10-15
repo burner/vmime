@@ -90,7 +90,7 @@ private:
 //
 
 
-IMAPMessage::IMAPMessage(ref <IMAPFolder> folder, const int num)
+IMAPMessage::IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num)
 	: m_folder(folder), m_num(num), m_size(-1), m_flags(FLAG_UNDEFINED),
 	  m_expunged(false), m_structure(NULL)
 {
@@ -98,7 +98,7 @@ IMAPMessage::IMAPMessage(ref <IMAPFolder> folder, const int num)
 }
 
 
-IMAPMessage::IMAPMessage(ref <IMAPFolder> folder, const int num, const uid& uniqueId)
+IMAPMessage::IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num, const uid& uniqueId)
 	: m_folder(folder), m_num(num), m_size(-1), m_flags(FLAG_UNDEFINED),
 	  m_expunged(false), m_uid(uniqueId), m_structure(NULL)
 {
@@ -108,7 +108,7 @@ IMAPMessage::IMAPMessage(ref <IMAPFolder> folder, const int num, const uid& uniq
 
 IMAPMessage::~IMAPMessage()
 {
-	ref <IMAPFolder> folder = m_folder.acquire();
+	std::shared_ptr<IMAPFolder> folder = m_folder.acquire();
 
 	if (folder)
 		folder->unregisterMessage(this);
@@ -157,7 +157,7 @@ int IMAPMessage::getFlags() const
 }
 
 
-ref <const structure> IMAPMessage::getStructure() const
+std::shared_ptr<const structure> IMAPMessage::getStructure() const
 {
 	if (m_structure == NULL)
 		throw exceptions::unfetched_object();
@@ -166,7 +166,7 @@ ref <const structure> IMAPMessage::getStructure() const
 }
 
 
-ref <structure> IMAPMessage::getStructure()
+std::shared_ptr<structure> IMAPMessage::getStructure()
 {
 	if (m_structure == NULL)
 		throw exceptions::unfetched_object();
@@ -175,7 +175,7 @@ ref <structure> IMAPMessage::getStructure()
 }
 
 
-ref <const header> IMAPMessage::getHeader() const
+std::shared_ptr<const header> IMAPMessage::getHeader() const
 {
 	if (m_header == NULL)
 		throw exceptions::unfetched_object();
@@ -187,7 +187,7 @@ ref <const header> IMAPMessage::getHeader() const
 void IMAPMessage::extract(utility::outputStream& os, utility::progressListener* progress,
                           const int start, const int length, const bool peek) const
 {
-	ref <const IMAPFolder> folder = m_folder.acquire();
+	std::shared_ptr<const IMAPFolder> folder = m_folder.acquire();
 
 	if (!folder)
 		throw exceptions::folder_not_found();
@@ -197,10 +197,10 @@ void IMAPMessage::extract(utility::outputStream& os, utility::progressListener* 
 
 
 void IMAPMessage::extractPart
-	(ref <const part> p, utility::outputStream& os, utility::progressListener* progress,
+	(std::shared_ptr<const part> p, utility::outputStream& os, utility::progressListener* progress,
 	 const int start, const int length, const bool peek) const
 {
-	ref <const IMAPFolder> folder = m_folder.acquire();
+	std::shared_ptr<const IMAPFolder> folder = m_folder.acquire();
 
 	if (!folder)
 		throw exceptions::folder_not_found();
@@ -209,9 +209,9 @@ void IMAPMessage::extractPart
 }
 
 
-void IMAPMessage::fetchPartHeader(ref <part> p)
+void IMAPMessage::fetchPartHeader(std::shared_ptr<part> p)
 {
-	ref <IMAPFolder> folder = m_folder.acquire();
+	std::shared_ptr<IMAPFolder> folder = m_folder.acquire();
 
 	if (!folder)
 		throw exceptions::folder_not_found();
@@ -225,11 +225,11 @@ void IMAPMessage::fetchPartHeader(ref <part> p)
 }
 
 
-void IMAPMessage::fetchPartHeaderForStructure(ref <structure> str)
+void IMAPMessage::fetchPartHeaderForStructure(std::shared_ptr<structure> str)
 {
 	for (int i = 0, n = str->getPartCount() ; i < n ; ++i)
 	{
-		ref <class part> part = str->getPartAt(i);
+		std::shared_ptr<class part> part = str->getPartAt(i);
 
 		// Fetch header of current part
 		fetchPartHeader(part);
@@ -240,11 +240,11 @@ void IMAPMessage::fetchPartHeaderForStructure(ref <structure> str)
 }
 
 
-void IMAPMessage::extractImpl(ref <const part> p, utility::outputStream& os,
+void IMAPMessage::extractImpl(std::shared_ptr<const part> p, utility::outputStream& os,
 	utility::progressListener* progress, const int start,
 	const int length, const int extractFlags) const
 {
-	ref <const IMAPFolder> folder = m_folder.acquire();
+	std::shared_ptr<const IMAPFolder> folder = m_folder.acquire();
 
 	IMAPMessage_literalHandler literalHandler(os, progress);
 
@@ -254,7 +254,7 @@ void IMAPMessage::extractImpl(ref <const part> p, utility::outputStream& os,
 
 	if (p != NULL)
 	{
-		ref <const IMAPPart> currentPart = p.dynamicCast <const IMAPPart>();
+		std::shared_ptr<const IMAPPart> currentPart = p.dynamicCast <const IMAPPart>();
 		std::vector <int> numbers;
 
 		numbers.push_back(currentPart->getNumber());
@@ -352,9 +352,9 @@ void IMAPMessage::extractImpl(ref <const part> p, utility::outputStream& os,
 }
 
 
-void IMAPMessage::fetch(ref <IMAPFolder> msgFolder, const int options)
+void IMAPMessage::fetch(std::shared_ptr<IMAPFolder> msgFolder, const int options)
 {
-	ref <IMAPFolder> folder = m_folder.acquire();
+	std::shared_ptr<IMAPFolder> folder = m_folder.acquire();
 
 	if (folder != msgFolder)
 		throw exceptions::folder_not_found();
@@ -408,7 +408,7 @@ void IMAPMessage::fetch(ref <IMAPFolder> msgFolder, const int options)
 void IMAPMessage::processFetchResponse
 	(const int options, const IMAPParser::message_data* msgData)
 {
-	ref <IMAPFolder> folder = m_folder.acquire();
+	std::shared_ptr<IMAPFolder> folder = m_folder.acquire();
 
 	// Get message attributes
 	const std::vector <IMAPParser::msg_att_item*> atts = msgData->msg_att()->items();
@@ -435,7 +435,7 @@ void IMAPMessage::processFetchResponse
 			if (!(options & folder::FETCH_FULL_HEADER))
 			{
 				const IMAPParser::envelope* env = (*it)->envelope();
-				ref <vmime::header> hdr = getOrCreateHeader();
+				std::shared_ptr<vmime::header> hdr = getOrCreateHeader();
 
 				// Date
 				hdr->Date()->setValue(env->env_date()->value());
@@ -492,7 +492,7 @@ void IMAPMessage::processFetchResponse
 		}
 		case IMAPParser::msg_att_item::BODY_STRUCTURE:
 		{
-			m_structure = vmime::create <IMAPStructure>((*it)->body());
+			m_structure = vmime::std::make_shared<IMAPStructure>((*it)->body());
 			break;
 		}
 		case IMAPParser::msg_att_item::RFC822_HEADER:
@@ -517,9 +517,9 @@ void IMAPMessage::processFetchResponse
 					tempHeader.parse((*it)->nstring()->value());
 
 					vmime::header& hdr = *getOrCreateHeader();
-					std::vector <ref <headerField> > fields = tempHeader.getFieldList();
+					std::vector <std::shared_ptr<headerField> > fields = tempHeader.getFieldList();
 
-					for (std::vector <ref <headerField> >::const_iterator jt = fields.begin() ;
+					for (std::vector <std::shared_ptr<headerField> >::const_iterator jt = fields.begin() ;
 					     jt != fields.end() ; ++jt)
 					{
 						hdr.appendField((*jt)->clone().dynamicCast <headerField>());
@@ -545,18 +545,18 @@ void IMAPMessage::processFetchResponse
 }
 
 
-ref <header> IMAPMessage::getOrCreateHeader()
+std::shared_ptr<header> IMAPMessage::getOrCreateHeader()
 {
 	if (m_header != NULL)
 		return (m_header);
 	else
-		return (m_header = vmime::create <header>());
+		return (m_header = vmime::std::make_shared<header>());
 }
 
 
 void IMAPMessage::setFlags(const int flags, const int mode)
 {
-	ref <IMAPFolder> folder = m_folder.acquire();
+	std::shared_ptr<IMAPFolder> folder = m_folder.acquire();
 
 	if (!folder)
 		throw exceptions::folder_not_found();
@@ -668,19 +668,19 @@ void IMAPMessage::setFlags(const int flags, const int mode)
 }
 
 
-void IMAPMessage::constructParsedMessage(ref <bodyPart> parentPart, ref <structure> str, int level)
+void IMAPMessage::constructParsedMessage(std::shared_ptr<bodyPart> parentPart, std::shared_ptr<structure> str, int level)
 {
 	if (level == 0)
 	{
-		ref <class part> part = str->getPartAt(0);
+		std::shared_ptr<class part> part = str->getPartAt(0);
 
 		// Copy header
-		ref <const header> hdr = part->getHeader();
+		std::shared_ptr<const header> hdr = part->getHeader();
 		parentPart->getHeader()->copyFrom(*hdr);
 
 		// Initialize body
 		parentPart->getBody()->setContents
-			(vmime::create <IMAPMessagePartContentHandler>
+			(vmime::std::make_shared<IMAPMessagePartContentHandler>
 				(thisRef().dynamicCast <IMAPMessage>(),
 				 part, parentPart->getBody()->getEncoding()));
 
@@ -690,17 +690,17 @@ void IMAPMessage::constructParsedMessage(ref <bodyPart> parentPart, ref <structu
 	{
 		for (int i = 0, n = str->getPartCount() ; i < n ; ++i)
 		{
-			ref <class part> part = str->getPartAt(i);
+			std::shared_ptr<class part> part = str->getPartAt(i);
 
-			ref <bodyPart> childPart = vmime::create <bodyPart>();
+			std::shared_ptr<bodyPart> childPart = vmime::std::make_shared<bodyPart>();
 
 			// Copy header
-			ref <const header> hdr = part->getHeader();
+			std::shared_ptr<const header> hdr = part->getHeader();
 			childPart->getHeader()->copyFrom(*hdr);
 
 			// Initialize body
 			childPart->getBody()->setContents
-				(vmime::create <IMAPMessagePartContentHandler>
+				(vmime::std::make_shared<IMAPMessagePartContentHandler>
 					(thisRef().dynamicCast <IMAPMessage>(),
 					 part, childPart->getBody()->getEncoding()));
 
@@ -714,10 +714,10 @@ void IMAPMessage::constructParsedMessage(ref <bodyPart> parentPart, ref <structu
 }
 
 
-ref <vmime::message> IMAPMessage::getParsedMessage()
+std::shared_ptr<vmime::message> IMAPMessage::getParsedMessage()
 {
 	// Fetch structure
-	ref <structure> structure = NULL;
+	std::shared_ptr<structure> structure = NULL;
 
 	try
 	{
@@ -733,7 +733,7 @@ ref <vmime::message> IMAPMessage::getParsedMessage()
 	fetchPartHeaderForStructure(structure);
 
 	// Construct message from structure
-	ref <vmime::message> msg = vmime::create <vmime::message>();
+	std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
 
 	constructParsedMessage(msg, structure);
 

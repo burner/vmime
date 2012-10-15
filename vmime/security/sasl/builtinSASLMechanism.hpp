@@ -43,30 +43,30 @@ class builtinSASLMechanism : public SASLMechanism
 {
 public:
 
-	builtinSASLMechanism(ref <SASLContext> ctx, const string& name);
+	builtinSASLMechanism(std::shared_ptr<SASLContext> ctx, const string& name);
 	~builtinSASLMechanism();
 
 
 	const string getName() const;
 
-	bool step(ref <SASLSession> sess,
+	bool step(std::shared_ptr<SASLSession> sess,
 		 const byte_t* challenge, const int challengeLen,
 		 byte_t** response, int* responseLen);
 
 	bool isComplete() const;
 
-	void encode(ref <SASLSession> sess,
+	void encode(std::shared_ptr<SASLSession> sess,
 		const byte_t* input, const int inputLen,
 		byte_t** output, int* outputLen);
 
-	void decode(ref <SASLSession> sess,
+	void decode(std::shared_ptr<SASLSession> sess,
 		const byte_t* input, const int inputLen,
 		byte_t** output, int* outputLen);
 
 private:
 
 	/** SASL context */
-	ref <SASLContext> m_context;
+	std::shared_ptr<SASLContext> m_context;
 
 	/** Mechanism name */
 	const string m_name;

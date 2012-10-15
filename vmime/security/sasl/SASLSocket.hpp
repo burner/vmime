@@ -44,7 +44,7 @@ class SASLSocket : public net::socket
 {
 public:
 
-	SASLSocket(ref <SASLSession> sess, ref <net::socket> wrapped);
+	SASLSocket(std::shared_ptr<SASLSession> sess, std::shared_ptr<net::socket> wrapped);
 	~SASLSocket();
 
 	void connect(const string& address, const port_t port);
@@ -62,8 +62,8 @@ public:
 
 private:
 
-	ref <SASLSession> m_session;
-	ref <net::socket> m_wrapped;
+	std::shared_ptr<SASLSession> m_session;
+	std::shared_ptr<net::socket> m_wrapped;
 
 	byte_t* m_pendingBuffer;
 	int m_pendingPos;

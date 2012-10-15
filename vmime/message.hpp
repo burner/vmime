@@ -58,7 +58,7 @@ public:
 		 const string::size_type curLinePos = 0) const;
 
 	void generate
-		(ref <utility::outputStream> os,
+		(std::shared_ptr<utility::outputStream> os,
 		 const string::size_type maxLineLength = lineLengthLimits::infinite,
 		 const string::size_type curLinePos = 0,
 		 string::size_type* newLinePos = NULL) const;

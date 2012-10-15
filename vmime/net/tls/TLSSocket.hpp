@@ -55,7 +55,7 @@ protected:
 	  * @param session TLS session
 	  * @param sok socket to wrap
 	  */
-	TLSSocket(ref <TLSSession> session, ref <socket> sok);
+	TLSSocket(std::shared_ptr<TLSSession> session, std::shared_ptr<socket> sok);
 
 public:
 
@@ -68,14 +68,14 @@ public:
 	  * during the negociation process, exceptions::operation_timed_out
 	  * if a time-out occurs
 	  */
-	void handshake(ref <timeoutHandler> toHandler = NULL);
+	void handshake(std::shared_ptr<timeoutHandler> toHandler = NULL);
 
 	/** Return the peer's certificate (chain) as sent by the peer.
 	  *
 	  * @return server certificate chain, or NULL if the handshake
 	  * has not been performed yet
 	  */
-	ref <security::cert::certificateChain> getPeerCertificates() const;
+	std::shared_ptr<security::cert::certificateChain> getPeerCertificates() const;
 
 
 	// Implementation of 'socket'
@@ -104,15 +104,15 @@ private:
 #endif // LIBGNUTLS_VERSION
 
 
-	ref <TLSSession> m_session;
-	ref <socket> m_wrapped;
+	std::shared_ptr<TLSSession> m_session;
+	std::shared_ptr<socket> m_wrapped;
 
 	bool m_connected;
 
 	char m_buffer[65536];
 
 	bool m_handshaking;
-	ref <timeoutHandler> m_toHandler;
+	std::shared_ptr<timeoutHandler> m_toHandler;
 
 	exception* m_ex;
 };

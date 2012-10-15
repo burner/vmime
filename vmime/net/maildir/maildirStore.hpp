@@ -56,14 +56,14 @@ class maildirStore : public store
 
 public:
 
-	maildirStore(ref <session> sess, ref <security::authenticator> auth);
+	maildirStore(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth);
 	~maildirStore();
 
 	const string getProtocolName() const;
 
-	ref <folder> getDefaultFolder();
-	ref <folder> getRootFolder();
-	ref <folder> getFolder(const folder::path& path);
+	std::shared_ptr<folder> getDefaultFolder();
+	std::shared_ptr<folder> getRootFolder();
+	std::shared_ptr<folder> getFolder(const folder::path& path);
 
 	bool isValidFolderName(const folder::path::component& name) const;
 
@@ -81,10 +81,10 @@ public:
 	int getCapabilities() const;
 
 	bool isSecuredConnection() const;
-	ref <connectionInfos> getConnectionInfos() const;
+	std::shared_ptr<connectionInfos> getConnectionInfos() const;
 
-	ref <maildirFormat> getFormat();
-	ref <const maildirFormat> getFormat() const;
+	std::shared_ptr<maildirFormat> getFormat();
+	std::shared_ptr<const maildirFormat> getFormat() const;
 
 private:
 
@@ -94,7 +94,7 @@ private:
 
 	std::list <maildirFolder*> m_folders;
 
-	ref <maildirFormat> m_format;
+	std::shared_ptr<maildirFormat> m_format;
 
 	bool m_connected;
 

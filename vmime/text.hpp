@@ -53,18 +53,18 @@ public:
 	bool operator==(const text& t) const;
 	bool operator!=(const text& t) const;
 
-	ref <component> clone() const;
+	std::shared_ptr<component> clone() const;
 	void copyFrom(const component& other);
 	text& operator=(const component& other);
 	text& operator=(const text& other);
 
-	const std::vector <ref <component> > getChildComponents();
+	const std::vector <std::shared_ptr<component> > getChildComponents();
 
 	/** Add a word at the end of the list.
 	  *
 	  * @param w word to append
 	  */
-	void appendWord(ref <word> w);
+	void appendWord(std::shared_ptr<word> w);
 
 	/** Insert a new word before the specified position.
 	  *
@@ -72,14 +72,14 @@ public:
 	  * the beginning of the list)
 	  * @param w word to insert
 	  */
-	void insertWordBefore(const int pos, ref <word> w);
+	void insertWordBefore(const int pos, std::shared_ptr<word> w);
 
 	/** Insert a new word after the specified position.
 	  *
 	  * @param pos position of the word before the new word
 	  * @param w word to insert
 	  */
-	void insertWordAfter(const int pos, ref <word> w);
+	void insertWordAfter(const int pos, std::shared_ptr<word> w);
 
 	/** Remove the word at the specified position.
 	  *
@@ -108,26 +108,26 @@ public:
 	  * @param pos position
 	  * @return word at position 'pos'
 	  */
-	const ref <word> getWordAt(const int pos);
+	const std::shared_ptr<word> getWordAt(const int pos);
 
 	/** Return the word at the specified position.
 	  *
 	  * @param pos position
 	  * @return word at position 'pos'
 	  */
-	const ref <const word> getWordAt(const int pos) const;
+	const std::shared_ptr<const word> getWordAt(const int pos) const;
 
 	/** Return the word list.
 	  *
 	  * @return list of words
 	  */
-	const std::vector <ref <const word> > getWordList() const;
+	const std::vector <std::shared_ptr<const word> > getWordList() const;
 
 	/** Return the word list.
 	  *
 	  * @return list of words
 	  */
-	const std::vector <ref <word> > getWordList();
+	const std::vector <std::shared_ptr<word> > getWordList();
 
 
 	/** Return the text converted into the specified charset.
@@ -164,7 +164,7 @@ public:
 	  * @param ch input charset
 	  * @return new text object
 	  */
-	static ref <text> newFromString(const string& in, const charset& ch);
+	static std::shared_ptr<text> newFromString(const string& in, const charset& ch);
 
 	/** This function can be used to make several encoded words from a text.
 	  * All the characters in the text must be in the same specified charset.
@@ -213,7 +213,7 @@ public:
 	  * @param in input string
 	  * @return new text object
 	  */
-	static ref <text> decodeAndUnfold(const string& in);
+	static std::shared_ptr<text> decodeAndUnfold(const string& in);
 
 	/** Decode and unfold text (RFC-2047).
 	  *
@@ -243,7 +243,7 @@ protected:
 
 private:
 
-	std::vector <ref <word> > m_words;
+	std::vector <std::shared_ptr<word> > m_words;
 };
 
 

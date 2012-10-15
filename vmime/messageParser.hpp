@@ -49,7 +49,7 @@ class messageParser
 public:
 
 	messageParser(const string& buffer);
-	messageParser(ref <const message> msg);
+	messageParser(std::shared_ptr<const message> msg);
 	~messageParser();
 
 public:
@@ -101,19 +101,19 @@ public:
 	  * @param pos position of the attachment
 	  * @return attachment at position 'pos'
 	  */
-	const ref <const attachment> getAttachmentAt(const int pos) const;
+	const std::shared_ptr<const attachment> getAttachmentAt(const int pos) const;
 
 	/** Return the attachments of the message.
 	  *
 	  * @return list of attachments in the message
 	  */
-	const std::vector <ref <const attachment> > getAttachmentList() const;
+	const std::vector <std::shared_ptr<const attachment> > getAttachmentList() const;
 
 	/** Return the text parts of the message.
 	  *
 	  * @return list of text parts in the message
 	  */
-	const std::vector <ref <const textPart> > getTextPartList() const;
+	const std::vector <std::shared_ptr<const textPart> > getTextPartList() const;
 
 	/** Return the number of text parts in the message.
 	  *
@@ -126,7 +126,7 @@ public:
 	  * @param pos position of the text part
 	  * @return text part at position 'pos'
 	  */
-	const ref <const textPart> getTextPartAt(const int pos) const;
+	const std::shared_ptr<const textPart> getTextPartAt(const int pos) const;
 
 private:
 
@@ -140,16 +140,16 @@ private:
 
 	datetime m_date;
 
-	std::vector <ref <const attachment> > m_attach;
+	std::vector <std::shared_ptr<const attachment> > m_attach;
 
-	std::vector <ref <textPart> > m_textParts;
+	std::vector <std::shared_ptr<textPart> > m_textParts;
 
-	void parse(ref <const message> msg);
+	void parse(std::shared_ptr<const message> msg);
 
-	void findAttachments(ref <const message> msg);
+	void findAttachments(std::shared_ptr<const message> msg);
 
-	void findTextParts(ref <const bodyPart> msg, ref <const bodyPart> part);
-	bool findSubTextParts(ref <const bodyPart> msg, ref <const bodyPart> part);
+	void findTextParts(std::shared_ptr<const bodyPart> msg, std::shared_ptr<const bodyPart> part);
+	bool findSubTextParts(std::shared_ptr<const bodyPart> msg, std::shared_ptr<const bodyPart> part);
 };
 
 
