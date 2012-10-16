@@ -30,10 +30,11 @@ namespace vmime
 
 bodyPart::bodyPart()
 	: m_header(std::make_shared<header>()),
-	  m_body(std::make_shared<body>()),
-	  m_parent(NULL)
+	  m_body(std::make_shared<body>())
+	  //, m_parent(NULL) TODO shared
 {
-	m_body->setParentPart(thisRef().dynamicCast <bodyPart>());
+	//m_body->setParentPart(thisRef().dynamicCast <bodyPart>()); TODO shared
+	m_body->setParentPart(std::dynamic_pointer_cast<bodyPart>(thisRef()));
 }
 
 
@@ -42,7 +43,8 @@ bodyPart::bodyPart(std::weak_ptr<vmime::bodyPart> parentPart)
 	  m_body(std::make_shared<body>()),
 	  m_parent(parentPart)
 {
-	m_body->setParentPart(thisRef().dynamicCast <bodyPart>());
+	// m_body->setParentPart(thisRef().dynamicCast <bodyPart>()); TODO shared
+	m_body->setParentPart(std::dynamic_pointer_cast<bodyPart>(thisRef()));
 }
 
 
@@ -84,7 +86,7 @@ std::shared_ptr<component> bodyPart::clone() const
 {
 	std::shared_ptr<bodyPart> p = std::make_shared<bodyPart>();
 
-	p->m_parent = null;
+	//p->m_parent = null; TODO shared
 
 	p->m_header->copyFrom(*m_header);
 	p->m_body->copyFrom(*m_body);
@@ -135,13 +137,15 @@ std::shared_ptr<body> bodyPart::getBody()
 
 std::shared_ptr<bodyPart> bodyPart::getParentPart()
 {
-	return m_parent.acquire();
+	//return m_parent.acquire(); TODO shared
+	return m_parent.lock();
 }
 
 
 std::shared_ptr<const bodyPart> bodyPart::getParentPart() const
 {
-	return m_parent.acquire();
+	// return m_parent.acquire(); TODO shared
+	return m_parent.lock();
 }
 
 

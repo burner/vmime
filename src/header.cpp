@@ -108,7 +108,9 @@ std::shared_ptr<component> header::clone() const
 	for (std::vector <std::shared_ptr<headerField> >::const_iterator it = m_fields.begin() ;
 	     it != m_fields.end() ; ++it)
 	{
-		hdr->m_fields.push_back((*it)->clone().dynamicCast <headerField>());
+		// hdr->m_fields.push_back((*it)->clone().dynamicCast
+		// <headerField>()); TODO shared
+		hdr->m_fields.push_back(std::dynamic_pointer_cast<headerField>((*it)->clone()));
 	}
 
 	return (hdr);
@@ -126,7 +128,9 @@ void header::copyFrom(const component& other)
 	for (std::vector <std::shared_ptr<headerField> >::const_iterator it = h.m_fields.begin() ;
 	     it != h.m_fields.end() ; ++it)
 	{
-		fields.push_back((*it)->clone().dynamicCast <headerField>());
+		// fields.push_back((*it)->clone().dynamicCast <headerField>()); TODO
+		// shared
+		fields.push_back(std::dynamic_pointer_cast<headerField>((*it)->clone()));
 	}
 
 	m_fields.clear();

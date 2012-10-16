@@ -30,7 +30,7 @@
 #include <vector>
 
 #include "vmime/config.hpp"
-#include "vmime/utility/smartPtr.hpp"
+//#include "vmime/utility/smartPtr.hpp" TODO shared
 
 
 namespace vmime
@@ -45,13 +45,13 @@ namespace vmime
 	typedef std::vector <byte_t> byteArray;
 
 	// Some aliases
-	namespace utils = utility;
+	// namespace utils = utility; TODO
 
-	using vmime::utility::ref;
-	using vmime::utility::weak_ref;
-	using vmime::utility::null_ref;
+	// using vmime::utility::ref; TODO
+	// using vmime::utility::weak_ref;
+	// using vmime::utility::null_ref;
 
-	extern const null_ref null;
+	// extern const null_ref null; TODO
 
 	// For compatibility with versions <= 0.7.1 (deprecated)
 	namespace net { }

@@ -54,7 +54,9 @@ defaultAttachment::defaultAttachment(std::shared_ptr<const contentHandler> data,
 
 defaultAttachment::defaultAttachment(const defaultAttachment& attach)
 	: attachment(), m_type(attach.m_type), m_desc(attach.m_desc),
-	  m_data(attach.m_data->clone().dynamicCast <contentHandler>()),
+	  // m_data(attach.m_data->clone().dynamicCast <contentHandler>()), TODO
+	  // shared
+	  m_data(std::dynamic_pointer_cast<contentHandler>(attach.m_data->clone())),
 	  m_encoding(attach.m_encoding), m_name(attach.m_name)
 {
 }
@@ -70,7 +72,9 @@ defaultAttachment& defaultAttachment::operator=(const defaultAttachment& attach)
 	m_type = attach.m_type;
 	m_desc = attach.m_desc;
 	m_name = attach.m_name;
-	m_data = attach.m_data->clone().dynamicCast <contentHandler>();
+	//m_data = attach.m_data->clone().dynamicCast <contentHandler>(); TODO
+	//shared
+	m_data = std::dynamic_pointer_cast<contentHandler>(attach.m_data->clone());
 	m_encoding = attach.m_encoding;
 
 	return (*this);
@@ -94,7 +98,10 @@ void defaultAttachment::generatePart(std::shared_ptr<bodyPart> part) const
 	if (!m_desc.isEmpty()) part->getHeader()->ContentDescription()->setValue(m_desc);
 	part->getHeader()->ContentTransferEncoding()->setValue(m_encoding);
 	part->getHeader()->ContentDisposition()->setValue(contentDisposition(contentDispositionTypes::ATTACHMENT));
-	part->getHeader()->ContentDisposition().dynamicCast <contentDispositionField>()->setFilename(m_name);
+	// part->getHeader()->ContentDisposition().dynamicCast
+	// <contentDispositionField>()->setFilename(m_name); TODO shared
+	std::dynamic_pointer_cast<contentDispositionField>(part->getHeader()->ContentDisposition())
+		->setFilename(m_name);
 
 	// Set contents
 	part->getBody()->setContents(m_data);

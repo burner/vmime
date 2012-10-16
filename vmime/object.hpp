@@ -29,6 +29,7 @@
 
 
 #include <vector>
+#include <memory>
 
 
 namespace vmime
@@ -41,10 +42,10 @@ namespace vmime
 
 class object
 {
-	template <class T> friend class utility::ref;
-	template <class T> friend class utility::weak_ref;
+	// template <class T> friend class utility::ref; TODO shared
+	// template <class T> friend class utility::weak_ref;
 
-	friend class utility::refManager;
+	// friend class utility::refManager; TODO shared
 
 protected:
 
@@ -82,14 +83,14 @@ protected:
 	std::weak_ptr<const object> thisWeakRef() const;
 
 
-	void setRefManager(utility::refManager* mgr);
-	utility::refManager* getRefManager() const;
+	// void setRefManager(utility::refManager* mgr); TODO shared
+	// utility::refManager* getRefManager() const;
 
 #endif // VMIME_BUILDING_DOC
 
 private:
 
-	mutable utility::refManager* m_refMgr;
+	// mutable utility::refManager* m_refMgr; TODO shared
 };
 
 

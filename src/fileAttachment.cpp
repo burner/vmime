@@ -145,8 +145,10 @@ void fileAttachment::generatePart(std::shared_ptr<bodyPart> part) const
 {
 	defaultAttachment::generatePart(part);
 
-	std::shared_ptr<contentDispositionField> cdf = part->getHeader()->ContentDisposition().
-		dynamicCast <contentDispositionField>();
+	//std::shared_ptr<contentDispositionField> cdf = part->getHeader()->ContentDisposition().
+	//	dynamicCast <contentDispositionField>(); TODO shared
+	std::shared_ptr<contentDispositionField> cdf =
+		std::dynamic_pointer_cast<contentDispositionField>(part->getHeader()->ContentDisposition());
 
 	if (m_fileInfo.hasSize()) cdf->setSize(utility::stringUtils::toString(m_fileInfo.getSize()));
 	if (m_fileInfo.hasFilename() && !m_fileInfo.getFilename().isEmpty()) cdf->setFilename(m_fileInfo.getFilename());

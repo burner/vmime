@@ -40,7 +40,9 @@ const mediaType bodyPartAttachment::getType() const
 
 	try
 	{
-		type = *getContentType()->getValue().dynamicCast <const mediaType>();
+		//type = *getContentType()->getValue().dynamicCast <const
+		//mediaType>(); TODO
+		type = *std::dynamic_pointer_cast<const mediaType>(getContentType()->getValue());
 	}
 	catch (exceptions::no_such_field&)
 	{
@@ -104,7 +106,8 @@ const text bodyPartAttachment::getDescription() const
 		std::shared_ptr<const headerField> cd =
 			getHeader()->findField(fields::CONTENT_DESCRIPTION);
 
-		description = *cd->getValue().dynamicCast <const text>();
+		//description = *cd->getValue().dynamicCast <const text>(); TODO
+		description = *std::dynamic_pointer_cast<const text>(cd->getValue());
 	}
 	catch (exceptions::no_such_field&)
 	{
@@ -141,15 +144,15 @@ std::shared_ptr<const header> bodyPartAttachment::getHeader() const
 
 std::shared_ptr<const contentDispositionField> bodyPartAttachment::getContentDisposition() const
 {
-	return getHeader()->findField(fields::CONTENT_DISPOSITION).
-		dynamicCast <const contentDispositionField>();
+	return std::dynamic_pointer_cast<const contentDispositionField>(getHeader()->
+			findField(fields::CONTENT_DISPOSITION));
 }
 
 
 std::shared_ptr<const contentTypeField> bodyPartAttachment::getContentType() const
 {
-	return getHeader()->findField(fields::CONTENT_TYPE).
-		dynamicCast <const contentTypeField>();
+	return std::dynamic_pointer_cast<const
+		contentTypeField>(getHeader()->findField(fields::CONTENT_TYPE));
 }
 
 

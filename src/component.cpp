@@ -59,8 +59,9 @@ void component::parse
 {
 	m_parsedOffset = m_parsedLength = 0;
 
+	// TODO shared
 	std::shared_ptr<utility::seekableInputStream> seekableStream =
-		inputStream.dynamicCast <utility::seekableInputStream>();
+		std::dynamic_pointer_cast<utility::seekableInputStream>(inputStream);
 
 	if (seekableStream == NULL || end == 0)
 	{
