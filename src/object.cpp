@@ -33,16 +33,23 @@ namespace vmime
 
 
 object::object()
-	: m_refMgr(utility::refManager::create(this))
+	// : m_refMgr(utility::refManager::create(this)) TODO shared
+	: m_thisRef(std::make_shared<object>(this))
 {
 }
 
 
 object::object(const object&)
-	: m_refMgr(utility::refManager::create(this))
+	// : m_refMgr(utility::refManager::create(this)) TODO shared
+	: m_thisRef(std::make_shared<object>(this))
 {
 }
 
+object::object(object* const)
+	// : m_refMgr(utility::refManager::create(this)) TODO shared
+	: m_thisRef(std::make_shared<object>(this))
+{
+}
 
 object& object::operator=(const object&)
 {
@@ -53,47 +60,50 @@ object& object::operator=(const object&)
 
 object::~object()
 {
-	delete m_refMgr;
-	m_refMgr = 0;
+	// delete m_refMgr; TODO shared
+	// m_refMgr = 0; TODO shared
 }
 
 
 std::shared_ptr<object> object::thisRef()
 {
-	m_refMgr->addStrong();
-	return std::shared_ptr<object>::fromPtr(this);
+	// m_refMgr->addStrong(); TODO shared
+	return m_thisRef;
 }
 
 
 std::shared_ptr<const object> object::thisRef() const
 {
-	m_refMgr->addStrong();
-	return std::shared_ptr<const object>::fromPtr(this);
+	// m_refMgr->addStrong(); TODO shared
+	return m_thisRef;
 }
 
 
 std::weak_ptr<object> object::thisWeakRef()
 {
-	return std::weak_ptr<object>(thisRef());
+	return std::weak_ptr<object>(m_thisRef); // TODO shared
 }
 
 
 std::weak_ptr<const object> object::thisWeakRef() const
 {
-	return std::weak_ptr<const object>(thisRef());
+	return std::weak_ptr<const object>(m_thisRef); // TODO shared
 }
 
 
-void object::setRefManager(utility::refManager* mgr)
+/*void object::setRefManager(utility::refManager* mgr)
 {
-	m_refMgr = mgr;
-}
+	// m_refMgr = mgr; TODO shared
+	std::err<<__FILE__<<':'<<__LINE__<<" very bad place check"<<std::endl;
+}*/
 
 
-utility::refManager* object::getRefManager() const
+/* utility::refManager* object::getRefManager() const
 {
-	return m_refMgr;
-}
+	// return m_refMgr; TODO shared
+	std::err<<__FILE__<<':'<<__LINE__<<" very bad place check"<<std::endl;
+	return NULL;
+}*/
 
 
 } // vmime

@@ -123,13 +123,15 @@ bool mailboxList::isEmpty() const
 
 std::shared_ptr<mailbox> mailboxList::getMailboxAt(const int pos)
 {
-	return m_list.getAddressAt(pos).staticCast <mailbox>();
+	// TODO shared
+	return std::static_pointer_cast<mailbox>(m_list.getAddressAt(pos));
 }
 
 
 const std::shared_ptr<const mailbox> mailboxList::getMailboxAt(const int pos) const
 {
-	return m_list.getAddressAt(pos).staticCast <const mailbox>();
+	//TODO shared
+	return std::static_pointer_cast<const mailbox>(m_list.getAddressAt(pos));
 }
 
 
@@ -141,7 +143,10 @@ const std::vector <std::shared_ptr<const mailbox> > mailboxList::getMailboxList(
 	for (std::vector <std::shared_ptr<const address> >::const_iterator it = addrList.begin() ;
 	     it != addrList.end() ; ++it)
 	{
-		const std::shared_ptr<const mailbox> mbox = (*it).dynamicCast <const mailbox>();
+		// const std::shared_ptr<const mailbox> mbox = (*it).dynamicCast
+		// <const mailbox>(); TODO shared
+		const std::shared_ptr<const mailbox> mbox =
+			std::dynamic_pointer_cast<const mailbox>(*it);
 
 		if (mbox != NULL)
 			res.push_back(mbox);
@@ -159,7 +164,9 @@ const std::vector <std::shared_ptr<mailbox> > mailboxList::getMailboxList()
 	for (std::vector <std::shared_ptr<address> >::const_iterator it = addrList.begin() ;
 	     it != addrList.end() ; ++it)
 	{
-		const std::shared_ptr<mailbox> mbox = (*it).dynamicCast <mailbox>();
+		// const std::shared_ptr<mailbox> mbox = (*it).dynamicCast
+		// <mailbox>(); TODO shared
+		const std::shared_ptr<mailbox> mbox = std::dynamic_pointer_cast<mailbox>(*it);
 
 		if (mbox != NULL)
 			res.push_back(mbox);
@@ -212,7 +219,8 @@ void mailboxList::generateImpl(utility::outputStream& os, const string::size_typ
 
 std::shared_ptr<addressList> mailboxList::toAddressList() const
 {
-	return m_list.clone().dynamicCast <addressList>();
+	// return m_list.clone().dynamicCast <addressList>(); TODO shared
+	return std::dynamic_pointer_cast<addressList>(m_list.clone());
 }
 
 

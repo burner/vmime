@@ -147,7 +147,9 @@ std::shared_ptr<message> messageBuilder::construct() const
 		const bodyPart& part = *msg->getBody()->getPartAt(0);
 
 		// Make a full copy of the body, otherwise the copyFrom() will delete the body we're copying
-		std::shared_ptr<body> bodyCopy = part.getBody()->clone().dynamicCast <body>();
+		// std::shared_ptr<body> bodyCopy =
+		// part.getBody()->clone().dynamicCast <body>(); TODO shared
+		std::shared_ptr<body> bodyCopy = std::dynamic_pointer_cast<body>(part.getBody()->clone());
 
 		// First, copy (and replace) the header fields
 		const std::vector <std::shared_ptr<const headerField> > fields = part.getHeader()->getFieldList();

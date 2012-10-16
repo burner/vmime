@@ -62,8 +62,11 @@ void messageIdSequence::copyFrom(const component& other)
 
 	removeAllMessageIds();
 
-	for (unsigned int i = 0 ; i < midSeq.m_list.size() ; ++i)
-		m_list.push_back(midSeq.m_list[i]->clone().dynamicCast <messageId>());
+	for (unsigned int i = 0 ; i < midSeq.m_list.size() ; ++i) {
+		// m_list.push_back(midSeq.m_list[i]->clone().dynamicCast
+		// <messageId>()); TODO shared
+		m_list.push_back(std::dynamic_pointer_cast<messageId>(midSeq.m_list[i]->clone()));
+	}
 }
 
 

@@ -27,7 +27,6 @@
 
 #include "vmime/types.hpp"
 
-
 #include <vector>
 #include <memory>
 
@@ -45,17 +44,20 @@ class object
 	// template <class T> friend class utility::ref; TODO shared
 	// template <class T> friend class utility::weak_ref;
 
-	// friend class utility::refManager; TODO shared
+	// friend class utility::refManager; // TODO shared
+	std::shared_ptr<object> m_thisRef;
 
-protected:
 
+public: // TODO shared
 	object();
 	object(const object&);
+	object(object* const);
 
 	object& operator=(const object&);
 
 	virtual ~object();
 
+protected:
 #ifndef VMIME_BUILDING_DOC
 
 	/** Return a reference to this object.
@@ -83,14 +85,14 @@ protected:
 	std::weak_ptr<const object> thisWeakRef() const;
 
 
-	// void setRefManager(utility::refManager* mgr); TODO shared
-	// utility::refManager* getRefManager() const;
+	 // void setRefManager(utility::refManager* mgr); // TODO shared
+	 // utility::refManager* getRefManager() const;
 
 #endif // VMIME_BUILDING_DOC
 
 private:
 
-	// mutable utility::refManager* m_refMgr; TODO shared
+	 // mutable utility::refManager* m_refMgr; // TODO shared
 };
 
 

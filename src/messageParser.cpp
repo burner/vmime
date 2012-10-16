@@ -62,8 +62,9 @@ void messageParser::parse(std::shared_ptr<const message> msg)
 	// Header fields (if field is present, copy its value, else do nothing)
 #ifndef VMIME_BUILDING_DOC
 
+	// TODO shared changed the macro a bit
 #define TRY_FIELD(var, type, name) \
-	try { var = *msg->getHeader()->findField(name)->getValue().dynamicCast <type>(); } \
+	try { var = *std::dynamic_pointer_cast<type>(msg->getHeader()->findField(name)->getValue()); } \
 	catch (exceptions::no_such_field) { }
 
 	TRY_FIELD(m_from, mailbox, fields::FROM);
@@ -82,14 +83,18 @@ void messageParser::parse(std::shared_ptr<const message> msg)
 	try
 	{
 		const headerField& recv = *msg->getHeader()->findField(fields::RECEIVED);
-		m_date = recv.getValue().dynamicCast <const relay>()->getDate();
+		// m_date = recv.getValue().dynamicCast <const relay>()->getDate();
+		// TODO shared
+		m_date = std::dynamic_pointer_cast<const relay>(recv.getValue())->getDate();
 	}
 	catch (vmime::exceptions::no_such_field&)
 	{
 		try
 		{
 			const headerField& date = *msg->getHeader()->findField(fields::DATE);
-			m_date = *date.getValue().dynamicCast <const datetime>();
+			// m_date = *date.getValue().dynamicCast <const datetime>(); TODO
+			// shared
+			m_date = *std::dynamic_pointer_cast<const datetime>(date.getValue());
 		}
 		catch (vmime::exceptions::no_such_field&)
 		{
@@ -126,7 +131,9 @@ void messageParser::findTextParts(std::shared_ptr<const bodyPart> msg, std::shar
 				(*msg->getHeader()->findField(fields::CONTENT_TYPE));
 
 			const mediaType ctfType =
-				*ctf.getValue().dynamicCast <const mediaType>();
+				// *ctf.getValue().dynamicCast <const mediaType>(); TODO
+				// shared
+				*std::dynamic_pointer_cast<const mediaType>(ctf.getValue());
 
 			if (ctfType.getType() == mediaTypes::TEXT)
 			{
@@ -174,17 +181,28 @@ bool messageParser::findSubTextParts(std::shared_ptr<const bodyPart> msg, std::s
 			const contentTypeField& ctf = dynamic_cast <const contentTypeField&>
 				(*(p->getHeader()->findField(fields::CONTENT_TYPE)));
 
-			const mediaType type = *ctf.getValue().dynamicCast <const mediaType>();
+			// const mediaType type = *ctf.getValue().dynamicCast <const
+			// mediaType>(); TODO shared
+			const mediaType type = *std::dynamic_pointer_cast<const
+				mediaType>(ctf.getValue());
 			contentDisposition disp; // default should be inline
 
 			if (type.getType() == mediaTypes::TEXT)
 			{
 				try
 				{
-					std::shared_ptr<const contentDispositionField> cdf = p->getHeader()->
-						findField(fields::CONTENT_DISPOSITION).dynamicCast <const contentDispositionField>();
+					//std::shared_ptr<const contentDispositionField> cdf = p->getHeader()->
+						// findField(fields::CONTENT_DISPOSITION).dynamicCast
+						// <const contentDispositionField>(); TODO shared
+					std::shared_ptr<const contentDispositionField> cdf = 
+						std::dynamic_pointer_cast<const contentDispositionField>(
+							p->getHeader()->findField(fields::CONTENT_DISPOSITION)
+						);
 
-					disp = *cdf->getValue().dynamicCast <const contentDisposition>();
+					// disp = *cdf->getValue().dynamicCast <const
+					// contentDisposition>(); TODO shared
+					disp = *std::dynamic_pointer_cast<const
+						contentDisposition>(cdf->getValue());
 				}
 				catch (exceptions::no_such_field&)
 				{
@@ -210,7 +228,10 @@ bool messageParser::findSubTextParts(std::shared_ptr<const bodyPart> msg, std::s
 			const contentTypeField& ctf = dynamic_cast <const contentTypeField&>
 				(*((*p)->getHeader()->findField(fields::CONTENT_TYPE)));
 
-			const mediaType type = *ctf.getValue().dynamicCast <const mediaType>();
+			// const mediaType type = *ctf.getValue().dynamicCast <const
+			// mediaType>(); TODO shared
+			const mediaType type = *std::dynamic_pointer_cast<const
+				mediaType>(ctf.getValue());
 
 			try
 			{
