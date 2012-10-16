@@ -54,12 +54,11 @@ private:
 	friend class POP3Message;
 	//friend class vmime::creator;  // std::make_shared<POP3Folder>
 
+public:
+	// TODO shared was private
 	POP3Folder(const folder::path& path, std::shared_ptr<POP3Store> store);
 	POP3Folder(const POP3Folder&) : folder() { }
-
 	~POP3Folder();
-
-public:
 
 	int getMode() const;
 

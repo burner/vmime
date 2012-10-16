@@ -223,7 +223,8 @@ void POP3Store::connect()
 
 void POP3Store::authenticate(const messageId& randomMID)
 {
-	getAuthenticator()->setService(thisRef().dynamicCast <service>());
+	//getAuthenticator()->setService(thisRef().dynamicCast <service>()); TODO shared
+	getAuthenticator()->setService(std::dynamic_pointer_cast<service>(thisRef()));
 
 #if VMIME_HAVE_SASL_SUPPORT
 	// First, try SASL authentication
@@ -364,8 +365,10 @@ void POP3Store::authenticate(const messageId& randomMID)
 
 void POP3Store::authenticateSASL()
 {
-	if (!getAuthenticator().dynamicCast <security::sasl::SASLAuthenticator>())
+	//if (!getAuthenticator().dynamicCast <security::sasl::SASLAuthenticator>()) TODO shared
+	if (!std::dynamic_pointer_cast<security::sasl::SASLAuthenticator>(getAuthenticator())) {
 		throw exceptions::authentication_error("No SASL authenticator available.");
+	}
 
 	std::vector <string> capa = getCapabilities();
 	std::vector <string> saslMechs;
@@ -433,7 +436,9 @@ void POP3Store::authenticateSASL()
 		throw exceptions::authentication_error("Unable to suggest SASL mechanism.");
 
 	// Allow application to choose which mechanisms to use
-	mechList = getAuthenticator().dynamicCast <security::sasl::SASLAuthenticator>()->
+	//mechList = getAuthenticator().dynamicCast <security::sasl::SASLAuthenticator>()-> TODO shared
+		//getAcceptableMechanisms(mechList, suggestedMech); TODO shared
+	mechList = std::dynamic_pointer_cast<security::sasl::SASLAuthenticator>(getAuthenticator())->
 		getAcceptableMechanisms(mechList, suggestedMech);
 
 	if (mechList.empty())

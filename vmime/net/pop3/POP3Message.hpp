@@ -47,14 +47,14 @@ class POP3Message : public message
 private:
 
 	friend class POP3Folder;
-	friend class vmime::creator;  // std::make_shared<POP3Message>
+	//friend class vmime::creator;  // std::make_shared<POP3Message> TODO shared
 
+public:
+	// TODO shared was private
 	POP3Message(std::shared_ptr<POP3Folder> folder, const int num);
 	POP3Message(const POP3Message&) : message() { }
 
 	~POP3Message();
-
-public:
 
 	int getNumber() const;
 
