@@ -95,7 +95,7 @@ void path::copyFrom(const component& other)
 
 std::shared_ptr<component> path::clone() const
 {
-	return vmime::std::make_shared<path>(*this);
+	return std::make_shared<path>(*this);
 }
 
 

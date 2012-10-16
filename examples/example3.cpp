@@ -52,12 +52,12 @@ int main()
 		mb.setExpeditor(vmime::mailbox("me@somewhere.com"));
 
 		vmime::addressList to;
-		to.appendAddress(vmime::std::make_shared<vmime::mailbox>("you@elsewhere.com"));
+		to.appendAddress(std::make_shared<vmime::mailbox>("you@elsewhere.com"));
 
 		mb.setRecipients(to);
 
 		vmime::addressList bcc;
-		bcc.appendAddress(vmime::std::make_shared<vmime::mailbox>("you-bcc@nowhere.com"));
+		bcc.appendAddress(std::make_shared<vmime::mailbox>("you-bcc@nowhere.com"));
 
 		mb.setBlindCopyRecipients(bcc);
 
@@ -73,30 +73,30 @@ int main()
 
 		// -- embed an image (the returned "CID" (content identifier) is used to reference
 		// -- the image into HTML content).
-		vmime::std::shared_ptr<vmime::utility::fileSystemFactory> fs =
+		std::shared_ptr<vmime::utility::fileSystemFactory> fs =
 			vmime::platform::getHandler()->getFileSystemFactory();
 
-		vmime::std::shared_ptr<vmime::utility::file> imageFile =
+		std::shared_ptr<vmime::utility::file> imageFile =
 			fs->create(fs->stringToPath("/path/to/image.jpg"));
 
-		vmime::std::shared_ptr<vmime::utility::fileReader> fileReader =
+		std::shared_ptr<vmime::utility::fileReader> fileReader =
 			imageFile->getFileReader();
 
-		vmime::std::shared_ptr<vmime::contentHandler> imageCts =
-			vmime::std::make_shared<vmime::streamContentHandler>
+		std::shared_ptr<vmime::contentHandler> imageCts =
+			std::make_shared<vmime::streamContentHandler>
 				(fileReader->getInputStream(), imageFile->getLength());
 
 		const vmime::string cid = textPart.addObject(imageCts,
 			vmime::mediaType(vmime::mediaTypes::IMAGE, vmime::mediaTypes::IMAGE_JPEG));
 
 		// -- message text
-		textPart.setText(vmime::std::make_shared<vmime::stringContentHandler>
+		textPart.setText(std::make_shared<vmime::stringContentHandler>
 			(vmime::string("This is the <b>HTML text</b>.<br/><img src=\"") + cid + vmime::string("\"/>")));
-		textPart.setPlainText(vmime::std::make_shared<vmime::stringContentHandler>
+		textPart.setPlainText(std::make_shared<vmime::stringContentHandler>
 			("This is the plain text (without HTML formatting)."));
 
 		// Construction
-		vmime::std::shared_ptr<vmime::message> msg = mb.construct();
+		std::shared_ptr<vmime::message> msg = mb.construct();
 
 		// Raw text generation
 		vmime::string dataToSend = msg->generate();

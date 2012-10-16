@@ -44,11 +44,11 @@ class bodyPartAttachment : public attachment
 {
 	friend class creator;
 
-protected:
+//protected: TODO shared_ptr constructor was protected
 
-	bodyPartAttachment(std::shared_ptr<const bodyPart> part);
 
 public:
+	bodyPartAttachment(std::shared_ptr<const bodyPart> part); // TODO shared
 
 	const mediaType getType() const;
 	const word getName() const;

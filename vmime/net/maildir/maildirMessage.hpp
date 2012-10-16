@@ -43,7 +43,7 @@ class maildirFolder;
 class maildirMessage : public message
 {
 	friend class maildirFolder;
-	friend class vmime::creator;  // vmime::std::make_shared<maildirMessage>
+	friend class vmime::creator;  // std::make_shared<maildirMessage>
 
 private:
 

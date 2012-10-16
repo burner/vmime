@@ -124,7 +124,7 @@ std::shared_ptr<word> word::parseNext(const string& buffer, const string::size_t
 				if (prevIsEncoded)
 					unencoded = whiteSpaces + unencoded;
 
-				std::shared_ptr<word> w = vmime::std::make_shared<word>(unencoded, charset(charsets::US_ASCII));
+				std::shared_ptr<word> w = std::make_shared<word>(unencoded, charset(charsets::US_ASCII));
 				w->setParsedBounds(position, pos);
 
 				if (newPosition)
@@ -181,7 +181,7 @@ std::shared_ptr<word> word::parseNext(const string& buffer, const string::size_t
 
 			pos += 2; // ?=
 
-			std::shared_ptr<word> w = vmime::std::make_shared<word>();
+			std::shared_ptr<word> w = std::make_shared<word>();
 			w->parse(buffer, wordStart, pos, NULL);
 
 			if (newPosition)
@@ -205,7 +205,7 @@ std::shared_ptr<word> word::parseNext(const string& buffer, const string::size_t
 	// Treat unencoded text at the end of the buffer
 	if (!unencoded.empty())
 	{
-		std::shared_ptr<word> w = vmime::std::make_shared<word>(unencoded, charset(charsets::US_ASCII));
+		std::shared_ptr<word> w = std::make_shared<word>(unencoded, charset(charsets::US_ASCII));
 		w->setParsedBounds(position, end);
 
 		if (newPosition)
@@ -712,7 +712,7 @@ const string word::getConvertedText(const charset& dest) const
 
 std::shared_ptr<component> word::clone() const
 {
-	return vmime::std::make_shared<word>(m_buffer, m_charset);
+	return std::make_shared<word>(m_buffer, m_charset);
 }
 
 

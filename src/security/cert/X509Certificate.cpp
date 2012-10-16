@@ -101,13 +101,13 @@ std::shared_ptr<X509Certificate> X509Certificate::import
 	buffer.size = length;
 
 	// Try DER format
-	std::shared_ptr<X509Certificate> derCert = vmime::std::make_shared<X509Certificate>();
+	std::shared_ptr<X509Certificate> derCert = std::make_shared<X509Certificate>();
 
 	if (gnutls_x509_crt_import(derCert->m_data->cert, &buffer, GNUTLS_X509_FMT_DER) >= 0)
 		return derCert;
 
 	// Try PEM format
-	std::shared_ptr<X509Certificate> pemCert = vmime::std::make_shared<X509Certificate>();
+	std::shared_ptr<X509Certificate> pemCert = std::make_shared<X509Certificate>();
 
 	if (gnutls_x509_crt_import(pemCert->m_data->cert, &buffer, GNUTLS_X509_FMT_PEM) >= 0)
 		return pemCert;

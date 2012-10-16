@@ -65,7 +65,7 @@ private:
 
 		std::shared_ptr<messageDigest> create() const
 		{
-			return vmime::std::make_shared<E>();
+			return std::make_shared<E>();
 		}
 	};
 
@@ -83,7 +83,7 @@ public:
 	void registerAlgorithm(const string& name)
 	{
 		m_algos.insert(MapType::value_type(utility::stringUtils::toLower(name),
-			vmime::std::make_shared<digestAlgorithmFactoryImpl <E> >()));
+			std::make_shared<digestAlgorithmFactoryImpl <E> >()));
 	}
 
 	/** Create a new algorithm instance from its name.

@@ -101,7 +101,7 @@ void header::generateImpl(utility::outputStream& os, const string::size_type max
 
 std::shared_ptr<component> header::clone() const
 {
-	std::shared_ptr<header> hdr = vmime::std::make_shared<header>();
+	std::shared_ptr<header> hdr = std::make_shared<header>();
 
 	hdr->m_fields.reserve(m_fields.size());
 

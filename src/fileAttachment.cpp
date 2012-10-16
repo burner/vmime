@@ -126,7 +126,7 @@ void fileAttachment::setData(const string& filepath)
 		throw exceptions::open_file_error();
 	}
 
-	std::shared_ptr<utility::inputStream> is = vmime::std::make_shared<utility::inputStreamPointerAdapter>(file, true);
+	std::shared_ptr<utility::inputStream> is = std::make_shared<utility::inputStreamPointerAdapter>(file, true);
 
 	setData(is);
 
@@ -137,7 +137,7 @@ void fileAttachment::setData(const string& filepath)
 
 void fileAttachment::setData(std::shared_ptr<utility::inputStream> is)
 {
-	m_data = vmime::std::make_shared<streamContentHandler>(is, 0);
+	m_data = std::make_shared<streamContentHandler>(is, 0);
 }
 
 

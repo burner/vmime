@@ -36,19 +36,19 @@ namespace vmime
 
 
 parameter::parameter(const string& name)
-	: m_name(name), m_value(vmime::std::make_shared<word>())
+	: m_name(name), m_value(std::make_shared<word>())
 {
 }
 
 
 parameter::parameter(const string& name, const word& value)
-	: m_name(name), m_value(vmime::std::make_shared<word>(value))
+	: m_name(name), m_value(std::make_shared<word>(value))
 {
 }
 
 
 parameter::parameter(const string& name, const string& value)
-	: m_name(name), m_value(vmime::std::make_shared<word>(value))
+	: m_name(name), m_value(std::make_shared<word>(value))
 {
 }
 
@@ -61,7 +61,7 @@ parameter::parameter(const parameter&)
 
 std::shared_ptr<component> parameter::clone() const
 {
-	std::shared_ptr<parameter> p = vmime::std::make_shared<parameter>(m_name);
+	std::shared_ptr<parameter> p = std::make_shared<parameter>(m_name);
 	p->copyFrom(*this);
 
 	return (p);

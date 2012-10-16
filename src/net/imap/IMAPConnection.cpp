@@ -105,7 +105,7 @@ void IMAPConnection::connect()
 	if (store->isIMAPS())  // dedicated port/IMAPS
 	{
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			vmime::std::make_shared<tls::TLSSession>(store->getCertificateVerifier());
+			std::make_shared<tls::TLSSession>(store->getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -113,19 +113,19 @@ void IMAPConnection::connect()
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
+		m_cntInfos = std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
 	}
 	else
 #endif // VMIME_HAVE_TLS_SUPPORT
 	{
-		m_cntInfos = vmime::std::make_shared<defaultConnectionInfos>(address, port);
+		m_cntInfos = std::make_shared<defaultConnectionInfos>(address, port);
 	}
 
 	m_socket->connect(address, port);
 
 
-	m_tag = vmime::std::make_shared<IMAPTag>();
-	m_parser = vmime::std::make_shared<IMAPParser>(m_tag, m_socket, m_timeoutHandler);
+	m_tag = std::make_shared<IMAPTag>();
+	m_parser = std::make_shared<IMAPParser>(m_tag, m_socket, m_timeoutHandler);
 
 
 	setState(STATE_NON_AUTHENTICATED);
@@ -294,7 +294,7 @@ void IMAPConnection::authenticateSASL()
 	std::vector <std::shared_ptr<security::sasl::SASLMechanism> > mechList;
 
 	std::shared_ptr<security::sasl::SASLContext> saslContext =
-		vmime::std::make_shared<security::sasl::SASLContext>();
+		std::make_shared<security::sasl::SASLContext>();
 
 	for (unsigned int i = 0 ; i < saslMechs.size() ; ++i)
 	{
@@ -454,7 +454,7 @@ void IMAPConnection::startTLS()
 		}
 
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			vmime::std::make_shared<tls::TLSSession>(m_store.acquire()->getCertificateVerifier());
+			std::make_shared<tls::TLSSession>(m_store.acquire()->getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -465,7 +465,7 @@ void IMAPConnection::startTLS()
 		m_parser->setSocket(m_socket);
 
 		m_secured = true;
-		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>
+		m_cntInfos = std::make_shared<tls::TLSSecuredConnectionInfos>
 			(m_cntInfos->getHost(), m_cntInfos->getPort(), tlsSession, tlsSocket);
 	}
 	catch (exceptions::command_error&)

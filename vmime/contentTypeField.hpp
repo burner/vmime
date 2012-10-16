@@ -37,7 +37,7 @@ namespace vmime
 
 class contentTypeField : public parameterizedHeaderField
 {
-	friend class vmime::creator;  // create ref
+	//friend class vmime::creator;  // create ref TODO shared_ptr
 
 protected:
 

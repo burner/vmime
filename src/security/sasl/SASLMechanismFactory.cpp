@@ -70,7 +70,7 @@ std::shared_ptr<SASLMechanism> SASLMechanismFactory::create
 	// Check for built-in mechanisms
 	if (isMechanismSupported(name))
 	{
-		return vmime::std::make_shared<builtinSASLMechanism>(ctx, name);
+		return std::make_shared<builtinSASLMechanism>(ctx, name);
 	}
 	// Check for registered mechanisms
 	else

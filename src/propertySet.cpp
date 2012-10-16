@@ -44,7 +44,7 @@ propertySet::propertySet(const propertySet& set)
 	: object()
 {
 	for (std::list <std::shared_ptr<property> >::const_iterator it = set.m_props.begin() ; it != set.m_props.end() ; ++it)
-		m_props.push_back(vmime::std::make_shared<property>(**it));
+		m_props.push_back(std::make_shared<property>(**it));
 }
 
 
@@ -59,7 +59,7 @@ propertySet& propertySet::operator=(const propertySet& set)
 	removeAllProperties();
 
 	for (std::list <std::shared_ptr<property> >::const_iterator it = set.m_props.begin() ; it != set.m_props.end() ; ++it)
-		m_props.push_back(vmime::std::make_shared<property>(**it));
+		m_props.push_back(std::make_shared<property>(**it));
 
 	return (*this);
 }
@@ -174,7 +174,7 @@ void propertySet::parse(const string& props)
 				}
 			}
 
-			m_props.push_back(vmime::std::make_shared<property>(option, value));
+			m_props.push_back(std::make_shared<property>(option, value));
 		}
 	}
 }
@@ -200,7 +200,7 @@ std::shared_ptr<propertySet::property> propertySet::findOrCreate(const string& n
 	}
 	else
 	{
-		std::shared_ptr<property> prop = vmime::std::make_shared<property>(name, "");
+		std::shared_ptr<property> prop = std::make_shared<property>(name, "");
 		m_props.push_back(prop);
 		return (prop);
 	}

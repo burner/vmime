@@ -108,7 +108,7 @@ void SMTPTransport::connect()
 	if (m_isSMTPS)  // dedicated port/SMTPS
 	{
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			vmime::std::make_shared<tls::TLSSession>(getCertificateVerifier());
+			std::make_shared<tls::TLSSession>(getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -116,12 +116,12 @@ void SMTPTransport::connect()
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
+		m_cntInfos = std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
 	}
 	else
 #endif // VMIME_HAVE_TLS_SUPPORT
 	{
-		m_cntInfos = vmime::std::make_shared<defaultConnectionInfos>(address, port);
+		m_cntInfos = std::make_shared<defaultConnectionInfos>(address, port);
 	}
 
 	m_socket->connect(address, port);
@@ -317,7 +317,7 @@ void SMTPTransport::authenticateSASL()
 	std::vector <std::shared_ptr<security::sasl::SASLMechanism> > mechList;
 
 	std::shared_ptr<security::sasl::SASLContext> saslContext =
-		vmime::std::make_shared<security::sasl::SASLContext>();
+		std::make_shared<security::sasl::SASLContext>();
 
 	for (unsigned int i = 0 ; i < saslMechs.size() ; ++i)
 	{
@@ -457,7 +457,7 @@ void SMTPTransport::startTLS()
 			throw exceptions::command_error("STARTTLS", resp->getText());
 
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			vmime::std::make_shared<tls::TLSSession>(getCertificateVerifier());
+			std::make_shared<tls::TLSSession>(getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -467,7 +467,7 @@ void SMTPTransport::startTLS()
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>
+		m_cntInfos = std::make_shared<tls::TLSSecuredConnectionInfos>
 			(m_cntInfos->getHost(), m_cntInfos->getPort(), tlsSession, tlsSocket);
 	}
 	catch (exceptions::command_error&)

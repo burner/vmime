@@ -29,8 +29,8 @@ namespace vmime
 
 
 bodyPart::bodyPart()
-	: m_header(vmime::std::make_shared<header>()),
-	  m_body(vmime::std::make_shared<body>()),
+	: m_header(std::make_shared<header>()),
+	  m_body(std::make_shared<body>()),
 	  m_parent(NULL)
 {
 	m_body->setParentPart(thisRef().dynamicCast <bodyPart>());
@@ -38,8 +38,8 @@ bodyPart::bodyPart()
 
 
 bodyPart::bodyPart(std::weak_ptr<vmime::bodyPart> parentPart)
-	: m_header(vmime::std::make_shared<header>()),
-	  m_body(vmime::std::make_shared<body>()),
+	: m_header(std::make_shared<header>()),
+	  m_body(std::make_shared<body>()),
 	  m_parent(parentPart)
 {
 	m_body->setParentPart(thisRef().dynamicCast <bodyPart>());
@@ -82,7 +82,7 @@ void bodyPart::generateImpl(utility::outputStream& os, const string::size_type m
 
 std::shared_ptr<component> bodyPart::clone() const
 {
-	std::shared_ptr<bodyPart> p = vmime::std::make_shared<bodyPart>();
+	std::shared_ptr<bodyPart> p = std::make_shared<bodyPart>();
 
 	p->m_parent = null;
 

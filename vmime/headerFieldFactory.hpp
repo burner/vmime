@@ -67,7 +67,7 @@ public:
 		static std::shared_ptr<BASE_TYPE> creator()
 		{
 			// Allocate a new object
-			return vmime::std::make_shared<TYPE>();
+			return std::make_shared<TYPE>();
 		}
 	};
 #endif // VMIME_BUILDING_DOC

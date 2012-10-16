@@ -204,7 +204,7 @@ void POP3Message::fetch(std::shared_ptr<POP3Folder> msgFolder, const int options
 		string buffer;
 		folder->m_store.acquire()->readResponse(buffer, true);
 
-		m_header = vmime::std::make_shared<header>();
+		m_header = std::make_shared<header>();
 		m_header->parse(buffer);
 	}
 	catch (exceptions::command_error& e)
@@ -227,7 +227,7 @@ std::shared_ptr<vmime::message> POP3Message::getParsedMessage()
 
 	extract(os);
 
-	vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+	std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 	msg->parse(oss.str());
 
 	return msg;

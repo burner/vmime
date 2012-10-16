@@ -492,7 +492,7 @@ void IMAPMessage::processFetchResponse
 		}
 		case IMAPParser::msg_att_item::BODY_STRUCTURE:
 		{
-			m_structure = vmime::std::make_shared<IMAPStructure>((*it)->body());
+			m_structure = std::make_shared<IMAPStructure>((*it)->body());
 			break;
 		}
 		case IMAPParser::msg_att_item::RFC822_HEADER:
@@ -550,7 +550,7 @@ std::shared_ptr<header> IMAPMessage::getOrCreateHeader()
 	if (m_header != NULL)
 		return (m_header);
 	else
-		return (m_header = vmime::std::make_shared<header>());
+		return (m_header = std::make_shared<header>());
 }
 
 
@@ -680,7 +680,7 @@ void IMAPMessage::constructParsedMessage(std::shared_ptr<bodyPart> parentPart, s
 
 		// Initialize body
 		parentPart->getBody()->setContents
-			(vmime::std::make_shared<IMAPMessagePartContentHandler>
+			(std::make_shared<IMAPMessagePartContentHandler>
 				(thisRef().dynamicCast <IMAPMessage>(),
 				 part, parentPart->getBody()->getEncoding()));
 
@@ -692,7 +692,7 @@ void IMAPMessage::constructParsedMessage(std::shared_ptr<bodyPart> parentPart, s
 		{
 			std::shared_ptr<class part> part = str->getPartAt(i);
 
-			std::shared_ptr<bodyPart> childPart = vmime::std::make_shared<bodyPart>();
+			std::shared_ptr<bodyPart> childPart = std::make_shared<bodyPart>();
 
 			// Copy header
 			std::shared_ptr<const header> hdr = part->getHeader();
@@ -700,7 +700,7 @@ void IMAPMessage::constructParsedMessage(std::shared_ptr<bodyPart> parentPart, s
 
 			// Initialize body
 			childPart->getBody()->setContents
-				(vmime::std::make_shared<IMAPMessagePartContentHandler>
+				(std::make_shared<IMAPMessagePartContentHandler>
 					(thisRef().dynamicCast <IMAPMessage>(),
 					 part, childPart->getBody()->getEncoding()));
 
@@ -733,7 +733,7 @@ std::shared_ptr<vmime::message> IMAPMessage::getParsedMessage()
 	fetchPartHeaderForStructure(structure);
 
 	// Construct message from structure
-	std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+	std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 
 	constructParsedMessage(msg, structure);
 

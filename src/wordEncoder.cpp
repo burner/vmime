@@ -68,11 +68,11 @@ wordEncoder::wordEncoder(const string& buffer, const charset& charset, const Enc
 
 	if (m_encoding == ENCODING_B64)
 	{
-		m_encoder = vmime::std::make_shared<utility::encoder::b64Encoder>();
+		m_encoder = std::make_shared<utility::encoder::b64Encoder>();
 	}
 	else // ENCODING_QP
 	{
-		m_encoder = vmime::std::make_shared<utility::encoder::qpEncoder>();
+		m_encoder = std::make_shared<utility::encoder::qpEncoder>();
 		m_encoder->getProperties()["rfc2047"] = true;
 	}
 }

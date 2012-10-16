@@ -57,7 +57,7 @@ service::service(std::shared_ptr<session> sess, const serviceInfos& /* infos */,
 	}
 
 #if VMIME_HAVE_TLS_SUPPORT
-	m_certVerifier = vmime::std::make_shared<security::cert::defaultCertificateVerifier>();
+	m_certVerifier = std::make_shared<security::cert::defaultCertificateVerifier>();
 #endif // VMIME_HAVE_TLS_SUPPORT
 
 	m_socketFactory = platform::getHandler()->getSocketFactory();

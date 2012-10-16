@@ -48,7 +48,7 @@ private:
 
 	friend class IMAPFolder;
 	friend class IMAPMessagePartContentHandler;
-	friend class vmime::creator;  // vmime::std::make_shared<IMAPMessage>
+	friend class vmime::creator;  // std::make_shared<IMAPMessage>
 
 	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num);
 	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num, const uid& uniqueId);

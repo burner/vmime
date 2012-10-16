@@ -154,7 +154,7 @@ std::shared_ptr<message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
                                   const std::vector <string>& reportingUAProducts)
 {
 	// Create a new message
-	std::shared_ptr<message> msg = vmime::std::make_shared<message>();
+	std::shared_ptr<message> msg = std::make_shared<message>();
 
 	// Fill-in header fields
 	std::shared_ptr<header> hdr = msg->getHeader();
@@ -166,7 +166,7 @@ std::shared_ptr<message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
 	hdr->Disposition()->setValue(dispo);
 
 	addressList to;
-	to.appendAddress(vmime::std::make_shared<mailbox>(mdnInfos.getRecipient()));
+	to.appendAddress(std::make_shared<mailbox>(mdnInfos.getRecipient()));
 	hdr->To()->setValue(to);
 
 	hdr->From()->setValue(expeditor);
@@ -188,7 +188,7 @@ std::shared_ptr<message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
 std::shared_ptr<bodyPart> MDNHelper::createFirstMDNPart(const sendableMDNInfos& /* mdnInfos */,
                                              const string& text, const charset& ch)
 {
-	std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
+	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 	// Header
 	std::shared_ptr<header> hdr = part->getHeader();
@@ -199,7 +199,7 @@ std::shared_ptr<bodyPart> MDNHelper::createFirstMDNPart(const sendableMDNInfos& 
 	hdr->ContentType().dynamicCast <contentTypeField>()->setCharset(ch);
 
 	// Body
-	part->getBody()->setContents(vmime::std::make_shared<stringContentHandler>(text));
+	part->getBody()->setContents(std::make_shared<stringContentHandler>(text));
 
 	return (part);
 }
@@ -210,7 +210,7 @@ std::shared_ptr<bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos&
                                               const string& reportingUA,
                                               const std::vector <string>& reportingUAProducts)
 {
-	std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
+	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 	// Header
 	std::shared_ptr<header> hdr = part->getHeader();
@@ -287,7 +287,7 @@ std::shared_ptr<bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos&
 
 	fields.generate(vos);
 
-	part->getBody()->setContents(vmime::std::make_shared<stringContentHandler>(oss.str()));
+	part->getBody()->setContents(std::make_shared<stringContentHandler>(oss.str()));
 
 	return (part);
 }
@@ -295,7 +295,7 @@ std::shared_ptr<bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos&
 
 std::shared_ptr<bodyPart> MDNHelper::createThirdMDNPart(const sendableMDNInfos& mdnInfos)
 {
-	std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
+	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 	// Header
 	std::shared_ptr<header> hdr = part->getHeader();
@@ -310,7 +310,7 @@ std::shared_ptr<bodyPart> MDNHelper::createThirdMDNPart(const sendableMDNInfos& 
 
 	mdnInfos.getMessage()->getHeader()->generate(vos);
 
-	part->getBody()->setContents(vmime::std::make_shared<stringContentHandler>(oss.str()));
+	part->getBody()->setContents(std::make_shared<stringContentHandler>(oss.str()));
 
 	return (part);
 }

@@ -41,7 +41,7 @@ namespace vmime
 
 class parameterizedHeaderField : virtual public headerField
 {
-	friend class vmime::creator;  // create ref
+	//friend class vmime::creator;  // create ref TODO shared_ptr
 
 protected:
 

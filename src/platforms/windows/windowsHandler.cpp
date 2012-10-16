@@ -46,10 +46,10 @@ windowsHandler::windowsHandler()
 	WSAStartup(MAKEWORD(1, 1), &wsaData);
 
 #if VMIME_HAVE_MESSAGING_FEATURES
-	m_socketFactory = vmime::std::make_shared<windowsSocketFactory>();
+	m_socketFactory = std::make_shared<windowsSocketFactory>();
 #endif
 #if VMIME_HAVE_FILESYSTEM_FEATURES
-	m_fileSysFactory = vmime::std::make_shared<windowsFileSystemFactory>();
+	m_fileSysFactory = std::make_shared<windowsFileSystemFactory>();
 #endif
 }
 

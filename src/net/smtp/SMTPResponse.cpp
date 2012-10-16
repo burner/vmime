@@ -83,7 +83,7 @@ const string SMTPResponse::getText() const
 std::shared_ptr<SMTPResponse> SMTPResponse::readResponse
 	(std::shared_ptr<socket> sok, std::shared_ptr<timeoutHandler> toh)
 {
-	std::shared_ptr<SMTPResponse> resp = vmime::std::make_shared<SMTPResponse>(sok, toh);
+	std::shared_ptr<SMTPResponse> resp = std::make_shared<SMTPResponse>(sok, toh);
 
 	resp->readResponse();
 

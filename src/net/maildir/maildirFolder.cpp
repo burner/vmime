@@ -405,7 +405,7 @@ std::shared_ptr<message> maildirFolder::getMessage(const int num)
 	if (num < 1 || num > m_messageCount)
 		throw exceptions::message_not_found();
 
-	return vmime::std::make_shared<maildirMessage>
+	return std::make_shared<maildirMessage>
 		(thisRef().dynamicCast <maildirFolder>(), num);
 }
 
@@ -423,7 +423,7 @@ std::vector <std::shared_ptr<message> > maildirFolder::getMessages(const int fro
 	std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
 
 	for (int i = from ; i <= to2 ; ++i)
-		v.push_back(vmime::std::make_shared<maildirMessage>(thisFolder, i));
+		v.push_back(std::make_shared<maildirMessage>(thisFolder, i));
 
 	return (v);
 }
@@ -438,7 +438,7 @@ std::vector <std::shared_ptr<message> > maildirFolder::getMessages(const std::ve
 	std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
 
 	for (std::vector <int>::const_iterator it = nums.begin() ; it != nums.end() ; ++it)
-		v.push_back(vmime::std::make_shared<maildirMessage>(thisFolder, *it));
+		v.push_back(std::make_shared<maildirMessage>(thisFolder, *it));
 
 	return (v);
 }
@@ -469,7 +469,7 @@ std::shared_ptr<folder> maildirFolder::getFolder(const folder::path::component& 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 
-	return vmime::std::make_shared<maildirFolder>(m_path / name, store);
+	return std::make_shared<maildirFolder>(m_path / name, store);
 }
 
 
@@ -502,7 +502,7 @@ void maildirFolder::listFolders(std::vector <std::shared_ptr<folder> >& list, co
 		for (unsigned int i = 0, n = pathList.size() ; i < n ; ++i)
 		{
 			std::shared_ptr<maildirFolder> subFolder =
-				vmime::std::make_shared<maildirFolder>(pathList[i], store);
+				std::make_shared<maildirFolder>(pathList[i], store);
 
 			list.push_back(subFolder);
 		}
@@ -1299,7 +1299,7 @@ std::shared_ptr<folder> maildirFolder::getParent()
 	if (m_path.isEmpty())
 		return NULL;
 	else
-		return vmime::std::make_shared<maildirFolder>(m_path.getParent(), m_store.acquire());
+		return std::make_shared<maildirFolder>(m_path.getParent(), m_store.acquire());
 }
 
 

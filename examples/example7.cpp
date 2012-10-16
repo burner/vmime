@@ -49,12 +49,12 @@ int main()
 
 	for (int i = 0 ; i < ef->getEncoderCount() ; ++i)
 	{
-		vmime::std::shared_ptr<const vmime::utility::encoder::encoderFactory::registeredEncoder>
+		std::shared_ptr<const vmime::utility::encoder::encoderFactory::registeredEncoder>
 			enc = ef->getEncoderAt(i);
 
 		std::cout << "  * " << enc->getName() << std::endl;
 
-		vmime::std::shared_ptr<vmime::utility::encoder::encoder> e = enc->create();
+		std::shared_ptr<vmime::utility::encoder::encoder> e = enc->create();
 
 		std::vector <vmime::string> props = e->getAvailableProperties();
 

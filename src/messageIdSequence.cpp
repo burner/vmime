@@ -52,7 +52,7 @@ messageIdSequence::messageIdSequence(const messageIdSequence& midSeq)
 
 std::shared_ptr<component> messageIdSequence::clone() const
 {
-	return vmime::std::make_shared<messageIdSequence>(*this);
+	return std::make_shared<messageIdSequence>(*this);
 }
 
 

@@ -110,7 +110,7 @@ public:
 	~windowsFileIterator();
 
 	bool hasMoreElements() const;
-	vmime::std::shared_ptr<vmime::utility::file> nextElement();
+	std::shared_ptr<vmime::utility::file> nextElement();
 
 private:
 

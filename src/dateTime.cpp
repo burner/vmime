@@ -780,7 +780,7 @@ const datetime datetime::now()
 
 std::shared_ptr<component> datetime::clone() const
 {
-	return vmime::std::make_shared<datetime>(*this);
+	return std::make_shared<datetime>(*this);
 }
 
 

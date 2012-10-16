@@ -42,7 +42,7 @@ class headerField : public component
 	friend class headerFieldFactory;
 	friend class header;
 
-	friend class vmime::creator;  // create ref
+	//friend class vmime::creator;  // create ref TODO shared_ptr
 
 protected:
 

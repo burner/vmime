@@ -54,7 +54,7 @@ protected:
 		static std::shared_ptr<textPart> creator()
 		{
 			// Allocate a new object
-			return vmime::std::make_shared<TYPE>();
+			return std::make_shared<TYPE>();
 		}
 	};
 #endif // VMIME_BUILDING_DOC

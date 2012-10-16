@@ -351,7 +351,7 @@ std::shared_ptr<security::cert::certificateChain> TLSSocket::getPeerCertificates
 		if (error)
 			return NULL;
 
-		return vmime::std::make_shared<security::cert::certificateChain>(certs);
+		return std::make_shared<security::cert::certificateChain>(certs);
 	}
 
 	delete [] x509Certs;
@@ -395,7 +395,7 @@ void TLSSocket::internalThrow()
 		m_ex = NULL;
 
 		// To avoid memory leaks
-		exToDelete.push_back(vmime::std::make_shared<TLSSocket_DeleteExWrapper>(ex));
+		exToDelete.push_back(std::make_shared<TLSSocket_DeleteExWrapper>(ex));
 
 		throw *ex;
 	}

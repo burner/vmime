@@ -44,8 +44,10 @@ bool attachmentHelper::isBodyPartAnAttachment
 		const contentDispositionField& cdf = dynamic_cast<contentDispositionField&>
 			(*part->getHeader()->findField(fields::CONTENT_DISPOSITION));
 
-		const contentDisposition disp = *cdf.getValue()
-			.dynamicCast <const contentDisposition>();
+		//const contentDisposition disp = *cdf.getValue()
+		//	.dynamicCast <const contentDisposition>(); TODO shared_ptr
+		const contentDisposition disp = *dynamic_cast<const
+			contentDisposition*>(cdf.getValue().get());
 
 		if (disp.getName() != contentDispositionTypes::INLINE)
 			return true;
@@ -80,7 +82,9 @@ bool attachmentHelper::isBodyPartAnAttachment
 		const contentTypeField& ctf = dynamic_cast<contentTypeField&>
 			(*part->getHeader()->findField(fields::CONTENT_TYPE));
 
-		type = *ctf.getValue().dynamicCast <const mediaType>();
+		//type = *ctf.getValue().dynamicCast <const mediaType>(); TODO
+		//shared_ptr
+		type = *dynamic_cast<const mediaType*>(ctf.getValue().get());
 	}
 	catch (exceptions::no_such_field&)
 	{
@@ -144,7 +148,9 @@ std::shared_ptr<const attachment> attachmentHelper::getBodyPartAttachment
 	}
 	else
 	{
-		return std::make_shared<bodyPartAttachment>(part);
+		return std::dynamic_pointer_cast<const attachment>(
+				std::make_shared<bodyPartAttachment>(part)
+			);
 	}
 }
 

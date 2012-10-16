@@ -160,7 +160,7 @@ std::shared_ptr<messageId> messageId::parseNext(const string& buffer, const stri
 		while (pos < end && !parserHelpers::isSpace(buffer[pos]))
 			++pos;
 
-		std::shared_ptr<messageId> mid = vmime::std::make_shared<messageId>();
+		std::shared_ptr<messageId> mid = std::make_shared<messageId>();
 		mid->parse(buffer, begin, pos, NULL);
 
 		if (newPosition != NULL)
@@ -244,7 +244,7 @@ bool messageId::operator!=(const messageId& mid) const
 
 std::shared_ptr<component> messageId::clone() const
 {
-	return vmime::std::make_shared<messageId>(*this);
+	return std::make_shared<messageId>(*this);
 }
 
 

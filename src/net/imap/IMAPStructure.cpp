@@ -74,7 +74,7 @@ int IMAPStructure::getPartCount() const
 // static
 std::shared_ptr<IMAPStructure> IMAPStructure::emptyStructure()
 {
-	static std::shared_ptr<IMAPStructure> emptyStructure = vmime::std::make_shared<IMAPStructure>();
+	static std::shared_ptr<IMAPStructure> emptyStructure = std::make_shared<IMAPStructure>();
 	return emptyStructure;
 }
 

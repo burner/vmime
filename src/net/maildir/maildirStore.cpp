@@ -79,7 +79,7 @@ std::shared_ptr<folder> maildirStore::getRootFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::std::make_shared<maildirFolder>(folder::path(),
+	return std::make_shared<maildirFolder>(folder::path(),
 		thisRef().dynamicCast <maildirStore>());
 }
 
@@ -89,7 +89,7 @@ std::shared_ptr<folder> maildirStore::getDefaultFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::std::make_shared<maildirFolder>(folder::path::component("inbox"),
+	return std::make_shared<maildirFolder>(folder::path::component("inbox"),
 		thisRef().dynamicCast <maildirStore>());
 }
 
@@ -99,7 +99,7 @@ std::shared_ptr<folder> maildirStore::getFolder(const folder::path& path)
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::std::make_shared<maildirFolder>(path,
+	return std::make_shared<maildirFolder>(path,
 		thisRef().dynamicCast <maildirStore>());
 }
 
@@ -171,7 +171,7 @@ bool maildirStore::isSecuredConnection() const
 
 std::shared_ptr<connectionInfos> maildirStore::getConnectionInfos() const
 {
-	return vmime::std::make_shared<defaultConnectionInfos>("localhost", static_cast <port_t>(0));
+	return std::make_shared<defaultConnectionInfos>("localhost", static_cast <port_t>(0));
 }
 
 

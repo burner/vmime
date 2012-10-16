@@ -52,24 +52,24 @@ int main()
 		mb.setExpeditor(vmime::mailbox("me@somewhere.com"));
 
 		vmime::addressList to;
-		to.appendAddress(vmime::std::make_shared<vmime::mailbox>("you@elsewhere.com"));
+		to.appendAddress(std::make_shared<vmime::mailbox>("you@elsewhere.com"));
 
 		mb.setRecipients(to);
 
 		vmime::addressList bcc;
-		bcc.appendAddress(vmime::std::make_shared<vmime::mailbox>("you-bcc@nowhere.com"));
+		bcc.appendAddress(std::make_shared<vmime::mailbox>("you-bcc@nowhere.com"));
 
 		mb.setBlindCopyRecipients(bcc);
 
 		mb.setSubject(vmime::text("My first message generated with vmime::messageBuilder"));
 
 		// Message body
-		mb.getTextPart()->setText(vmime::std::make_shared<vmime::stringContentHandler>(
+		mb.getTextPart()->setText(std::make_shared<vmime::stringContentHandler>(
 			"I'm writing this short text to test message construction " \
 			"with attachment, using the vmime::messageBuilder component."));
 
 		// Adding an attachment
-		vmime::std::shared_ptr<vmime::fileAttachment> a = vmime::std::make_shared<vmime::fileAttachment>
+		std::shared_ptr<vmime::fileAttachment> a = std::make_shared<vmime::fileAttachment>
 		(
 			"./example2.cpp",                               // full path to file
 			vmime::mediaType("application/octet-stream"),   // content type
@@ -82,7 +82,7 @@ int main()
 		mb.attach(a);
 
 		// Construction
-		vmime::std::shared_ptr<vmime::message> msg = mb.construct();
+		std::shared_ptr<vmime::message> msg = mb.construct();
 
 		// Raw text generation
 		vmime::string dataToSend = msg->generate();

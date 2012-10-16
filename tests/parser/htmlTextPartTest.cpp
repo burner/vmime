@@ -39,7 +39,7 @@ VMIME_TEST_SUITE_BEGIN
 
 
 	static const vmime::string extractContent
-		(vmime::std::shared_ptr<const vmime::contentHandler> cth)
+		(std::shared_ptr<const vmime::contentHandler> cth)
 	{
 		std::ostringstream oss;
 		vmime::utility::outputStreamAdapter osa(oss);
@@ -78,7 +78,7 @@ VMIME_TEST_SUITE_BEGIN
 "--LEVEL1--\r\n"
 "";
 
-		vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 		msg->parse(msgString);
 
 		// Sanity checks
@@ -133,7 +133,7 @@ VMIME_TEST_SUITE_BEGIN
 "--LEVEL1--\r\n"
 "";
 
-		vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 		msg->parse(msgString);
 
 		// Sanity checks
@@ -157,7 +157,7 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT_EQ("has-obj2-pre", true, htmlPart.hasObject("cid:image2@test"));
 
 		// Check data in objects
-		vmime::std::shared_ptr<const vmime::htmlTextPart::embeddedObject> obj;
+		std::shared_ptr<const vmime::htmlTextPart::embeddedObject> obj;
 
 		obj = htmlPart.findObject("image1@test");
 
@@ -203,7 +203,7 @@ VMIME_TEST_SUITE_BEGIN
 "--LEVEL1--\r\n"
 "";
 
-		vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 		msg->parse(msgString);
 
 		// Sanity checks
@@ -223,7 +223,7 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT_EQ("has-obj-cid", false, htmlPart.hasObject("image1@test"));
 
 		// Check data
-		vmime::std::shared_ptr<const vmime::htmlTextPart::embeddedObject> obj;
+		std::shared_ptr<const vmime::htmlTextPart::embeddedObject> obj;
 
 		obj = htmlPart.findObject("http://www.vmime.org/test/image1.png");
 

@@ -180,12 +180,12 @@ void windowsSocket::sendRaw(const char* buffer, const size_type count)
 std::shared_ptr<vmime::net::socket> windowsSocketFactory::create()
 {
 	std::shared_ptr<vmime::net::timeoutHandler> th = NULL;
-	return vmime::std::make_shared<windowsSocket>(th);
+	return std::make_shared<windowsSocket>(th);
 }
 
 std::shared_ptr<vmime::net::socket> windowsSocketFactory::create(std::shared_ptr<vmime::net::timeoutHandler> th)
 {
-    return vmime::std::make_shared<windowsSocket>(th);
+    return std::make_shared<windowsSocket>(th);
 }
 
 } // posix

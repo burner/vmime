@@ -45,7 +45,9 @@ namespace vmime
 
 
 body::body()
-	: m_contents(std::make_shared<emptyContentHandler>()), m_part(NULL), m_header(NULL)
+	: m_contents(std::make_shared<emptyContentHandler>())
+	//, m_part(NULL) TODO shared_ptr
+	//, m_header(nullptr) TODO shared_ptr
 {
 }
 
@@ -83,8 +85,10 @@ void body::parseImpl
 
 	try
 	{
+		//const std::shared_ptr<const contentTypeField> ctf = TODO shared_ptr
+		//	m_header.acquire()->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
 		const std::shared_ptr<const contentTypeField> ctf =
-			m_header.acquire()->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
+			std::dynamic_pointer_cast<contentTypeField>(m_header.lock()->findField(fields::CONTENT_TYPE));
 
 		const mediaType type = *ctf->getValue().dynamicCast <const mediaType>();
 
@@ -267,7 +271,7 @@ void body::parseImpl
 
 			if (index > 0)
 			{
-				std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
+				std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 				// End before start may happen on empty bodyparts (directly
 				// successive boundaries without even a line-break)
@@ -317,12 +321,12 @@ void body::parseImpl
 			}
 		}
 
-		m_contents = vmime::std::make_shared<emptyContentHandler>();
+		m_contents = std::make_shared<emptyContentHandler>();
 
 		// Last part was not found: recover from missing boundary
 		if (!lastPart && pos == utility::stream::npos)
 		{
-			std::shared_ptr<bodyPart> part = vmime::std::make_shared<bodyPart>();
+			std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 			try
 			{
@@ -371,10 +375,10 @@ void body::parseImpl
 		const utility::stream::size_type length = end - position;
 
 		std::shared_ptr<utility::inputStream> contentStream =
-			vmime::std::make_shared<utility::seekableInputStreamRegionAdapter>
+			std::make_shared<utility::seekableInputStreamRegionAdapter>
 				(parser->getUnderlyingStream(), position, length);
 
-		m_contents = vmime::std::make_shared<streamContentHandler>(contentStream, length, enc);
+		m_contents = std::make_shared<streamContentHandler>(contentStream, length, enc);
 	}
 
 	setParsedBounds(position, end);
@@ -686,7 +690,7 @@ bool body::isRootPart() const
 
 std::shared_ptr<component> body::clone() const
 {
-	std::shared_ptr<body> bdy = vmime::std::make_shared<body>();
+	std::shared_ptr<body> bdy = std::make_shared<body>();
 
 	bdy->copyFrom(*this);
 

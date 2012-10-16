@@ -103,7 +103,7 @@ bool SASLSession::evaluateChallenge
 
 std::shared_ptr<net::socket> SASLSession::getSecuredSocket(std::shared_ptr<net::socket> sok)
 {
-	return vmime::std::make_shared<SASLSocket>(thisRef().dynamicCast <SASLSession>(), sok);
+	return std::make_shared<SASLSocket>(thisRef().dynamicCast <SASLSession>(), sok);
 }
 
 

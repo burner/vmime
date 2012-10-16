@@ -95,7 +95,7 @@ std::shared_ptr<folder> POP3Store::getDefaultFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::std::make_shared<POP3Folder>(folder::path(folder::path::component("INBOX")),
+	return std::make_shared<POP3Folder>(folder::path(folder::path::component("INBOX")),
 		thisRef().dynamicCast <POP3Store>());
 }
 
@@ -105,7 +105,7 @@ std::shared_ptr<folder> POP3Store::getRootFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::std::make_shared<POP3Folder>(folder::path(),
+	return std::make_shared<POP3Folder>(folder::path(),
 		thisRef().dynamicCast <POP3Store>());
 }
 
@@ -115,7 +115,7 @@ std::shared_ptr<folder> POP3Store::getFolder(const folder::path& path)
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return vmime::std::make_shared<POP3Folder>(path,
+	return std::make_shared<POP3Folder>(path,
 		thisRef().dynamicCast <POP3Store>());
 }
 
@@ -145,7 +145,7 @@ void POP3Store::connect()
 	if (m_isPOP3S)  // dedicated port/POP3S
 	{
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			vmime::std::make_shared<tls::TLSSession>(getCertificateVerifier());
+			std::make_shared<tls::TLSSession>(getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -153,12 +153,12 @@ void POP3Store::connect()
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
+		m_cntInfos = std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
 	}
 	else
 #endif // VMIME_HAVE_TLS_SUPPORT
 	{
-		m_cntInfos = vmime::std::make_shared<defaultConnectionInfos>(address, port);
+		m_cntInfos = std::make_shared<defaultConnectionInfos>(address, port);
 	}
 
 	m_socket->connect(address, port);
@@ -401,7 +401,7 @@ void POP3Store::authenticateSASL()
 	std::vector <std::shared_ptr<security::sasl::SASLMechanism> > mechList;
 
 	std::shared_ptr<security::sasl::SASLContext> saslContext =
-		vmime::std::make_shared<security::sasl::SASLContext>();
+		std::make_shared<security::sasl::SASLContext>();
 
 	for (unsigned int i = 0 ; i < saslMechs.size() ; ++i)
 	{
@@ -544,7 +544,7 @@ void POP3Store::startTLS()
 			throw exceptions::command_error("STLS", response);
 
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			vmime::std::make_shared<tls::TLSSession>(getCertificateVerifier());
+			std::make_shared<tls::TLSSession>(getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -554,7 +554,7 @@ void POP3Store::startTLS()
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = vmime::std::make_shared<tls::TLSSecuredConnectionInfos>
+		m_cntInfos = std::make_shared<tls::TLSSecuredConnectionInfos>
 			(m_cntInfos->getHost(), m_cntInfos->getPort(), tlsSession, tlsSocket);
 	}
 	catch (exceptions::command_error&)

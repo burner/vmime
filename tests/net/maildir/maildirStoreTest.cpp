@@ -191,7 +191,7 @@ public:
 	{
 		createMaildir(TEST_MAILDIR_KMAIL, TEST_MAILDIRFILES_KMAIL);
 
-		vmime::std::shared_ptr<vmime::net::maildir::maildirStore> store =
+		std::shared_ptr<vmime::net::maildir::maildirStore> store =
 			vmime::dynamicCast <vmime::net::maildir::maildirStore>(createAndConnectStore());
 
 		VASSERT_EQ("*", "kmail", store->getFormat()->getName());
@@ -203,7 +203,7 @@ public:
 	{
 		createMaildir(TEST_MAILDIR_COURIER, TEST_MAILDIRFILES_COURIER);
 
-		vmime::std::shared_ptr<vmime::net::maildir::maildirStore> store =
+		std::shared_ptr<vmime::net::maildir::maildirStore> store =
 			vmime::dynamicCast <vmime::net::maildir::maildirStore>(createAndConnectStore());
 
 		VASSERT_EQ("*", "courier", store->getFormat()->getName());
@@ -227,11 +227,11 @@ public:
 		createMaildir(dirs, files);
 
 		// Connect to store
-		vmime::std::shared_ptr<vmime::net::store> store = createAndConnectStore();
-		vmime::std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
+		std::shared_ptr<vmime::net::store> store = createAndConnectStore();
+		std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
 
 		// Get root folders, not recursive
-		const std::vector <vmime::std::shared_ptr<vmime::net::folder> >
+		const std::vector <std::shared_ptr<vmime::net::folder> >
 			rootFolders = rootFolder->getFolders(false);
 
 		VASSERT_EQ("1", 2, rootFolders.size());
@@ -257,11 +257,11 @@ public:
 		createMaildir(dirs, files);
 
 		// Connect to store
-		vmime::std::shared_ptr<vmime::net::store> store = createAndConnectStore();
-		vmime::std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
+		std::shared_ptr<vmime::net::store> store = createAndConnectStore();
+		std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
 
 		// Get all folders, recursive
-		const std::vector <vmime::std::shared_ptr<vmime::net::folder> >
+		const std::vector <std::shared_ptr<vmime::net::folder> >
 			allFolders = rootFolder->getFolders(true);
 
 		VASSERT_EQ("1", 5, allFolders.size());
@@ -289,10 +289,10 @@ public:
 	{
 		createMaildir(dirs, files);
 
-		vmime::std::shared_ptr<vmime::net::store> store = createAndConnectStore();
-		vmime::std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
+		std::shared_ptr<vmime::net::store> store = createAndConnectStore();
+		std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
 
-		vmime::std::shared_ptr<vmime::net::folder> folder = store->getFolder
+		std::shared_ptr<vmime::net::folder> folder = store->getFolder
 			(fpath() / "Folder" / "SubFolder" / "SubSubFolder2");
 
 		int count, unseen;
@@ -302,7 +302,7 @@ public:
 
 		folder->open(vmime::net::folder::MODE_READ_ONLY);
 
-		vmime::std::shared_ptr<vmime::net::message> msg = folder->getMessage(1);
+		std::shared_ptr<vmime::net::message> msg = folder->getMessage(1);
 
 		folder->fetchMessage(msg, vmime::net::folder::FETCH_SIZE);
 
@@ -350,17 +350,17 @@ public:
 	{
 		createMaildir(dirs, files);
 
-		vmime::std::shared_ptr<vmime::net::store> store = createAndConnectStore();
-		vmime::std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
+		std::shared_ptr<vmime::net::store> store = createAndConnectStore();
+		std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
 
 		// Rename "Folder/SubFolder" to "Folder/foo"
-		vmime::std::shared_ptr<vmime::net::folder> folder = store->getFolder
+		std::shared_ptr<vmime::net::folder> folder = store->getFolder
 			(fpath() / "Folder" / "SubFolder");
 
 		folder->rename(fpath() / "Folder" / "foo");
 
 		// Ensure folder and its subfolders have been renamed
-		const std::vector <vmime::std::shared_ptr<vmime::net::folder> >
+		const std::vector <std::shared_ptr<vmime::net::folder> >
 			allFolders = rootFolder->getFolders(true);
 
 		VASSERT_EQ("1", 5, allFolders.size());
@@ -391,17 +391,17 @@ public:
 	{
 		createMaildir(dirs, files);
 
-		vmime::std::shared_ptr<vmime::net::store> store = createAndConnectStore();
-		vmime::std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
+		std::shared_ptr<vmime::net::store> store = createAndConnectStore();
+		std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
 
 		// Destroy "Folder/SubFolder" (total: 3 folders)
-		vmime::std::shared_ptr<vmime::net::folder> folder = store->getFolder
+		std::shared_ptr<vmime::net::folder> folder = store->getFolder
 			(fpath() / "Folder" / "SubFolder");
 
 		folder->destroy();
 
 		// Ensure folder and its subfolders have been deleted and other folders still exist
-		const std::vector <vmime::std::shared_ptr<vmime::net::folder> >
+		const std::vector <std::shared_ptr<vmime::net::folder> >
 			allFolders = rootFolder->getFolders(true);
 
 		VASSERT_EQ("1", 2, allFolders.size());
@@ -429,8 +429,8 @@ public:
 	{
 		createMaildir(dirs, files);
 
-		vmime::std::shared_ptr<vmime::net::store> store = createAndConnectStore();
-		vmime::std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
+		std::shared_ptr<vmime::net::store> store = createAndConnectStore();
+		std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
 
 		VASSERT("1",  store->getFolder(fpath() / "Folder" / "SubFolder")->exists());
 		VASSERT("2", !store->getFolder(fpath() / "Folder" / "SubSubFolder1")->exists());
@@ -455,8 +455,8 @@ public:
 	{
 		createMaildir(dirs, files);
 
-		vmime::std::shared_ptr<vmime::net::store> store = createAndConnectStore();
-		vmime::std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
+		std::shared_ptr<vmime::net::store> store = createAndConnectStore();
+		std::shared_ptr<vmime::net::folder> rootFolder = store->getRootFolder();
 
 		VASSERT("Before", !store->getFolder(fpath() / "Folder" / "NewFolder")->exists());
 
@@ -473,12 +473,12 @@ private:
 	vmime::utility::file::path m_tempPath;
 
 
-	vmime::std::shared_ptr<vmime::net::store> createAndConnectStore()
+	std::shared_ptr<vmime::net::store> createAndConnectStore()
 	{
-		vmime::std::shared_ptr<vmime::net::session> session =
-			vmime::std::make_shared<vmime::net::session>();
+		std::shared_ptr<vmime::net::session> session =
+			std::make_shared<vmime::net::session>();
 
-		vmime::std::shared_ptr<vmime::net::store> store =
+		std::shared_ptr<vmime::net::store> store =
 			session->getStore(getStoreURL());
 
 		store->connect();
@@ -486,8 +486,8 @@ private:
 		return store;
 	}
 
-	const vmime::std::shared_ptr<vmime::net::folder> findFolder
-		(const std::vector <vmime::std::shared_ptr<vmime::net::folder> >& folders,
+	const std::shared_ptr<vmime::net::folder> findFolder
+		(const std::vector <std::shared_ptr<vmime::net::folder> >& folders,
 		 const vmime::net::folder::path& path)
 	{
 		for (unsigned int i = 0, n = folders.size() ; i < n ; ++i)
@@ -501,7 +501,7 @@ private:
 
 	const vmime::utility::url getStoreURL()
 	{
-		vmime::std::shared_ptr<vmime::utility::fileSystemFactory> fsf =
+		std::shared_ptr<vmime::utility::fileSystemFactory> fsf =
 			vmime::platform::getHandler()->getFileSystemFactory();
 
 		vmime::utility::url url(std::string("maildir://localhost")
@@ -512,15 +512,15 @@ private:
 
 	void createMaildir(const vmime::string* const dirs, const vmime::string* const files)
 	{
-		vmime::std::shared_ptr<vmime::utility::fileSystemFactory> fsf =
+		std::shared_ptr<vmime::utility::fileSystemFactory> fsf =
 			vmime::platform::getHandler()->getFileSystemFactory();
 
-		vmime::std::shared_ptr<vmime::utility::file> rootDir = fsf->create(m_tempPath);
+		std::shared_ptr<vmime::utility::file> rootDir = fsf->create(m_tempPath);
 		rootDir->createDirectory(false);
 
 		for (vmime::string const* dir = dirs ; *dir != "*" ; ++dir)
 		{
-			vmime::std::shared_ptr<vmime::utility::file> fdir = fsf->create(m_tempPath / fsf->stringToPath(*dir));
+			std::shared_ptr<vmime::utility::file> fdir = fsf->create(m_tempPath / fsf->stringToPath(*dir));
 			fdir->createDirectory(false);
 		}
 
@@ -528,11 +528,11 @@ private:
 		{
 			const vmime::string& contents = *(file + 1);
 
-			vmime::std::shared_ptr<vmime::utility::file> ffile = fsf->create(m_tempPath / fsf->stringToPath(*file));
+			std::shared_ptr<vmime::utility::file> ffile = fsf->create(m_tempPath / fsf->stringToPath(*file));
 			ffile->createFile();
 
-			vmime::std::shared_ptr<vmime::utility::fileWriter> fileWriter = ffile->getFileWriter();
-			vmime::std::shared_ptr<vmime::utility::outputStream> os = fileWriter->getOutputStream();
+			std::shared_ptr<vmime::utility::fileWriter> fileWriter = ffile->getFileWriter();
+			std::shared_ptr<vmime::utility::outputStream> os = fileWriter->getOutputStream();
 
 			os->write(contents.data(), contents.length());
 			os->flush();
@@ -544,23 +544,23 @@ private:
 
 	void destroyMaildir()
 	{
-		vmime::std::shared_ptr<vmime::utility::fileSystemFactory> fsf =
+		std::shared_ptr<vmime::utility::fileSystemFactory> fsf =
 			vmime::platform::getHandler()->getFileSystemFactory();
 
 		recursiveDelete(fsf->create(m_tempPath));
 	}
 
-	void recursiveDelete(vmime::std::shared_ptr<vmime::utility::file> dir)
+	void recursiveDelete(std::shared_ptr<vmime::utility::file> dir)
 	{
 		if (!dir->exists() || !dir->isDirectory())
 			return;
 
-		vmime::std::shared_ptr<vmime::utility::fileIterator> files = dir->getFiles();
+		std::shared_ptr<vmime::utility::fileIterator> files = dir->getFiles();
 
 		// First, delete files and subdirectories in this directory
 		while (files->hasMoreElements())
 		{
-			vmime::std::shared_ptr<vmime::utility::file> file = files->nextElement();
+			std::shared_ptr<vmime::utility::file> file = files->nextElement();
 
 			if (file->isDirectory())
 			{

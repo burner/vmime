@@ -256,14 +256,14 @@ class testSocketFactory : public vmime::net::socketFactory
 {
 public:
 
-	vmime::std::shared_ptr<vmime::net::socket> create()
+	std::shared_ptr<vmime::net::socket> create()
 	{
-		return vmime::std::make_shared<T>();
+		return std::make_shared<T>();
 	}
 
-	vmime::std::shared_ptr<vmime::net::socket> create(vmime::std::shared_ptr<vmime::net::timeoutHandler> /* th */)
+	std::shared_ptr<vmime::net::socket> create(std::shared_ptr<vmime::net::timeoutHandler> /* th */)
 	{
-		return vmime::std::make_shared<T>();
+		return std::make_shared<T>();
 	}
 };
 
@@ -307,7 +307,7 @@ class testTimeoutHandlerFactory : public vmime::net::timeoutHandlerFactory
 {
 public:
 
-	vmime::std::shared_ptr<vmime::net::timeoutHandler> create();
+	std::shared_ptr<vmime::net::timeoutHandler> create();
 };
 
 

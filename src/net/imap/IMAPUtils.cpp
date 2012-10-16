@@ -737,7 +737,7 @@ void IMAPUtils::convertAddressList
 		string email = addr.addr_mailbox()->value()
 			+ "@" + addr.addr_host()->value();
 
-		dest.appendMailbox(vmime::std::make_shared<mailbox>(name, email));
+		dest.appendMailbox(std::make_shared<mailbox>(name, email));
 	}
 }
 

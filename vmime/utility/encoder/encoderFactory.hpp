@@ -67,7 +67,7 @@ private:
 	template <class E>
 	class registeredEncoderImpl : public registeredEncoder
 	{
-		friend class vmime::creator;
+		//friend class vmime::creator; TODO shared_ptr
 
 	protected:
 
@@ -77,7 +77,7 @@ private:
 
 		std::shared_ptr<encoder> create() const
 		{
-			return vmime::std::make_shared<E>();
+			return std::make_shared<E>();
 		}
 
 		const string& getName() const
@@ -102,7 +102,7 @@ public:
 	template <class E>
 	void registerName(const string& name)
 	{
-		m_encoders.push_back(vmime::std::make_shared<registeredEncoderImpl <E> >(utility::stringUtils::toLower(name)));
+		m_encoders.push_back(std::make_shared<registeredEncoderImpl <E> >(utility::stringUtils::toLower(name)));
 	}
 
 	/** Create a new encoder instance from an encoding name.

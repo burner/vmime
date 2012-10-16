@@ -125,14 +125,14 @@ std::shared_ptr<IMAPPart> IMAPPart::create
 {
 	if (body->body_type_mpart())
 	{
-		std::shared_ptr<IMAPPart> part = vmime::std::make_shared<IMAPPart>(parent, number, body->body_type_mpart());
-		part->m_structure = vmime::std::make_shared<IMAPStructure>(part, body->body_type_mpart()->list());
+		std::shared_ptr<IMAPPart> part = std::make_shared<IMAPPart>(parent, number, body->body_type_mpart());
+		part->m_structure = std::make_shared<IMAPStructure>(part, body->body_type_mpart()->list());
 
 		return part;
 	}
 	else
 	{
-		return vmime::std::make_shared<IMAPPart>(parent, number, body->body_type_1part());
+		return std::make_shared<IMAPPart>(parent, number, body->body_type_1part());
 	}
 }
 
@@ -142,7 +142,7 @@ header& IMAPPart::getOrCreateHeader()
 	if (m_header != NULL)
 		return *m_header;
 	else
-		return *(m_header = vmime::std::make_shared<header>());
+		return *(m_header = std::make_shared<header>());
 }
 
 

@@ -52,7 +52,7 @@ private:
 
 	friend class IMAPStore;
 	friend class IMAPMessage;
-	friend class vmime::creator;  // vmime::std::make_shared<IMAPFolder>
+	friend class vmime::creator;  // std::make_shared<IMAPFolder>
 
 
 	IMAPFolder(const folder::path& path, std::shared_ptr<IMAPStore> store, const int type = TYPE_UNDEFINED, const int flags = FLAG_UNDEFINED);

@@ -67,7 +67,7 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testNull()
 	{
-		vmime::std::shared_ptr<A> r1;
+		std::shared_ptr<A> r1;
 
 		VASSERT("1", r1 == NULL);
 		VASSERT("2", r1 == 0);
@@ -82,21 +82,21 @@ VMIME_TEST_SUITE_BEGIN
 	void testRefCounting()
 	{
 		bool o1_alive;
-		vmime::std::shared_ptr<R> r1 = vmime::std::make_shared<R>(&o1_alive);
+		std::shared_ptr<R> r1 = std::make_shared<R>(&o1_alive);
 
 		VASSERT("1", r1.get() != 0);
 		VASSERT("2", o1_alive);
 		VASSERT_EQ("3", 1, r1->strongCount());
 		VASSERT_EQ("4", 1, r1->weakCount());
 
-		vmime::std::shared_ptr<R> r2 = r1;
+		std::shared_ptr<R> r2 = r1;
 
 		VASSERT("5", o1_alive);
 		VASSERT_EQ("6", 2, r1->strongCount());
 		VASSERT_EQ("7", 2, r1->weakCount());
 
 		bool o2_alive;
-		vmime::std::shared_ptr<R> r3 = vmime::std::make_shared<R>(&o2_alive);
+		std::shared_ptr<R> r3 = std::make_shared<R>(&o2_alive);
 
 		r2 = r3;
 
@@ -107,7 +107,7 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT_EQ("12", 2, r3->strongCount());
 
 		{
-			vmime::std::shared_ptr<R> r4;
+			std::shared_ptr<R> r4;
 
 			r4 = r1;
 
@@ -129,7 +129,7 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT("21", o2_alive);
 
 		{
-			vmime::std::weak_ptr<R> w1 = r3;
+			std::weak_ptr<R> w1 = r3;
 
 			VASSERT_EQ("22", 3, r3->weakCount());
 		}
@@ -141,14 +141,14 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testWeakRef()
 	{
-		vmime::std::shared_ptr<A> r1 = vmime::std::make_shared<A>();
-		vmime::std::weak_ptr<A> w1 = r1;
+		std::shared_ptr<A> r1 = std::make_shared<A>();
+		std::weak_ptr<A> w1 = r1;
 
 		VASSERT("1", r1.get() != 0);
 		VASSERT("2", r1.get() == w1.acquire().get());
 
 		{
-			vmime::std::shared_ptr<A> r2 = r1;
+			std::shared_ptr<A> r2 = r1;
 
 			VASSERT("3", r1.get() == r2.get());
 			VASSERT("4", r1.get() == w1.acquire().get());
@@ -165,15 +165,15 @@ VMIME_TEST_SUITE_BEGIN
 	void testCast()
 	{
 		// Explicit upcast
-		vmime::std::shared_ptr<A> r1 = vmime::std::make_shared<C>();
-		vmime::std::shared_ptr<C> r2 = r1.dynamicCast <C>();
+		std::shared_ptr<A> r1 = std::make_shared<C>();
+		std::shared_ptr<C> r2 = r1.dynamicCast <C>();
 
 		VASSERT("1", r2.get() == dynamic_cast <C*>(r1.get()));
 		VASSERT("2", 0 == r1.dynamicCast <B>().get());
 
 		// Implicit downcast
-		vmime::std::shared_ptr<D> r3 = vmime::std::make_shared<D>();
-		vmime::std::shared_ptr<A> r4 = r3;
+		std::shared_ptr<D> r3 = std::make_shared<D>();
+		std::shared_ptr<A> r4 = r3;
 
 		VASSERT("3", r4.get() == dynamic_cast <A*>(r3.get()));
 	}
@@ -181,12 +181,12 @@ VMIME_TEST_SUITE_BEGIN
 	void testContainer()
 	{
 		bool o1_alive;
-		vmime::std::shared_ptr<R> r1 = vmime::std::make_shared<R>(&o1_alive);
+		std::shared_ptr<R> r1 = std::make_shared<R>(&o1_alive);
 
 		bool o2_alive;
-		vmime::std::shared_ptr<R> r2 = vmime::std::make_shared<R>(&o2_alive);
+		std::shared_ptr<R> r2 = std::make_shared<R>(&o2_alive);
 
-		std::vector <vmime::std::shared_ptr<R> > v1;
+		std::vector <std::shared_ptr<R> > v1;
 		v1.push_back(r1);
 		v1.push_back(r2);
 
@@ -196,7 +196,7 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT_EQ("4", 2, r2->strongCount());
 
 		{
-			std::vector <vmime::std::shared_ptr<R> > v2 = v1;
+			std::vector <std::shared_ptr<R> > v2 = v1;
 
 			VASSERT("5", o1_alive);
 			VASSERT_EQ("6", 3, r1->strongCount());
@@ -219,10 +219,10 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testCompare()
 	{
-		vmime::std::shared_ptr<A> r1 = vmime::std::make_shared<A>();
-		vmime::std::shared_ptr<A> r2 = vmime::std::make_shared<B>();
-		vmime::std::shared_ptr<A> r3 = vmime::std::make_shared<C>();
-		vmime::std::shared_ptr<A> r4 = r1;
+		std::shared_ptr<A> r1 = std::make_shared<A>();
+		std::shared_ptr<A> r2 = std::make_shared<B>();
+		std::shared_ptr<A> r3 = std::make_shared<C>();
+		std::shared_ptr<A> r4 = r1;
 
 		VASSERT("1", r1 != r2);
 		VASSERT("2", r1.get() == r1);
@@ -232,7 +232,7 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT("6", r1 == r4);
 		VASSERT("7", r1.get() == r4);
 
-		std::vector <vmime::std::shared_ptr<A> > v;
+		std::vector <std::shared_ptr<A> > v;
 		v.push_back(r1);
 		v.push_back(r2);
 

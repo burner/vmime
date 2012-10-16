@@ -51,7 +51,7 @@ VMIME_TEST_SUITE_BEGIN
 		                     buffer.begin() + c.getParsedOffset() + c.getParsedLength());
 	}
 
-	static const vmime::string extractContents(const vmime::std::shared_ptr<const vmime::contentHandler> cts)
+	static const vmime::string extractContents(const std::shared_ptr<const vmime::contentHandler> cts)
 	{
 		std::ostringstream oss;
 		vmime::utility::outputStreamAdapter os(oss);
@@ -107,7 +107,7 @@ VMIME_TEST_SUITE_BEGIN
 	{
 		vmime::bodyPart p1;
 		p1.getHeader()->getField("Foo")->setValue(vmime::string("bar"));
-		p1.getBody()->setContents(vmime::std::make_shared<vmime::stringContentHandler>("Baz"));
+		p1.getBody()->setContents(std::make_shared<vmime::stringContentHandler>("Baz"));
 
 		VASSERT_EQ("1", "Foo: bar\r\n\r\nBaz", p1.generate());
 	}
@@ -164,7 +164,7 @@ VMIME_TEST_SUITE_BEGIN
 			"--=_+ZWjySayKqSf2CyrfnNpaAcO6-G1HpoXdHZ4YyswAWqEY39Q--\r\n"
 			"Epilog text";
 
-		vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 
 		std::string istr(testmail);
 
@@ -207,26 +207,26 @@ VMIME_TEST_SUITE_BEGIN
 	/** Ensure '7bit' encoding is used when body is 7-bit only. */
 	void testGenerate7bit()
 	{
-		vmime::std::shared_ptr<vmime::plainTextPart> p1 = vmime::std::make_shared<vmime::plainTextPart>();
-		p1->setText(vmime::std::make_shared<vmime::stringContentHandler>("Part1 is US-ASCII only."));
+		std::shared_ptr<vmime::plainTextPart> p1 = std::make_shared<vmime::plainTextPart>();
+		p1->setText(std::make_shared<vmime::stringContentHandler>("Part1 is US-ASCII only."));
 
-		vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 		p1->generateIn(msg, msg);
 
-		vmime::std::shared_ptr<vmime::header> header1 = msg->getBody()->getPartAt(0)->getHeader();
+		std::shared_ptr<vmime::header> header1 = msg->getBody()->getPartAt(0)->getHeader();
 		VASSERT_EQ("1", "7bit", header1->ContentTransferEncoding()->getValue()->generate());
 	}
 
 	void testTextUsageForQPEncoding()
 	{
-		vmime::std::shared_ptr<vmime::plainTextPart> part = vmime::std::make_shared<vmime::plainTextPart>();
-		part->setText(vmime::std::make_shared<vmime::stringContentHandler>("Part1-line1\r\nPart1-line2\r\n\x89"));
+		std::shared_ptr<vmime::plainTextPart> part = std::make_shared<vmime::plainTextPart>();
+		part->setText(std::make_shared<vmime::stringContentHandler>("Part1-line1\r\nPart1-line2\r\n\x89"));
 
-		vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 		part->generateIn(msg, msg);
 
-		vmime::std::shared_ptr<vmime::body> body = msg->getBody()->getPartAt(0)->getBody();
-		vmime::std::shared_ptr<vmime::header> header = msg->getBody()->getPartAt(0)->getHeader();
+		std::shared_ptr<vmime::body> body = msg->getBody()->getPartAt(0)->getBody();
+		std::shared_ptr<vmime::header> header = msg->getBody()->getPartAt(0)->getHeader();
 
 		std::ostringstream oss;
 		vmime::utility::outputStreamAdapter os(oss);
@@ -301,17 +301,17 @@ VMIME_TEST_SUITE_BEGIN
 		oss << "\r\n"
 		    << "--MY-BOUNDARY--\r\n";
 
-		vmime::std::shared_ptr<vmime::utility::inputStreamStringAdapter> is =
-			vmime::std::make_shared<vmime::utility::inputStreamStringAdapter>(oss.str());
+		std::shared_ptr<vmime::utility::inputStreamStringAdapter> is =
+			std::make_shared<vmime::utility::inputStreamStringAdapter>(oss.str());
 
-		vmime::std::shared_ptr<vmime::message> msg = vmime::std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
 		msg->parse(is, oss.str().length());
 
-		vmime::std::shared_ptr<vmime::body> body1 = msg->getBody()->getPartAt(0)->getBody();
-		vmime::std::shared_ptr<const vmime::contentHandler> body1Cts = body1->getContents();
+		std::shared_ptr<vmime::body> body1 = msg->getBody()->getPartAt(0)->getBody();
+		std::shared_ptr<const vmime::contentHandler> body1Cts = body1->getContents();
 
-		vmime::std::shared_ptr<vmime::body> body2 = msg->getBody()->getPartAt(1)->getBody();
-		vmime::std::shared_ptr<const vmime::contentHandler> body2Cts = body2->getContents();
+		std::shared_ptr<vmime::body> body2 = msg->getBody()->getPartAt(1)->getBody();
+		std::shared_ptr<const vmime::contentHandler> body2Cts = body2->getContents();
 
 		vmime::string body1CtsExtracted;
 		vmime::utility::outputStreamStringAdapter body1CtsExtractStream(body1CtsExtracted);

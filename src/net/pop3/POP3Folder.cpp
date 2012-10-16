@@ -222,7 +222,7 @@ std::shared_ptr<message> POP3Folder::getMessage(const int num)
 	else if (num < 1 || num > m_messageCount)
 		throw exceptions::message_not_found();
 
-	return vmime::std::make_shared<POP3Message>(thisRef().dynamicCast <POP3Folder>(), num);
+	return std::make_shared<POP3Message>(thisRef().dynamicCast <POP3Folder>(), num);
 }
 
 
@@ -243,7 +243,7 @@ std::vector <std::shared_ptr<message> > POP3Folder::getMessages(const int from, 
 	std::shared_ptr<POP3Folder> thisFolder = thisRef().dynamicCast <POP3Folder>();
 
 	for (int i = from ; i <= to2 ; ++i)
-		v.push_back(vmime::std::make_shared<POP3Message>(thisFolder, i));
+		v.push_back(std::make_shared<POP3Message>(thisFolder, i));
 
 	return (v);
 }
@@ -278,7 +278,7 @@ std::vector <std::shared_ptr<message> > POP3Folder::getMessages(const std::vecto
 		if (*it < 1|| *it > m_messageCount)
 			throw exceptions::message_not_found();
 
-		v.push_back(vmime::std::make_shared<POP3Message>(thisFolder, *it));
+		v.push_back(std::make_shared<POP3Message>(thisFolder, *it));
 	}
 
 	return (v);
@@ -305,7 +305,7 @@ std::shared_ptr<folder> POP3Folder::getFolder(const folder::path::component& nam
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 
-	return vmime::std::make_shared<POP3Folder>(m_path / name, store);
+	return std::make_shared<POP3Folder>(m_path / name, store);
 }
 
 
@@ -319,7 +319,7 @@ std::vector <std::shared_ptr<folder> > POP3Folder::getFolders(const bool /* recu
 	if (m_path.isEmpty())
 	{
 		std::vector <std::shared_ptr<folder> > v;
-		v.push_back(vmime::std::make_shared<POP3Folder>(folder::path::component("INBOX"), store));
+		v.push_back(std::make_shared<POP3Folder>(folder::path::component("INBOX"), store));
 		return (v);
 	}
 	else
@@ -542,7 +542,7 @@ std::shared_ptr<folder> POP3Folder::getParent()
 	if (m_path.isEmpty())
 		return NULL;
 	else
-		return vmime::std::make_shared<POP3Folder>(m_path.getParent(), m_store.acquire());
+		return std::make_shared<POP3Folder>(m_path.getParent(), m_store.acquire());
 }
 
 

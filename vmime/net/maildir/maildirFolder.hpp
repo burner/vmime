@@ -53,7 +53,7 @@ private:
 
 	friend class maildirStore;
 	friend class maildirMessage;
-	friend class vmime::creator;  // vmime::std::make_shared<maildirFolder>
+	friend class vmime::creator;  // std::make_shared<maildirFolder>
 
 
 	maildirFolder(const folder::path& path, std::shared_ptr<maildirStore> store);
