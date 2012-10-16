@@ -328,13 +328,15 @@ void headerField::setValue(std::shared_ptr<headerFieldValue> value)
 
 void headerField::setValueConst(std::shared_ptr<const headerFieldValue> value)
 {
-	m_value = value->clone().dynamicCast <headerFieldValue>();
+	//m_value = value->clone().dynamicCast <headerFieldValue>(); TODO shared
+	m_value = std::dynamic_pointer_cast<headerFieldValue>(value->clone());
 }
 
 
 void headerField::setValue(const headerFieldValue& value)
 {
-	m_value = value.clone().dynamicCast <headerFieldValue>();
+	// m_value = value.clone().dynamicCast <headerFieldValue>(); TODO shared
+	m_value = std::dynamic_pointer_cast<headerFieldValue>(value.clone());
 }
 
 

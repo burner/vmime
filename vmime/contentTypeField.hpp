@@ -41,10 +41,10 @@ class contentTypeField : public parameterizedHeaderField
 
 protected:
 
-	contentTypeField();
+public:
+	contentTypeField(); // TODO shared was protected
 	contentTypeField(contentTypeField&);
 
-public:
 
 	/** Return the value of the "boundary" parameter. Boundary is a
 	  * random string used to separate body parts.

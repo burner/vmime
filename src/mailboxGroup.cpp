@@ -86,18 +86,24 @@ void mailboxGroup::parseImpl(const string& buffer, const string::size_type posit
 		{
 			if (parsedAddress->isGroup())
 			{
-				std::shared_ptr<mailboxGroup> group = parsedAddress.staticCast <mailboxGroup>();
+				// std::shared_ptr<mailboxGroup> group =
+				// parsedAddress.staticCast <mailboxGroup>(); TODO shared
+				std::shared_ptr<mailboxGroup> group = std::static_pointer_cast<mailboxGroup>(parsedAddress);
 
 				// Sub-groups are not allowed in mailbox groups: so, we add all
 				// the contents of the sub-group into this group...
 				for (int i = 0 ; i < group->getMailboxCount() ; ++i)
 				{
-					m_list.push_back(group->getMailboxAt(i)->clone().staticCast <mailbox>());
+					// m_list.push_back(group->getMailboxAt(i)->clone().staticCast
+					// <mailbox>()); TODO shared
+					m_list.push_back(std::static_pointer_cast<mailbox>(group->getMailboxAt(i)->clone()));
 				}
 			}
 			else
 			{
-				m_list.push_back(parsedAddress.staticCast <mailbox>());
+				// m_list.push_back(parsedAddress.staticCast <mailbox>());
+				// TODO shared
+				m_list.push_back(std::static_pointer_cast<mailbox>(parsedAddress));
 			}
 		}
 	}
@@ -198,7 +204,9 @@ void mailboxGroup::copyFrom(const component& other)
 	for (std::vector <std::shared_ptr<mailbox> >::const_iterator it = source.m_list.begin() ;
 	     it != source.m_list.end() ; ++it)
 	{
-		m_list.push_back((*it)->clone().staticCast <mailbox>());
+		// m_list.push_back((*it)->clone().staticCast <mailbox>()); TODO
+		// shared
+		m_list.push_back(std::static_pointer_cast<mailbox>((*it)->clone()));
 	}
 }
 

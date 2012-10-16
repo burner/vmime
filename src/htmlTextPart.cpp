@@ -174,7 +174,9 @@ void htmlTextPart::addEmbeddedObject(const bodyPart& part, const string& id)
 	try
 	{
 		const std::shared_ptr<const headerField> ctf = part.getHeader()->ContentType();
-		type = *ctf->getValue().dynamicCast <const mediaType>();
+		// type = *ctf->getValue().dynamicCast <const mediaType>(); TODO
+		// shared
+		type = *std::dynamic_pointer_cast<const mediaType>(ctf->getValue());
 	}
 	catch (exceptions::no_such_field)
 	{
@@ -182,7 +184,9 @@ void htmlTextPart::addEmbeddedObject(const bodyPart& part, const string& id)
 	}
 
 	m_objects.push_back(std::make_shared<embeddedObject>
-		(part.getBody()->getContents()->clone().dynamicCast <contentHandler>(),
+		// (part.getBody()->getContents()->clone().dynamicCast
+		// <contentHandler>(), TODO shared
+		(std::dynamic_pointer_cast<contentHandler>(part.getBody()->getContents()->clone()),
 		 part.getBody()->getEncoding(), id, type));
 }
 
@@ -207,8 +211,11 @@ void htmlTextPart::parse(std::shared_ptr<const bodyPart> message, std::shared_pt
 
 	try
 	{
+		// const std::shared_ptr<const contentTypeField> ctf = TODO shared
+			//textPart->getHeader()->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
 		const std::shared_ptr<const contentTypeField> ctf =
-			textPart->getHeader()->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
+			std::dynamic_pointer_cast<contentTypeField>(textPart->getHeader()->
+					findField(fields::CONTENT_TYPE));
 
 		m_charset = ctf->getCharset();
 	}
@@ -228,7 +235,9 @@ void htmlTextPart::parse(std::shared_ptr<const bodyPart> message, std::shared_pt
 		const std::shared_ptr<const headerField> midField =
 			(*p)->getHeader()->findField(fields::CONTENT_ID);
 
-		const messageId mid = *midField->getValue().dynamicCast <const messageId>();
+		// const messageId mid = *midField->getValue().dynamicCast <const
+		// messageId>(); TODO shared
+		const messageId mid = *std::dynamic_pointer_cast<const messageId>(midField->getValue());
 
 		if (data.find("CID:" + mid.getId()) != string::npos ||
 		    data.find("cid:" + mid.getId()) != string::npos)
@@ -244,7 +253,9 @@ void htmlTextPart::parse(std::shared_ptr<const bodyPart> message, std::shared_pt
 		const std::shared_ptr<const headerField> locField =
 			(*p)->getHeader()->findField(fields::CONTENT_LOCATION);
 
-		const text loc = *locField->getValue().dynamicCast <const text>();
+		// const text loc = *locField->getValue().dynamicCast <const text>();
+		// TODO shared
+		const text loc = *std::dynamic_pointer_cast<const text>(locField->getValue());
 		const string locStr = loc.getWholeBuffer();
 
 		if (data.find(locStr) != string::npos)
@@ -271,19 +282,25 @@ bool htmlTextPart::findPlainTextPart(const bodyPart& part, const bodyPart& paren
 		const std::shared_ptr<const headerField> ctf =
 			part.getHeader()->findField(fields::CONTENT_TYPE);
 
-		const mediaType type = *ctf->getValue().dynamicCast <const mediaType>();
+		//const mediaType type = *ctf->getValue().dynamicCast <const
+		//mediaType>(); TODO shared
+		const mediaType type = *std::dynamic_pointer_cast<const mediaType>(ctf->getValue());
 
 		if (type.getType() == mediaTypes::MULTIPART &&
 		    type.getSubType() == mediaTypes::MULTIPART_ALTERNATIVE)
 		{
-			std::shared_ptr<const bodyPart> foundPart = NULL;
+			//std::shared_ptr<const bodyPart> foundPart = NULL; TODO shared
+			std::shared_ptr<const bodyPart> foundPart;
 
 			for (int i = 0 ; i < part.getBody()->getPartCount() ; ++i)
 			{
 				const std::shared_ptr<const bodyPart> p = part.getBody()->getPartAt(i);
 
-				if (p == &parent ||     // if "text/html" is in "multipart/related"
-				    p == &textPart)     // if not...
+				// if (p == &parent ||     // if "text/html" is in
+				// "multipart/related" TODO shared
+				 // p == &textPart)     // if not... TODO shared
+				if (p.get() == &parent ||     // if "text/html" is in "multipart/related"
+				    p.get() == &textPart)     // if not...
 				{
 					foundPart = p;
 				}
@@ -303,7 +320,10 @@ bool htmlTextPart::findPlainTextPart(const bodyPart& part, const bodyPart& paren
 						const std::shared_ptr<const headerField> ctf =
 							p->getHeader()->findField(fields::CONTENT_TYPE);
 
-						const mediaType type = *ctf->getValue().dynamicCast <const mediaType>();
+						// const mediaType type = *ctf->getValue().dynamicCast
+						// <const mediaType>(); TODO shared
+						const mediaType type = *dynamic_cast<const
+							mediaType*>(ctf->getValue().get());
 
 						if (type.getType() == mediaTypes::TEXT &&
 						    type.getSubType() == mediaTypes::TEXT_PLAIN)
@@ -470,9 +490,11 @@ const string htmlTextPart::cleanId(const string& id)
 htmlTextPart::embeddedObject::embeddedObject
 	(std::shared_ptr<contentHandler> data, const encoding& enc,
 	 const string& id, const mediaType& type)
-	: m_data(data->clone().dynamicCast <contentHandler>()),
-	  m_encoding(enc), m_id(id), m_type(type)
+	//: m_data(data->clone().dynamicCast <contentHandler>()), TODO shared
+	//: (m_data(data->clone())),
+	  : m_encoding(enc), m_id(id), m_type(type)
 {
+	m_data = data->clone();
 }
 
 

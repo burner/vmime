@@ -45,11 +45,11 @@ class parameterizedHeaderField : virtual public headerField
 
 protected:
 
+public:
 	// Protected constructor to prevent the user from creating
 	// new objects without using 'headerFieldFactory'
-	parameterizedHeaderField();
+	parameterizedHeaderField(); // TODO shared was proteced
 
-public:
 
 	~parameterizedHeaderField();
 

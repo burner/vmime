@@ -59,7 +59,10 @@ void mailboxField::parse(const string& buffer, const string::size_type position,
 		{
 			// If it is a group of mailboxes, take the first
 			// mailbox of the group
-			std::shared_ptr<mailboxGroup> group = parsedAddress.staticCast <mailboxGroup>();
+			// std::shared_ptr<mailboxGroup> group = parsedAddress.staticCast
+			// <mailboxGroup>(); TODO shared
+			std::shared_ptr<mailboxGroup> group =
+				std::static_pointer_cast<mailboxGroup>(parsedAddress);
 
 			if (!group->isEmpty())
 				mbox = group->getMailboxAt(0);
@@ -67,7 +70,8 @@ void mailboxField::parse(const string& buffer, const string::size_type position,
 		else
 		{
 			// Parse only if it is a mailbox
-			mbox = parsedAddress.staticCast <mailbox>();
+			// mbox = parsedAddress.staticCast <mailbox>(); TODO shared
+			mbox = std::static_pointer_cast<mailbox>(parsedAddress);
 		}
 	}
 

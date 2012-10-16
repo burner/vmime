@@ -46,12 +46,12 @@ class headerField : public component
 
 protected:
 
+public:
+
 	// Protected constructor to prevent the user from creating
 	// new objects without using 'headerFieldFactory'
-	headerField();
+	headerField(); // TODO shared was proteced
 	headerField(const string& fieldName);
-
-public:
 
 	~headerField();
 

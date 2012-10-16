@@ -42,10 +42,10 @@ class contentDispositionField : public parameterizedHeaderField
 
 protected:
 
-	contentDispositionField();
-	contentDispositionField(contentDispositionField&);
 
 public:
+	contentDispositionField(); // TODO shared was proteced
+	contentDispositionField(contentDispositionField&);
 
 	/** Return the value of the "creation-date" parameter.
 	  *
