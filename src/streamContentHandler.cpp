@@ -34,7 +34,8 @@ namespace vmime
 
 
 streamContentHandler::streamContentHandler()
-	: m_encoding(NO_ENCODING), m_stream(null)
+	//: m_encoding(NO_ENCODING), m_stream(null) TODO shared
+	: m_encoding(NO_ENCODING)
 {
 }
 
@@ -208,8 +209,10 @@ const vmime::encoding& streamContentHandler::getEncoding() const
 
 bool streamContentHandler::isBuffered() const
 {
-	if (m_stream.dynamicCast <utility::seekableInputStream>() != NULL)
+	//if (std::dynamic_pointer_cast<utility::seekableInputStream>(m_stream))
+	if (std::dynamic_pointer_cast<utility::seekableInputStream>(m_stream)) {
 		return true;
+	}
 
 	// FIXME: some streams can be resetted
 	return false;

@@ -48,10 +48,12 @@ service::service(std::shared_ptr<session> sess, const serviceInfos& /* infos */,
 	if (!auth)
 	{
 #if VMIME_HAVE_SASL_SUPPORT
-		m_auth = vmime::create
+		//m_auth = vmime::create TODO shared
+		m_auth = std::make_shared
 			<security::sasl::defaultSASLAuthenticator>();
 #else
-		m_auth = vmime::create
+		//m_auth = vmime::create TODO shared
+		m_auth = std::make_shared
 			<security::defaultAuthenticator>();
 #endif // VMIME_HAVE_SASL_SUPPORT
 	}

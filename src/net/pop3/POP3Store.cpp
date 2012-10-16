@@ -95,8 +95,10 @@ std::shared_ptr<folder> POP3Store::getDefaultFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
+	//return std::make_shared<POP3Folder>(folder::path(folder::path::component("INBOX")), TODO shared
+		//thisRef().dynamicCast <POP3Store>()); TODO shared
 	return std::make_shared<POP3Folder>(folder::path(folder::path::component("INBOX")),
-		thisRef().dynamicCast <POP3Store>());
+		std::dynamic_pointer_cast<POP3Store>(thisRef()));
 }
 
 
@@ -105,8 +107,10 @@ std::shared_ptr<folder> POP3Store::getRootFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
+	//return std::make_shared<POP3Folder>(folder::path(), TODO shared
+		//thisRef().dynamicCast <POP3Store>()); TODO shared
 	return std::make_shared<POP3Folder>(folder::path(),
-		thisRef().dynamicCast <POP3Store>());
+		std::dynamic_pointer_cast<POP3Store>(thisRef()));
 }
 
 
@@ -115,8 +119,10 @@ std::shared_ptr<folder> POP3Store::getFolder(const folder::path& path)
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
+	//return std::make_shared<POP3Folder>(path, TODO shared
+		//thisRef().dynamicCast <POP3Store>()); TODO shared
 	return std::make_shared<POP3Folder>(path,
-		thisRef().dynamicCast <POP3Store>());
+		std::dynamic_pointer_cast<POP3Store>(thisRef()));
 }
 
 

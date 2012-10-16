@@ -41,11 +41,12 @@ public:
 	{
 	}
 
-	ref <service> create
-		(ref <session> sess,
-		 ref <security::authenticator> auth) const
+	//ref <service> create (ref <session> sess, ref <security::authenticator> auth) const TODO shared
+	std::shared_ptr<service> create(std::shared_ptr<session> sess, 
+			std::shared_ptr<security::authenticator> auth) const
 	{
-		return vmime::create <S>(sess, auth);
+		//return vmime::create <S>(sess, auth); TODO shared
+		return std::make_shared<S>(sess, auth);
 	}
 
 	const serviceInfos& getInfos() const
@@ -80,7 +81,8 @@ public:
 	serviceRegisterer(const string& protocol, const service::Type type)
 	{
 		serviceFactory::getInstance()->registerService
-			(vmime::create <vmime::net::registeredServiceImpl <S> >(protocol, type));
+			//(vmime::create <vmime::net::registeredServiceImpl <S> >(protocol, type)); TODO shared
+			(std::make_shared<vmime::net::registeredServiceImpl <S> >(protocol, type));
 	}
 };
 

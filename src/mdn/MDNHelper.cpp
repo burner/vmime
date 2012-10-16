@@ -49,7 +49,8 @@ void MDNHelper::attachMDNRequest(std::shared_ptr<message> msg, const mailboxList
 void MDNHelper::attachMDNRequest(std::shared_ptr<message> msg, const mailbox& mbox)
 {
 	mailboxList mboxList;
-	mboxList.appendMailbox(mbox.clone().dynamicCast <mailbox>());
+	//mboxList.appendMailbox(mbox.clone().dynamicCast <mailbox>()); TODO shared
+	mboxList.appendMailbox(std::dynamic_pointer_cast<mailbox>(mbox.clone()));
 
 	attachMDNRequest(msg, mboxList);
 }
@@ -63,8 +64,10 @@ const std::vector <sendableMDNInfos> MDNHelper::getPossibleMDNs(const std::share
 
 	if (hdr->hasField(fields::DISPOSITION_NOTIFICATION_TO))
 	{
-		const mailboxList& dnto = *hdr->DispositionNotificationTo()->getValue()
-			.dynamicCast <const mailboxList>();
+		//const mailboxList& dnto = *hdr->DispositionNotificationTo()->getValue() TODO shared
+			//.dynamicCast <const mailboxList>(); TODO shared
+		const mailboxList& dnto = *std::dynamic_pointer_cast<const mailboxList>(
+			hdr->DispositionNotificationTo()->getValue());
 
 		for (int i = 0 ; i < dnto.getMailboxCount() ; ++i)
 			result.push_back(sendableMDNInfos(msg, *dnto.getMailboxAt(i)));
@@ -84,10 +87,12 @@ bool MDNHelper::isMDN(const std::shared_ptr<const message> msg)
 	//     and its value is "disposition-notification"
 	if (hdr->hasField(fields::CONTENT_TYPE))
 	{
-		const contentTypeField& ctf = *(hdr->ContentType()
-			.dynamicCast <const contentTypeField>());
+		//const contentTypeField& ctf = *(hdr->ContentType() TODO shared
+		//	.dynamicCast <const contentTypeField>());
+		const contentTypeField& ctf = *std::dynamic_pointer_cast<const contentTypeField>(hdr->ContentType());
 
-		const mediaType type = *ctf.getValue().dynamicCast <const mediaType>();
+		//const mediaType type = *ctf.getValue().dynamicCast <const mediaType>(); TODO shared
+		const mediaType type = *std::dynamic_pointer_cast<const mediaType>(ctf.getValue());
 
 		if (type.getType() == vmime::mediaTypes::MULTIPART &&
 		    type.getSubType() == vmime::mediaTypes::MULTIPART_REPORT)
@@ -124,8 +129,10 @@ bool MDNHelper::needConfirmation(const std::shared_ptr<const message> msg)
 	// More than one address in Disposition-Notification-To
 	if (hdr->hasField(fields::DISPOSITION_NOTIFICATION_TO))
 	{
-		const mailboxList& dnto = *hdr->DispositionNotificationTo()->getValue()
-			.dynamicCast <const mailboxList>();
+		//const mailboxList& dnto = *hdr->DispositionNotificationTo()->getValue()
+		//	.dynamicCast <const mailboxList>(); TODO shared
+		const mailboxList& dnto = *std::dynamic_pointer_cast<const mailboxList>(
+			hdr->DispositionNotificationTo()->getValue());
 
 		if (dnto.getMailboxCount() > 1)
 			return true;
@@ -134,7 +141,8 @@ bool MDNHelper::needConfirmation(const std::shared_ptr<const message> msg)
 
 		// Return-Path != Disposition-Notification-To
 		const mailbox& mbox = *dnto.getMailboxAt(0);
-		const path& rp = *hdr->ReturnPath()->getValue().dynamicCast <const path>();
+		//const path& rp = *hdr->ReturnPath()->getValue().dynamicCast <const path>(); TODO shared
+		const path& rp = *std::dynamic_pointer_cast<const path>(hdr->ReturnPath()->getValue());
 
 		if (mbox.getEmail() != rp.getLocalPart() + "@" + rp.getDomain())
 			return true;
@@ -161,7 +169,8 @@ std::shared_ptr<message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
 
 	hdr->ContentType()->setValue(mediaType(vmime::mediaTypes::MULTIPART,
 	                                       vmime::mediaTypes::MULTIPART_REPORT));
-	hdr->ContentType().dynamicCast <contentTypeField>()->setReportType("disposition-notification");
+	//hdr->ContentType().dynamicCast <contentTypeField>()->setReportType("disposition-notification"); TODO shared
+	std::dynamic_pointer_cast<contentTypeField>(hdr->ContentType())->setReportType("disposition-notification");
 
 	hdr->Disposition()->setValue(dispo);
 
@@ -196,7 +205,8 @@ std::shared_ptr<bodyPart> MDNHelper::createFirstMDNPart(const sendableMDNInfos& 
 	hdr->ContentType()->setValue(mediaType(vmime::mediaTypes::TEXT,
 	                                       vmime::mediaTypes::TEXT_PLAIN));
 
-	hdr->ContentType().dynamicCast <contentTypeField>()->setCharset(ch);
+	//hdr->ContentType().dynamicCast <contentTypeField>()->setCharset(ch); TODO shared
+	std::dynamic_pointer_cast<contentTypeField>(hdr->ContentType())->setCharset(ch);
 
 	// Body
 	part->getBody()->setContents(std::make_shared<stringContentHandler>(text));

@@ -88,8 +88,10 @@ void receivedMDNInfos::extract()
 		if (!part->getHeader()->hasField(fields::CONTENT_TYPE))
 			continue;
 
-		const mediaType& type = *part->getHeader()->ContentType()->
-			getValue().dynamicCast <const mediaType>();
+		//const mediaType& type = *part->getHeader()->ContentType()-> TODO shared
+		//getValue().dynamicCast <const mediaType>(); TODO shared
+		const mediaType& type = *std::dynamic_pointer_cast<const mediaType>(
+				part->getHeader()->ContentType()->getValue());
 
 		// Extract from second part (message/disposition-notification)
 		if (type.getType() == vmime::mediaTypes::MESSAGE &&
@@ -104,10 +106,12 @@ void receivedMDNInfos::extract()
 			header fields;
 			fields.parse(oss.str());
 
-			try { m_omid = *fields.OriginalMessageId()->getValue().dynamicCast <const messageId>(); }
+			//try { m_omid = *fields.OriginalMessageId()->getValue().dynamicCast <const messageId>(); } TODO shared
+			try { m_omid = *std::dynamic_pointer_cast<const messageId>(fields.OriginalMessageId()->getValue()); }
 			catch (exceptions::no_such_field&) { /* Ignore */ }
 
-			try { m_disp = *fields.Disposition()->getValue().dynamicCast <const disposition>(); }
+			//try { m_disp = *fields.Disposition()->getValue().dynamicCast <const disposition>(); } TODO shared
+			try { m_disp = *std::dynamic_pointer_cast<const disposition>(fields.Disposition()->getValue()); }
 			catch (exceptions::no_such_field&) { /* Ignore */ }
 		}
 	}

@@ -69,11 +69,10 @@ private:
 	{
 		//friend class vmime::creator; TODO shared_ptr
 
-	protected:
-
-		registeredEncoderImpl(const string& name) : m_name(name) { }
-
 	public:
+
+		// TODO shared was protected
+		registeredEncoderImpl(const string& name) : m_name(name) { }
 
 		std::shared_ptr<encoder> create() const
 		{

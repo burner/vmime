@@ -217,7 +217,8 @@ std::shared_ptr<word> word::parseNext(const string& buffer, const string::size_t
 		return (w);
 	}
 
-	return (null);
+	//return (null); TODO shared
+	return nullptr;
 }
 
 

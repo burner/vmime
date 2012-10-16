@@ -52,7 +52,7 @@ private:
 
 	friend class POP3Store;
 	friend class POP3Message;
-	friend class vmime::creator;  // std::make_shared<POP3Folder>
+	//friend class vmime::creator;  // std::make_shared<POP3Folder>
 
 	POP3Folder(const folder::path& path, std::shared_ptr<POP3Store> store);
 	POP3Folder(const POP3Folder&) : folder() { }

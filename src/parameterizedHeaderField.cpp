@@ -362,7 +362,8 @@ void parameterizedHeaderField::copyFrom(const component& other)
 	for (std::vector <std::shared_ptr<parameter> >::const_iterator i = source.m_params.begin() ;
 	     i != source.m_params.end() ; ++i)
 	{
-		appendParameter((*i)->clone().dynamicCast <parameter>());
+		// TODO shared
+		appendParameter(std::dynamic_pointer_cast<parameter>((*i)->clone()));
 	}
 }
 

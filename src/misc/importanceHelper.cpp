@@ -73,7 +73,8 @@ importanceHelper::Importance importanceHelper::getImportanceHeader(std::shared_p
 	try
 	{
 		const std::shared_ptr<const headerField> fld = hdr->findField("X-Priority");
-		const string value = fld->getValue().dynamicCast <const text>()->getWholeBuffer();
+		//const string value = fld->getValue().dynamicCast <const text>()->getWholeBuffer(); TODO shared
+		const string value = std::dynamic_pointer_cast<const text>(fld->getValue())->getWholeBuffer();
 
 		int n = IMPORTANCE_NORMAL;
 
@@ -99,8 +100,10 @@ importanceHelper::Importance importanceHelper::getImportanceHeader(std::shared_p
 		try
 		{
 			const std::shared_ptr<const headerField> fld = hdr->findField("Importance");
+			//const string value = utility::stringUtils::toLower(utility::stringUtils::trim
+			//	(fld->getValue().dynamicCast <const text>()->getWholeBuffer())); TODO shared
 			const string value = utility::stringUtils::toLower(utility::stringUtils::trim
-				(fld->getValue().dynamicCast <const text>()->getWholeBuffer()));
+				(std::dynamic_pointer_cast<const text>(fld->getValue())->getWholeBuffer()));
 
 			if (value == "low")
 				return (IMPORTANCE_LOWEST);

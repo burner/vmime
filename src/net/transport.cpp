@@ -46,9 +46,11 @@ static void extractMailboxes
 {
 	for (int i = 0 ; i < list.getAddressCount() ; ++i)
 	{
-		std::shared_ptr<mailbox> mbox = list.getAddressAt(i)->clone().dynamicCast <mailbox>();
+		std::shared_ptr<mailbox> mbox = std::dynamic_pointer_cast<mailbox>(list.getAddressAt(i)->clone()); 
+		// TODO shard
 
-		if (mbox != NULL)
+		//if (mbox != NULL) TODO shared
+		if (mbox)
 			recipients.appendMailbox(mbox);
 	}
 }
@@ -61,8 +63,10 @@ void transport::send(std::shared_ptr<vmime::message> msg, utility::progressListe
 
 	try
 	{
-		const mailbox& mbox = *msg->getHeader()->findField(fields::FROM)->
-			getValue().dynamicCast <const mailbox>();
+		//const mailbox& mbox = *msg->getHeader()->findField(fields::FROM)-> TODO shared
+			//getValue().dynamicCast <const mailbox>(); TODO shared
+		const mailbox& mbox = *std::dynamic_pointer_cast<const mailbox>(msg->getHeader()->findField(fields::FROM)->
+			getValue());
 
 		expeditor = mbox;
 	}
@@ -76,8 +80,10 @@ void transport::send(std::shared_ptr<vmime::message> msg, utility::progressListe
 
 	try
 	{
-		const addressList& to = *msg->getHeader()->findField(fields::TO)->
-			getValue().dynamicCast <const addressList>();
+		//const addressList& to = *msg->getHeader()->findField(fields::TO)-> TODO shared
+			//getValue().dynamicCast <const addressList>(); TODO shared
+		const addressList& to = *std::dynamic_pointer_cast<const addressList>(
+			msg->getHeader()->findField(fields::TO)->getValue());
 
 		extractMailboxes(recipients, to);
 	}
@@ -85,8 +91,10 @@ void transport::send(std::shared_ptr<vmime::message> msg, utility::progressListe
 
 	try
 	{
-		const addressList& cc = *msg->getHeader()->findField(fields::CC)->
-			getValue().dynamicCast <const addressList>();
+		//const addressList& cc = *msg->getHeader()->findField(fields::CC)->
+		//	getValue().dynamicCast <const addressList>();
+		const addressList& cc = *std::dynamic_pointer_cast<const addressList>(
+			msg->getHeader()->findField(fields::CC)->getValue());
 
 		extractMailboxes(recipients, cc);
 	}
@@ -94,8 +102,10 @@ void transport::send(std::shared_ptr<vmime::message> msg, utility::progressListe
 
 	try
 	{
-		const addressList& bcc = *msg->getHeader()->findField(fields::BCC)->
-			getValue().dynamicCast <const addressList>();
+		//const addressList& bcc = *msg->getHeader()->findField(fields::BCC)-> TODO shared
+			//getValue().dynamicCast <const addressList>(); TODO shared
+		const addressList& bcc = *std::dynamic_pointer_cast<const addressList>(
+			msg->getHeader()->findField(fields::BCC)->getValue());
 
 		extractMailboxes(recipients, bcc);
 	}

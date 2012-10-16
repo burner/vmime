@@ -145,7 +145,8 @@ public:
 
 	std::shared_ptr<const IMAPTag> getTag() const
 	{
-		return m_tag.acquire();
+		//return m_tag.acquire(); TODO shared
+		return m_tag.lock();
 	}
 
 	void setSocket(std::shared_ptr<socket> sok)
@@ -5078,8 +5079,10 @@ public:
 	{
 		string receiveBuffer;
 
-		std::shared_ptr<timeoutHandler> toh = m_timeoutHandler.acquire();
-		std::shared_ptr<socket> sok = m_socket.acquire();
+		//std::shared_ptr<timeoutHandler> toh = m_timeoutHandler.acquire(); TODO shared
+		std::shared_ptr<timeoutHandler> toh = m_timeoutHandler.lock();
+		//std::shared_ptr<socket> sok = m_socket.acquire(); TODO shared
+		std::shared_ptr<socket> sok = m_socket.lock();
 
 		if (toh)
 			toh->resetTimeOut();
@@ -5116,8 +5119,10 @@ public:
 		string::size_type len = 0;
 		string receiveBuffer;
 
-		std::shared_ptr<timeoutHandler> toh = m_timeoutHandler.acquire();
-		std::shared_ptr<socket> sok = m_socket.acquire();
+		//std::shared_ptr<timeoutHandler> toh = m_timeoutHandler.acquire(); TODO shared
+		std::shared_ptr<timeoutHandler> toh = m_timeoutHandler.lock();
+		//std::shared_ptr<socket> sok = m_socket.acquire(); TODO shared
+		std::shared_ptr<socket> sok = m_socket.lock();
 
 		if (m_progress)
 			m_progress->start(count);

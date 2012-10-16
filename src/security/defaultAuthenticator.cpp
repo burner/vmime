@@ -44,7 +44,8 @@ defaultAuthenticator::~defaultAuthenticator()
 
 const string defaultAuthenticator::getUsername() const
 {
-	std::shared_ptr<const net::service> service = m_service.acquire();
+	//std::shared_ptr<const net::service> service = m_service.acquire(); TODO shared
+	std::shared_ptr<const net::service> service = m_service.lock();
 
 	const string prefix = service->getInfos().getPropertyPrefix();
 	const propertySet& props = service->getSession()->getProperties();
@@ -58,7 +59,8 @@ const string defaultAuthenticator::getUsername() const
 
 const string defaultAuthenticator::getPassword() const
 {
-	std::shared_ptr<const net::service> service = m_service.acquire();
+	//std::shared_ptr<const net::service> service = m_service.acquire(); TODO shared
+	std::shared_ptr<const net::service> service = m_service.lock();
 
 	const string prefix = service->getInfos().getPropertyPrefix();
 	const propertySet& props = service->getSession()->getProperties();

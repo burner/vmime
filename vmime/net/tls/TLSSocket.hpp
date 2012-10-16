@@ -45,7 +45,7 @@ class TLSSession;
   */
 class TLSSocket : public socket
 {
-	friend class vmime::creator;
+	//friend class vmime::creator; TODO shared
 
 protected:
 

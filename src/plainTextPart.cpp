@@ -73,7 +73,8 @@ void plainTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::sha
 void plainTextPart::parse(std::shared_ptr<const bodyPart> /* message */,
 	std::shared_ptr<const bodyPart> /* parent */, std::shared_ptr<const bodyPart> textPart)
 {
-	m_text = textPart->getBody()->getContents()->clone().dynamicCast <contentHandler>();
+	//m_text = textPart->getBody()->getContents()->clone().dynamicCast <contentHandler>(); TODO shared
+	m_text = std::dynamic_pointer_cast<contentHandler>(textPart->getBody()->getContents()->clone());
 
 	try
 	{
@@ -113,7 +114,8 @@ const std::shared_ptr<const contentHandler> plainTextPart::getText() const
 
 void plainTextPart::setText(std::shared_ptr<contentHandler> text)
 {
-	m_text = text->clone().dynamicCast <contentHandler>();
+	//m_text = text->clone().dynamicCast <contentHandler>(); TODO shared
+	m_text = std::dynamic_pointer_cast<contentHandler>(text->clone());
 }
 
 
