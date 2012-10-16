@@ -90,7 +90,9 @@ void body::parseImpl
 		const std::shared_ptr<const contentTypeField> ctf =
 			std::dynamic_pointer_cast<contentTypeField>(m_header.lock()->findField(fields::CONTENT_TYPE));
 
-		const mediaType type = *ctf->getValue().dynamicCast <const mediaType>();
+		//const mediaType type = *ctf->getValue().dynamicCast <const
+		//mediaType>(); TODO shared_ptr
+		const mediaType type = *dynamic_cast<const mediaType*>(ctf->getValue().get());
 
 		if (type.getType() == mediaTypes::MULTIPART)
 		{
@@ -357,10 +359,14 @@ void body::parseImpl
 
 		try
 		{
+			//const std::shared_ptr<const headerField> cef = TODO shared
+			//	m_header.acquire()->findField(fields::CONTENT_TRANSFER_ENCODING);
 			const std::shared_ptr<const headerField> cef =
-				m_header.acquire()->findField(fields::CONTENT_TRANSFER_ENCODING);
+				m_header.lock()->findField(fields::CONTENT_TRANSFER_ENCODING);
 
-			enc = *cef->getValue().dynamicCast <const encoding>();
+			//enc = *cef->getValue().dynamicCast <const encoding>(); TODO
+			//shared
+			enc = *dynamic_cast<const encoding*>(cef->getValue().get());
 		}
 		catch (exceptions::no_such_field&)
 		{
@@ -368,7 +374,9 @@ void body::parseImpl
 			enc = vmime::encoding(encodingTypes::SEVEN_BIT);
 
 			// Set header field
-			m_header.acquire()->ContentTransferEncoding()->setValue(enc);
+			//m_header.acquire()->ContentTransferEncoding()->setValue(enc);
+			//TODO shared
+			m_header.lock()->ContentTransferEncoding()->setValue(enc);
 		}
 
 		// Extract the (encoded) contents
@@ -396,7 +404,8 @@ void body::generateImpl(utility::outputStream& os, const string::size_type maxLi
 	{
 		string boundary;
 
-		if (m_header.acquire() == NULL)
+		//if (m_header.acquire() == NULL) TODO shared
+		if (m_header.lock())
 		{
 			boundary = generateRandomBoundaryString();
 		}
@@ -404,9 +413,12 @@ void body::generateImpl(utility::outputStream& os, const string::size_type maxLi
 		{
 			try
 			{
+				//std::shared_ptr<const contentTypeField> ctf = TODO shared
+				//	m_header.acquire()->findField(fields::CONTENT_TYPE)
+				//		.dynamicCast <const contentTypeField>();
 				std::shared_ptr<const contentTypeField> ctf =
-					m_header.acquire()->findField(fields::CONTENT_TYPE)
-						.dynamicCast <const contentTypeField>();
+					std::dynamic_pointer_cast<const contentTypeField>(
+					m_header.lock()->findField(fields::CONTENT_TYPE));
 
 				boundary = ctf->getBoundary();
 			}
@@ -573,7 +585,11 @@ bool body::isValidBoundary(const string& boundary)
 
 void body::setContentType(const mediaType& type, const charset& chset)
 {
-	std::shared_ptr<contentTypeField> ctf = m_header.acquire()->ContentType().dynamicCast <contentTypeField>();
+	//std::shared_ptr<contentTypeField> ctf =
+	//m_header.acquire()->ContentType().dynamicCast <contentTypeField>(); TODO
+	//shared
+	std::shared_ptr<contentTypeField> ctf =
+		std::dynamic_pointer_cast<contentTypeField>(m_header.lock()->ContentType());
 
 	ctf->setValue(type);
 	ctf->setCharset(chset);
@@ -582,7 +598,8 @@ void body::setContentType(const mediaType& type, const charset& chset)
 
 void body::setContentType(const mediaType& type)
 {
-	m_header.acquire()->ContentType()->setValue(type);
+	//m_header.acquire()->ContentType()->setValue(type); TODO shared
+	m_header.lock()->ContentType()->setValue(type);
 }
 
 
@@ -590,10 +607,15 @@ const mediaType body::getContentType() const
 {
 	try
 	{
-		std::shared_ptr<const contentTypeField> ctf =
-			m_header.acquire()->findField(fields::CONTENT_TYPE).dynamicCast <const contentTypeField>();
+		// std::shared_ptr<const contentTypeField> ctf = TODO shared
+		// 	m_header.acquire()->findField(fields::CONTENT_TYPE).dynamicCast <const contentTypeField>();
 
-		return (*ctf->getValue().dynamicCast <const mediaType>());
+		// return (*ctf->getValue().dynamicCast <const mediaType>());
+		std::shared_ptr<const contentTypeField> ctf =
+			std::dynamic_pointer_cast<const contentTypeField>(
+			m_header.lock()->findField(fields::CONTENT_TYPE));
+
+		return *dynamic_cast<const mediaType*>(ctf->getValue().get());
 	}
 	catch (exceptions::no_such_field&)
 	{
@@ -608,8 +630,11 @@ void body::setCharset(const charset& chset)
 	// If a Content-Type field exists, set charset
 	try
 	{
+		//std::shared_ptr<contentTypeField> ctf = TODO shared
+		//	m_header.acquire()->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
 		std::shared_ptr<contentTypeField> ctf =
-			m_header.acquire()->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
+			std::dynamic_pointer_cast<contentTypeField>(
+			m_header.lock()->findField(fields::CONTENT_TYPE));
 
 		ctf->setCharset(chset);
 	}
@@ -626,8 +651,11 @@ const charset body::getCharset() const
 {
 	try
 	{
+		//const std::shared_ptr<const contentTypeField> ctf = TODO shared
+		//	m_header.acquire()->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
 		const std::shared_ptr<const contentTypeField> ctf =
-			m_header.acquire()->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
+			std::dynamic_pointer_cast<contentTypeField>(
+				m_header.lock()->findField(fields::CONTENT_TYPE));
 
 		return (ctf->getCharset());
 	}
@@ -646,7 +674,8 @@ const charset body::getCharset() const
 
 void body::setEncoding(const encoding& enc)
 {
-	m_header.acquire()->ContentTransferEncoding()->setValue(enc);
+	//m_header.acquire()->ContentTransferEncoding()->setValue(enc);
+	m_header.lock()->ContentTransferEncoding()->setValue(enc);
 }
 
 
@@ -654,10 +683,12 @@ const encoding body::getEncoding() const
 {
 	try
 	{
+		//const std::shared_ptr<const headerField> cef = TODO shared
+		//	m_header.acquire()->findField(fields::CONTENT_TRANSFER_ENCODING);
 		const std::shared_ptr<const headerField> cef =
-			m_header.acquire()->findField(fields::CONTENT_TRANSFER_ENCODING);
+			m_header.lock()->findField(fields::CONTENT_TRANSFER_ENCODING);
 
-		return (*cef->getValue().dynamicCast <const encoding>());
+		return *dynamic_cast<const encoding*>(cef->getValue().get());
 	}
 	catch (exceptions::no_such_field&)
 	{
@@ -683,7 +714,8 @@ void body::setParentPart(std::shared_ptr<bodyPart> parent)
 
 bool body::isRootPart() const
 {
-	std::shared_ptr<const bodyPart> part = m_part.acquire();
+	// std::shared_ptr<const bodyPart> part = m_part.acquire(); TODO shared
+	std::shared_ptr<const bodyPart> part = m_part.lock();
 	return (part == NULL || part->getParentPart() == NULL);
 }
 
@@ -711,7 +743,10 @@ void body::copyFrom(const component& other)
 
 	for (int p = 0 ; p < bdy.getPartCount() ; ++p)
 	{
-		std::shared_ptr<bodyPart> part = bdy.getPartAt(p)->clone().dynamicCast <bodyPart>();
+		//std::shared_ptr<bodyPart> part =
+		//bdy.getPartAt(p)->clone().dynamicCast <bodyPart>(); TODO shared
+		std::shared_ptr<bodyPart> part = std::dynamic_pointer_cast<bodyPart>(
+			bdy.getPartAt(p)->clone());
 
 		part->m_parent = m_part;
 
@@ -793,15 +828,19 @@ void body::initNewPart(std::shared_ptr<bodyPart> part)
 {
 	part->m_parent = m_part;
 
-	std::shared_ptr<header> hdr = m_header.acquire();
+	//std::shared_ptr<header> hdr = m_header.acquire(); TODO shared
+	std::shared_ptr<header> hdr = m_header.lock();
 
 	if (hdr != NULL)
 	{
 		// Check whether we have a boundary string
 		try
 		{
+			//std::shared_ptr<contentTypeField> ctf = TODO shared
+			//	hdr->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
 			std::shared_ptr<contentTypeField> ctf =
-				hdr->findField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
+				std::dynamic_pointer_cast<contentTypeField>(
+				hdr->findField(fields::CONTENT_TYPE));
 
 			try
 			{
@@ -816,7 +855,9 @@ void body::initNewPart(std::shared_ptr<bodyPart> part)
 				ctf->setBoundary(generateRandomBoundaryString());
 			}
 
-			if (ctf->getValue().dynamicCast <const mediaType>()->getType() != mediaTypes::MULTIPART)
+			// if (ctf->getValue().dynamicCast <const mediaType>()->getType()
+			// != mediaTypes::MULTIPART) TODO shared
+			if (dynamic_cast<const mediaType*>(ctf->getValue().get())->getType() != mediaTypes::MULTIPART)
 			{
 				// Warning: multi-part body but the Content-Type is
 				// not specified as "multipart/..."
@@ -826,8 +867,10 @@ void body::initNewPart(std::shared_ptr<bodyPart> part)
 		{
 			// No "Content-Type" field: create a new one and generate
 			// a random boundary string.
+			//std::shared_ptr<contentTypeField> ctf = TODO shared
+				//hdr->getField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
 			std::shared_ptr<contentTypeField> ctf =
-				hdr->getField(fields::CONTENT_TYPE).dynamicCast <contentTypeField>();
+				std::dynamic_pointer_cast<contentTypeField>(hdr->getField(fields::CONTENT_TYPE));
 
 			ctf->setValue(mediaType(mediaTypes::MULTIPART, mediaTypes::MULTIPART_MIXED));
 			ctf->setBoundary(generateRandomBoundaryString());
