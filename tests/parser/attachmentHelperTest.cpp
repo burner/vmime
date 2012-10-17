@@ -237,7 +237,9 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT_EQ("5", "Foo bar baz", attData);
 
 		//VASSERT_EQ("6", part, att->getPart());
-		VASSERT_EQ("6", part->generate(), att->getPart().dynamicCast <const vmime::component>()->generate());
+		// VASSERT_EQ("6", part->generate(), att->getPart().dynamicCast <const
+		// vmime::component>()->generate()); TODO shared
+		VASSERT_EQ("6", part->generate(), std::dynamic_pointer_cast<const vmime::component>(att->getPart())->generate());
 		//VASSERT_EQ("7", part->getHeader(), att->getHeader());
 		VASSERT_EQ("7", part->getHeader()->generate(), att->getHeader()->generate());
 	}
@@ -282,7 +284,10 @@ VMIME_TEST_SUITE_BEGIN
 
 		std::shared_ptr<vmime::header> hdr = amsgOut->getHeader();
 
-		VASSERT_EQ("3", "Attached message", hdr->Subject()->getValue().dynamicCast <vmime::text>()->generate());
+		// VASSERT_EQ("3", "Attached message",
+		// hdr->Subject()->getValue().dynamicCast
+		// <vmime::text>()->generate()); TODO shared
+		VASSERT_EQ("3", "Attached message", std::dynamic_pointer_cast<vmime::text>(hdr->Subject()->getValue())->generate());
 		VASSERT_EQ("4", "Attached message body", extractBodyContents(amsgOut));
 	}
 
@@ -315,14 +320,18 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT("1", att != NULL);
 
 		std::shared_ptr<const vmime::messageAttachment> msgAtt =
-			att.dynamicCast <const vmime::messageAttachment>();
+			// att.dynamicCast <const vmime::messageAttachment>(); TODO shared
+			std::dynamic_pointer_cast<const vmime::messageAttachment>(att);
 
 		VASSERT("2", msgAtt != NULL);
 
 		std::shared_ptr<vmime::message> amsg = msgAtt->getMessage();
 		std::shared_ptr<vmime::header> hdr = amsg->getHeader();
 
-		VASSERT_EQ("3", "Attached message", hdr->Subject()->getValue().dynamicCast <vmime::text>()->generate());
+		// VASSERT_EQ("3", "Attached message",
+		// hdr->Subject()->getValue().dynamicCast
+		// <vmime::text>()->generate()); TODO shared
+		VASSERT_EQ("3", "Attached message", std::dynamic_pointer_cast<vmime::text>(hdr->Subject()->getValue())->generate());
 		VASSERT_EQ("4", "Attached message body", extractBodyContents(amsg));
 	}
 

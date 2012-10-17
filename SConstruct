@@ -978,6 +978,7 @@ Default(libVmime)
 if env['build_tests'] == 'yes':
 	if env['debug'] == 'yes':
 		env = env.Clone()
+# TODO shared
 		env.Append(LIBS = ['cppunit', 'dl', packageVersionedGenericName + '-debug', 'pthread'])
 		env.Append(LIBPATH=['.'])
 

@@ -231,24 +231,6 @@ namespace vmime
 		return creator::std::make_shared<T, P0, P1, P2, P3, P4>(p0, p1, p2, p3, p4); }
 
 
-	/** Clone helper.
-	  * Use "vmime::clone(obj)" instead of "obj->clone().cast <objtype>()".
-	  */
-	template <class T>
-	std::shared_ptr<T> clone(std::shared_ptr<const T> x)
-	{
-		return x->clone().template dynamicCast <T>();
-	}
-
-	/** Clone helper.
-	  * Use "vmime::clone(obj)" instead of "obj.clone().cast <objtype>()".
-	  */
-	template <class T>
-	std::shared_ptr<T> clone(const T& x)
-	{
-		return x.clone().template dynamicCast <T>();
-	}
-
 
 	/** Downcast helper.
 	  * Usage: vmime::dynamicCast <DerivedType>(obj), where 'obj' is of
@@ -260,6 +242,33 @@ namespace vmime
 		return y.dynamicCast <X>();
 	}
 #endif
+	// TODO shared moved
+	/** Clone helper.
+	  * Use "vmime::clone(obj)" instead of "obj->clone().cast <objtype>()".
+	  */
+	template <class T>
+	std::shared_ptr<T> clone(std::shared_ptr<const T> x)
+	{
+		/*if ( x )
+		{
+			return std::make_shared<T>( new T( *x ) );
+		}
+		else
+		{
+			return std::make_shared<T>( nullptr );
+		}*/
+		return std::dynamic_pointer_cast<T>(x->clone());
+	}
+
+	/** Clone helper.
+	  * Use "vmime::clone(obj)" instead of "obj.clone().cast <objtype>()".
+	  */
+	template <class T>
+	std::shared_ptr<T> clone(const T& x)
+	{
+		return std::dynamic_pointer_cast<T>(x.clone());
+	}
+
 
 	/** Inherit from this class to indicate the subclass is not copyable,
 	  * ie. you want to prohibit copy construction and copy assignment.

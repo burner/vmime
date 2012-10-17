@@ -122,7 +122,10 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT_EQ("count", 1, addrList.getAddressCount());
 		VASSERT_EQ("!group", false, addrList.getAddressAt(0)->isGroup());
 
-		std::shared_ptr<vmime::mailbox> mbox = addrList.getAddressAt(0).dynamicCast <vmime::mailbox>();
+		// std::shared_ptr<vmime::mailbox> mbox =
+		// addrList.getAddressAt(0).dynamicCast <vmime::mailbox>(); TODO
+		// shared
+		std::shared_ptr<vmime::mailbox> mbox = std::dynamic_pointer_cast<vmime::mailbox>(addrList.getAddressAt(0));
 
 		VASSERT_EQ("name", "Full Name", mbox->getName());
 		VASSERT_EQ("email", "", mbox->getEmail());

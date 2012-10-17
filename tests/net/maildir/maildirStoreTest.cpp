@@ -192,7 +192,7 @@ public:
 		createMaildir(TEST_MAILDIR_KMAIL, TEST_MAILDIRFILES_KMAIL);
 
 		std::shared_ptr<vmime::net::maildir::maildirStore> store =
-			vmime::dynamicCast <vmime::net::maildir::maildirStore>(createAndConnectStore());
+			std::dynamic_pointer_cast<vmime::net::maildir::maildirStore>(createAndConnectStore());
 
 		VASSERT_EQ("*", "kmail", store->getFormat()->getName());
 
@@ -204,7 +204,7 @@ public:
 		createMaildir(TEST_MAILDIR_COURIER, TEST_MAILDIRFILES_COURIER);
 
 		std::shared_ptr<vmime::net::maildir::maildirStore> store =
-			vmime::dynamicCast <vmime::net::maildir::maildirStore>(createAndConnectStore());
+			std::dynamic_pointer_cast<vmime::net::maildir::maildirStore>(createAndConnectStore());
 
 		VASSERT_EQ("*", "courier", store->getFormat()->getName());
 

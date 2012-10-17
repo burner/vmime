@@ -119,6 +119,7 @@ VMIME_TEST_SUITE_BEGIN
 		vmime::text t1("Test: \xa9\xc3");
 
 		VASSERT("operator==", t1 == t1);
+		// VASSERT("clone", *vmime::clone(t1) == t1); TODO shared
 		VASSERT("clone", *vmime::clone(t1) == t1);
 
 		vmime::text t2;

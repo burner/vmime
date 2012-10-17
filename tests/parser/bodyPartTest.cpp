@@ -318,13 +318,17 @@ VMIME_TEST_SUITE_BEGIN
 		body1Cts->extract(body1CtsExtractStream);
 
 		VASSERT_EQ("1.1", BODY1_LENGTH, body1Cts->getLength());
-		VASSERT("1.2", body1Cts.dynamicCast <const vmime::streamContentHandler>() != NULL);
+		// VASSERT("1.2", body1Cts.dynamicCast <const
+		// vmime::streamContentHandler>() != NULL); TODO shared
+		VASSERT("1.2", std::dynamic_pointer_cast<const vmime::streamContentHandler>(body1Cts) != NULL);
 		VASSERT_EQ("1.3", BODY1_LENGTH, body1CtsExtracted.length());
 		VASSERT_EQ("1.4", BODY1_BEGIN, body1CtsExtracted.substr(0, BODY1_BEGIN.length()));
 		VASSERT_EQ("1.5", BODY1_END, body1CtsExtracted.substr(BODY1_LENGTH - BODY1_END.length(), BODY1_END.length()));
 
 		VASSERT_EQ("2.1", BODY2_LINE.length() * BODY2_REPEAT, body2Cts->getLength());
-		VASSERT("2.2", body2Cts.dynamicCast <const vmime::streamContentHandler>() != NULL);
+		// VASSERT("2.2", body2Cts.dynamicCast <const
+		// vmime::streamContentHandler>() != NULL); TODO shared
+		VASSERT("2.2", std::dynamic_pointer_cast<const vmime::streamContentHandler>(body2Cts) != NULL);
 	}
 
 VMIME_TEST_SUITE_END

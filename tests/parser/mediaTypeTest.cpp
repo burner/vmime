@@ -65,10 +65,14 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT_EQ("eq2", "sub", t1.getSubType());
 
 		VASSERT("operator==", t1 == t1);
-		VASSERT("clone", t1 == *vmime::clone(t1));
+		// VASSERT("clone", t1 == *vmime::clone(t1)); TODO shared
+		VASSERT("clone", t1 ==
+				*std::dynamic_pointer_cast<vmime::mediaType>(t1.clone()));
 
-		VASSERT_EQ("eq3", "type", vmime::clone(t1)->getType());
-		VASSERT_EQ("eq4", "sub", vmime::clone(t1)->getSubType());
+		VASSERT_EQ("eq3", "type",
+			(std::dynamic_pointer_cast<vmime::mediaType>(t1.clone())->getType()));
+		VASSERT_EQ("eq4", "sub",
+			(std::dynamic_pointer_cast<vmime::mediaType>(t1.clone())->getSubType()));
 
 		vmime::mediaType t2;
 		t2.copyFrom(t1);
