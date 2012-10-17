@@ -347,8 +347,13 @@ void IMAPConnection::authenticateSASL()
 	{
 		std::shared_ptr<security::sasl::SASLMechanism> mech = mechList[i];
 
-		std::shared_ptr<security::sasl::SASLSession> saslSession =
-			saslContext->createSession("imap", getAuthenticator(), mech);
+		//TODO create std::shared_ptr<security::sasl::SASLSession> saslSession =
+		//	saslContext->createSession("imap", getAuthenticator(), mech);
+		auto saslSession( std::make_shared<security::sasl::SASLSession>( "imap", saslContext,
+					getAuthenticator(), mech ) );
+
+		// auto saslSession( SASLContext::createSession( saslContext, ... )
+		// TODO refmanager
 
 		saslSession->init();
 

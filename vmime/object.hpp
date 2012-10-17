@@ -29,11 +29,23 @@
 
 #include <vector>
 #include <memory>
+#include <utility>
 
 
 namespace vmime
 {
 
+template< class D_ >
+struct CreatoR
+{
+	template< class T_, typename... Args_ >
+	static
+	std::shared_ptr< D_ >
+	crt( std::shared_ptr<T_> this_ptr, Args_&&... args )
+	{
+	  return std::make_shared< D_ >( this_ptr, std::forward<Args_>( args) ...  );
+	}
+};
 
 /** Base object for all objects in the library. This implements
   * reference counting and auto-deletion.
@@ -49,6 +61,7 @@ class object
 
 
 public: // TODO shared
+	
 	object();
 	object(const object&);
 	object(object* const);
