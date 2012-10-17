@@ -48,15 +48,17 @@ private:
 
 	friend class IMAPFolder;
 	friend class IMAPMessagePartContentHandler;
-	friend class vmime::creator;  // std::make_shared<IMAPMessage>
+	// friend class vmime::creator;  // std::make_shared<IMAPMessage> TODO
+	// shared
 
+
+public:
+	// TODO shared were private
 	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num);
 	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num, const uid& uniqueId);
 	IMAPMessage(const IMAPMessage&) : message() { }
 
 	~IMAPMessage();
-
-public:
 
 	int getNumber() const;
 

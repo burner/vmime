@@ -44,7 +44,7 @@ namespace smtp {
   */
 class SMTPResponse : public object
 {
-	friend class vmime::creator;
+	//friend class vmime::creator;
 
 public:
 
@@ -110,10 +110,12 @@ public:
 	  */
 	const responseLine getLastLine() const;
 
-private:
-
+	// TODO shared were private
 	SMTPResponse(std::shared_ptr<socket> sok, std::shared_ptr<timeoutHandler> toh);
 	SMTPResponse(const SMTPResponse&);
+
+
+private:
 
 	void readResponse();
 

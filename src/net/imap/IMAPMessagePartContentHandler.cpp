@@ -42,8 +42,10 @@ IMAPMessagePartContentHandler::IMAPMessagePartContentHandler
 std::shared_ptr<contentHandler> IMAPMessagePartContentHandler::clone() const
 {
 	return std::make_shared<IMAPMessagePartContentHandler>
-		(m_message.acquire().constCast <IMAPMessage>(),
-		 m_part.acquire().constCast <part>(),
+		// (m_message.acquire().constCast <IMAPMessage>(), TODO shared
+		(std::const_pointer_cast<IMAPMessage>(m_message.lock()),
+		 // m_part.acquire().constCast <part>(), TODO shared
+		 std::const_pointer_cast<part>(m_part.lock()),
 		 m_encoding);
 }
 
@@ -51,8 +53,11 @@ std::shared_ptr<contentHandler> IMAPMessagePartContentHandler::clone() const
 void IMAPMessagePartContentHandler::generate
 	(utility::outputStream& os, const vmime::encoding& enc, const string::size_type maxLineLength) const
 {
-	std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
-	std::shared_ptr<part> part = m_part.acquire().constCast <class part>();
+	// std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast
+	// <IMAPMessage>(); TODO shared
+	std::shared_ptr<IMAPMessage> msg =
+		std::const_pointer_cast<IMAPMessage>(m_message.lock());
+	std::shared_ptr<part> part = std::const_pointer_cast<class part>(m_part.lock());
 
 	// Data is already encoded
 	if (isEncoded())
@@ -115,8 +120,13 @@ void IMAPMessagePartContentHandler::generate
 void IMAPMessagePartContentHandler::extract
 	(utility::outputStream& os, utility::progressListener* progress) const
 {
-	std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
-	std::shared_ptr<part> part = m_part.acquire().constCast <class part>();
+	// std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast
+	// <IMAPMessage>(); TODO shared
+	std::shared_ptr<IMAPMessage> msg =
+		std::const_pointer_cast<IMAPMessage>(m_message.lock());
+	// std::shared_ptr<part> part = m_part.acquire().constCast <class part>();
+	// TODO shared
+	std::shared_ptr<part> part = std::const_pointer_cast<class part>(m_part.lock());
 
 	// No decoding to perform
 	if (!isEncoded())
@@ -145,8 +155,13 @@ void IMAPMessagePartContentHandler::extract
 void IMAPMessagePartContentHandler::extractRaw
 	(utility::outputStream& os, utility::progressListener* progress) const
 {
-	std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast <IMAPMessage>();
-	std::shared_ptr<part> part = m_part.acquire().constCast <class part>();
+	// std::shared_ptr<IMAPMessage> msg = m_message.acquire().constCast
+	// <IMAPMessage>(); TODO shared
+	std::shared_ptr<IMAPMessage> msg =
+		std::const_pointer_cast<IMAPMessage>(m_message.lock());
+	// std::shared_ptr<part> part = m_part.acquire().constCast <class part>();
+	// TODO shared
+	std::shared_ptr<part> part = std::const_pointer_cast<class part>(m_part.lock());
 
 	msg->extractPart(part, os, progress);
 }
@@ -154,7 +169,8 @@ void IMAPMessagePartContentHandler::extractRaw
 
 string::size_type IMAPMessagePartContentHandler::getLength() const
 {
-	return m_part.acquire()->getSize();
+	// return m_part.acquire()->getSize(); TODO shared
+	return m_part.lock()->getSize();
 }
 
 

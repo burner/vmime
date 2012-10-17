@@ -55,7 +55,8 @@ maildirFolder::maildirFolder(const folder::path& path, std::shared_ptr<maildirSt
 
 maildirFolder::~maildirFolder()
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (store)
 	{
@@ -73,7 +74,8 @@ maildirFolder::~maildirFolder()
 
 void maildirFolder::onStoreDisconnected()
 {
-	m_store = NULL;
+	// m_store = NULL; TODO shared
+	m_store.reset();
 }
 
 
@@ -99,7 +101,9 @@ int maildirFolder::getFlags()
 {
 	int flags = 0;
 
-	if (m_store.acquire()->getFormat()->folderHasSubfolders(m_path))
+	// if (m_store.acquire()->getFormat()->folderHasSubfolders(m_path)) TODO
+	// shared
+	if (m_store.lock()->getFormat()->folderHasSubfolders(m_path))
 		flags |= FLAG_CHILDREN; // Contains at least one sub-folder
 
 	return (flags);
@@ -120,7 +124,8 @@ const folder::path maildirFolder::getFullPath() const
 
 void maildirFolder::open(const int mode, bool /* failIfModeIsNotAvailable */)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -138,7 +143,8 @@ void maildirFolder::open(const int mode, bool /* failIfModeIsNotAvailable */)
 
 void maildirFolder::close(const bool expunge)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -186,7 +192,8 @@ void maildirFolder::unregisterMessage(maildirMessage* msg)
 
 void maildirFolder::create(const int /* type */)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -209,7 +216,8 @@ void maildirFolder::create(const int /* type */)
 
 	// Notify folder created
 	events::folderEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::folderEvent::TYPE_CREATED, m_path, m_path);
 
 	notifyFolder(event);
@@ -218,7 +226,8 @@ void maildirFolder::create(const int /* type */)
 
 void maildirFolder::destroy()
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -237,7 +246,8 @@ void maildirFolder::destroy()
 
 	// Notify folder deleted
 	events::folderEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::folderEvent::TYPE_DELETED, m_path, m_path);
 
 	notifyFolder(event);
@@ -246,7 +256,8 @@ void maildirFolder::destroy()
 
 bool maildirFolder::exists()
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	return store->getFormat()->folderExists(m_path);
 }
@@ -260,7 +271,8 @@ bool maildirFolder::isOpen() const
 
 void maildirFolder::scanFolder()
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	try
 	{
@@ -406,7 +418,8 @@ std::shared_ptr<message> maildirFolder::getMessage(const int num)
 		throw exceptions::message_not_found();
 
 	return std::make_shared<maildirMessage>
-		(thisRef().dynamicCast <maildirFolder>(), num);
+		// (thisRef().dynamicCast <maildirFolder>(), num); TODO shared
+		(std::dynamic_pointer_cast<maildirFolder>(thisRef()), num);
 }
 
 
@@ -420,7 +433,10 @@ std::vector <std::shared_ptr<message> > maildirFolder::getMessages(const int fro
 		throw exceptions::message_not_found();
 
 	std::vector <std::shared_ptr<message> > v;
-	std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
+	// std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast
+	// <maildirFolder>(); TODO shared
+	std::shared_ptr<maildirFolder> thisFolder =
+		std::dynamic_pointer_cast<maildirFolder>(thisRef());
 
 	for (int i = from ; i <= to2 ; ++i)
 		v.push_back(std::make_shared<maildirMessage>(thisFolder, i));
@@ -435,7 +451,10 @@ std::vector <std::shared_ptr<message> > maildirFolder::getMessages(const std::ve
 		throw exceptions::illegal_state("Folder not open");
 
 	std::vector <std::shared_ptr<message> > v;
-	std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
+	// std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast
+	// <maildirFolder>(); TODO shared
+	std::shared_ptr<maildirFolder> thisFolder =
+		std::dynamic_pointer_cast<maildirFolder>(thisRef());
 
 	for (std::vector <int>::const_iterator it = nums.begin() ; it != nums.end() ; ++it)
 		v.push_back(std::make_shared<maildirMessage>(thisFolder, *it));
@@ -464,7 +483,8 @@ int maildirFolder::getMessageCount()
 
 std::shared_ptr<folder> maildirFolder::getFolder(const folder::path::component& name)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -475,7 +495,8 @@ std::shared_ptr<folder> maildirFolder::getFolder(const folder::path::component& 
 
 std::vector <std::shared_ptr<folder> > maildirFolder::getFolders(const bool recursive)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!isOpen() && !store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -490,7 +511,8 @@ std::vector <std::shared_ptr<folder> > maildirFolder::getFolders(const bool recu
 
 void maildirFolder::listFolders(std::vector <std::shared_ptr<folder> >& list, const bool recursive)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	try
 	{
@@ -516,7 +538,8 @@ void maildirFolder::listFolders(std::vector <std::shared_ptr<folder> >& list, co
 
 void maildirFolder::rename(const folder::path& newPath)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -542,7 +565,8 @@ void maildirFolder::rename(const folder::path& newPath)
 	m_name = newPath.getLastComponent();
 
 	events::folderEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::folderEvent::TYPE_RENAMED, oldPath, newPath);
 
 	notifyFolder(event);
@@ -557,7 +581,8 @@ void maildirFolder::rename(const folder::path& newPath)
 			(*it)->m_name = newPath.getLastComponent();
 
 			events::folderEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::folderEvent::TYPE_RENAMED, oldPath, newPath);
 
 			(*it)->notifyFolder(event);
@@ -569,7 +594,8 @@ void maildirFolder::rename(const folder::path& newPath)
 			(*it)->m_path.renameParent(oldPath, newPath);
 
 			events::folderEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::folderEvent::TYPE_RENAMED, oldPath, (*it)->m_path);
 
 			(*it)->notifyFolder(event);
@@ -602,7 +628,8 @@ void maildirFolder::deleteMessages(const std::vector <int>& nums)
 void maildirFolder::setMessageFlags
 	(const int from, const int to, const int flags, const int mode)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (from < 1 || (to < from && to != -1))
 		throw exceptions::invalid_argument();
@@ -678,7 +705,8 @@ void maildirFolder::setMessageFlags
 
 	// Notify message flags changed
 	events::messageChangedEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageChangedEvent::TYPE_FLAGS, nums);
 
 	notifyMessageChanged(event);
@@ -690,7 +718,8 @@ void maildirFolder::setMessageFlags
 void maildirFolder::setMessageFlags
 	(const std::vector <int>& nums, const int flags, const int mode)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -761,7 +790,8 @@ void maildirFolder::setMessageFlags
 
 	// Notify message flags changed
 	events::messageChangedEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageChangedEvent::TYPE_FLAGS, nums);
 
 	notifyMessageChanged(event);
@@ -773,7 +803,8 @@ void maildirFolder::setMessageFlags
 void maildirFolder::setMessageFlagsImpl
 	(const std::vector <int>& nums, const int flags, const int mode)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
@@ -838,7 +869,8 @@ void maildirFolder::addMessage(std::shared_ptr<vmime::message> msg, const int fl
 void maildirFolder::addMessage(utility::inputStream& is, const int size,
 	const int flags, vmime::datetime* /* date */, utility::progressListener* progress)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -900,7 +932,8 @@ void maildirFolder::addMessage(utility::inputStream& is, const int size,
 	nums.push_back(m_messageCount);
 
 	events::messageCountEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageCountEvent::TYPE_ADDED, nums);
 
 	notifyMessageCount(event);
@@ -918,7 +951,8 @@ void maildirFolder::addMessage(utility::inputStream& is, const int size,
 			std::copy(m_messageInfos.begin(), m_messageInfos.end(), (*it)->m_messageInfos.begin());
 
 			events::messageCountEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::messageCountEvent::TYPE_ADDED, nums);
 
 			(*it)->notifyMessageCount(event);
@@ -1018,7 +1052,8 @@ void maildirFolder::copyMessageImpl(const utility::file::path& tmpDirPath,
 
 void maildirFolder::copyMessage(const folder::path& dest, const int num)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1031,7 +1066,8 @@ void maildirFolder::copyMessage(const folder::path& dest, const int num)
 
 void maildirFolder::copyMessages(const folder::path& dest, const int from, const int to)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1057,7 +1093,8 @@ void maildirFolder::copyMessages(const folder::path& dest, const int from, const
 
 void maildirFolder::copyMessages(const folder::path& dest, const std::vector <int>& nums)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1071,7 +1108,8 @@ void maildirFolder::copyMessages(const folder::path& dest, const std::vector <in
 
 void maildirFolder::copyMessagesImpl(const folder::path& dest, const std::vector <int>& nums)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
@@ -1137,7 +1175,8 @@ void maildirFolder::copyMessagesImpl(const folder::path& dest, const std::vector
 
 void maildirFolder::notifyMessagesCopied(const folder::path& dest)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	for (std::list <maildirFolder*>::iterator it = store->m_folders.begin() ;
 	     it != store->m_folders.end() ; ++it)
@@ -1157,7 +1196,8 @@ void maildirFolder::notifyMessagesCopied(const folder::path& dest)
 
 void maildirFolder::status(int& count, int& unseen)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	const int oldCount = m_messageCount;
 
@@ -1176,7 +1216,8 @@ void maildirFolder::status(int& count, int& unseen)
 			nums[j] = i;
 
 		events::messageCountEvent event
-			(thisRef().dynamicCast <folder>(),
+			// (thisRef().dynamicCast <folder>(), TODO shared
+			(std::dynamic_pointer_cast<folder>(thisRef()),
 			 events::messageCountEvent::TYPE_ADDED, nums);
 
 		notifyMessageCount(event);
@@ -1194,7 +1235,8 @@ void maildirFolder::status(int& count, int& unseen)
 				std::copy(m_messageInfos.begin(), m_messageInfos.end(), (*it)->m_messageInfos.begin());
 
 				events::messageCountEvent event
-					((*it)->thisRef().dynamicCast <folder>(),
+					// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+					(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 					 events::messageCountEvent::TYPE_ADDED, nums);
 
 				(*it)->notifyMessageCount(event);
@@ -1206,7 +1248,8 @@ void maildirFolder::status(int& count, int& unseen)
 
 void maildirFolder::expunge()
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1267,7 +1310,8 @@ void maildirFolder::expunge()
 
 	// Notify message expunged
 	events::messageCountEvent event
-		(thisRef().dynamicCast <folder>(),
+		// TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageCountEvent::TYPE_REMOVED, nums);
 
 	notifyMessageCount(event);
@@ -1285,7 +1329,8 @@ void maildirFolder::expunge()
 			std::copy(m_messageInfos.begin(), m_messageInfos.end(), (*it)->m_messageInfos.begin());
 
 			events::messageCountEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::messageCountEvent::TYPE_REMOVED, nums);
 
 			(*it)->notifyMessageCount(event);
@@ -1299,26 +1344,32 @@ std::shared_ptr<folder> maildirFolder::getParent()
 	if (m_path.isEmpty())
 		return NULL;
 	else
-		return std::make_shared<maildirFolder>(m_path.getParent(), m_store.acquire());
+		// return std::make_shared<maildirFolder>(m_path.getParent(),
+		// m_store.acquire()); TODO shared
+		return std::make_shared<maildirFolder>(m_path.getParent(),
+				m_store.lock());
 }
 
 
 std::shared_ptr<const store> maildirFolder::getStore() const
 {
-	return m_store.acquire();
+	// return m_store.acquire(); TODO shared
+	return m_store.lock();
 }
 
 
 std::shared_ptr<store> maildirFolder::getStore()
 {
-	return m_store.acquire();
+	// return m_store.acquire(); TODO shared
+	return m_store.lock();
 }
 
 
 void maildirFolder::fetchMessages(std::vector <std::shared_ptr<message> >& msg,
 	const int options, utility::progressListener* progress)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1331,12 +1382,16 @@ void maildirFolder::fetchMessages(std::vector <std::shared_ptr<message> >& msg,
 	if (progress)
 		progress->start(total);
 
-	std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast <maildirFolder>();
+	// std::shared_ptr<maildirFolder> thisFolder = thisRef().dynamicCast
+	// <maildirFolder>(); TODO shared
+	std::shared_ptr<maildirFolder> thisFolder = std::dynamic_pointer_cast<maildirFolder>(thisRef());
 
 	for (std::vector <std::shared_ptr<message> >::iterator it = msg.begin() ;
 	     it != msg.end() ; ++it)
 	{
-		(*it).dynamicCast <maildirMessage>()->fetch(thisFolder, options);
+		// (*it).dynamicCast <maildirMessage>()->fetch(thisFolder, options);
+		// TODO shared
+		std::dynamic_pointer_cast<maildirMessage>((*it))->fetch(thisFolder, options);
 
 		if (progress)
 			progress->progress(++current, total);
@@ -1349,15 +1404,18 @@ void maildirFolder::fetchMessages(std::vector <std::shared_ptr<message> >& msg,
 
 void maildirFolder::fetchMessage(std::shared_ptr<message> msg, const int options)
 {
-	std::shared_ptr<maildirStore> store = m_store.acquire();
+	// std::shared_ptr<maildirStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<maildirStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 	else if (!isOpen())
 		throw exceptions::illegal_state("Folder not open");
 
-	msg.dynamicCast <maildirMessage>()->fetch
-		(thisRef().dynamicCast <maildirFolder>(), options);
+	// msg.dynamicCast <maildirMessage>()->fetch TODO shared
+		// (thisRef().dynamicCast <maildirFolder>(), options); TODO shared
+	std::dynamic_pointer_cast<maildirMessage>(msg)->fetch
+		(std::dynamic_pointer_cast<maildirFolder>(thisRef()), options);
 }
 
 
@@ -1371,7 +1429,9 @@ int maildirFolder::getFetchCapabilities() const
 
 const utility::file::path maildirFolder::getMessageFSPath(const int number) const
 {
-	utility::file::path curDirPath = m_store.acquire()->getFormat()->
+	// utility::file::path curDirPath = m_store.acquire()->getFormat()-> TODO
+	// shared
+	utility::file::path curDirPath = m_store.lock()->getFormat()->
 		folderPathToFileSystemPath(m_path, maildirFormat::CUR_DIRECTORY);
 
 	return (curDirPath / m_messageInfos[number - 1].path);

@@ -67,8 +67,10 @@ std::shared_ptr<folder> IMAPStore::getRootFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
+	// return std::make_shared<IMAPFolder>(folder::path(), TODO shared
+		// thisRef().dynamicCast <IMAPStore>()); TODO shared
 	return std::make_shared<IMAPFolder>(folder::path(),
-		thisRef().dynamicCast <IMAPStore>());
+		std::dynamic_pointer_cast<IMAPStore>(thisRef()));
 }
 
 
@@ -78,7 +80,8 @@ std::shared_ptr<folder> IMAPStore::getDefaultFolder()
 		throw exceptions::illegal_state("Not connected");
 
 	return std::make_shared<IMAPFolder>(folder::path::component("INBOX"),
-		thisRef().dynamicCast <IMAPStore>());
+		// thisRef().dynamicCast <IMAPStore>()); TODO shared
+		std::dynamic_pointer_cast<IMAPStore>(thisRef()));
 }
 
 
@@ -87,7 +90,8 @@ std::shared_ptr<folder> IMAPStore::getFolder(const folder::path& path)
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	return std::make_shared<IMAPFolder>(path, thisRef().dynamicCast <IMAPStore>());
+	return std::make_shared<IMAPFolder>(path,
+			std::dynamic_pointer_cast<IMAPStore>(thisRef()));
 }
 
 
@@ -103,7 +107,9 @@ void IMAPStore::connect()
 		throw exceptions::already_connected();
 
 	m_connection = std::make_shared<IMAPConnection>
-		(thisRef().dynamicCast <IMAPStore>(), getAuthenticator());
+		// (thisRef().dynamicCast <IMAPStore>(), getAuthenticator()); TODO
+		// shared
+		(std::dynamic_pointer_cast<IMAPStore>(thisRef()), getAuthenticator());
 
 	try
 	{

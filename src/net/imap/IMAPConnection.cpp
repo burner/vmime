@@ -44,12 +44,18 @@
 
 
 // Helpers for service properties
+// #define GET_PROPERTY(type, prop) TODO shared
+// 	(m_store.acquire()->getInfos().getPropertyValue <type>(getSession(),
+// 		dynamic_cast <const IMAPServiceInfos&>(m_store.acquire()->getInfos()).getProperties().prop))
 #define GET_PROPERTY(type, prop) \
-	(m_store.acquire()->getInfos().getPropertyValue <type>(getSession(), \
-		dynamic_cast <const IMAPServiceInfos&>(m_store.acquire()->getInfos()).getProperties().prop))
+	(m_store.lock()->getInfos().getPropertyValue <type>(getSession(), \
+		dynamic_cast <const IMAPServiceInfos&>(m_store.lock()->getInfos()).getProperties().prop))
+//#define HAS_PROPERTY(prop) TODO shared
+//	(m_store.acquire()->getInfos().hasProperty(getSession(),
+//		dynamic_cast <const IMAPServiceInfos&>(m_store.acquire()->getInfos()).getProperties().prop))
 #define HAS_PROPERTY(prop) \
-	(m_store.acquire()->getInfos().hasProperty(getSession(), \
-		dynamic_cast <const IMAPServiceInfos&>(m_store.acquire()->getInfos()).getProperties().prop))
+	(m_store.lock()->getInfos().hasProperty(getSession(), \
+		dynamic_cast <const IMAPServiceInfos&>(m_store.lock()->getInfos()).getProperties().prop))
 
 
 namespace vmime {
@@ -92,7 +98,8 @@ void IMAPConnection::connect()
 	const string address = GET_PROPERTY(string, PROPERTY_SERVER_ADDRESS);
 	const port_t port = GET_PROPERTY(port_t, PROPERTY_SERVER_PORT);
 
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	// Create the time-out handler
 	if (store->getTimeoutHandlerFactory())
@@ -208,7 +215,8 @@ void IMAPConnection::connect()
 
 void IMAPConnection::authenticate()
 {
-	getAuthenticator()->setService(m_store.acquire());
+	// getAuthenticator()->setService(m_store.acquire()); TODO shared
+	getAuthenticator()->setService(m_store.lock());
 
 #if VMIME_HAVE_SASL_SUPPORT
 	// First, try SASL authentication
@@ -267,8 +275,13 @@ void IMAPConnection::authenticate()
 
 void IMAPConnection::authenticateSASL()
 {
-	if (!getAuthenticator().dynamicCast <security::sasl::SASLAuthenticator>())
+	//if (!getAuthenticator().dynamicCast
+	//<security::sasl::SASLAuthenticator>()) TODO shared
+		//throw exceptions::authentication_error("No SASL authenticator available.");
+
+	if(!std::dynamic_pointer_cast<security::sasl::SASLAuthenticator>(getAuthenticator())) {
 		throw exceptions::authentication_error("No SASL authenticator available.");
+	}
 
 	const std::vector <string> capa = getCapabilities();
 	std::vector <string> saslMechs;
@@ -320,7 +333,10 @@ void IMAPConnection::authenticateSASL()
 		throw exceptions::authentication_error("Unable to suggest SASL mechanism.");
 
 	// Allow application to choose which mechanisms to use
-	mechList = getAuthenticator().dynamicCast <security::sasl::SASLAuthenticator>()->
+	// mechList = getAuthenticator().dynamicCast
+	// <security::sasl::SASLAuthenticator>()-> TODO shared
+		// getAcceptableMechanisms(mechList, suggestedMech); TODO shared
+	mechList = std::dynamic_pointer_cast<security::sasl::SASLAuthenticator>(getAuthenticator())->
 		getAcceptableMechanisms(mechList, suggestedMech);
 
 	if (mechList.empty())
@@ -454,7 +470,9 @@ void IMAPConnection::startTLS()
 		}
 
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			std::make_shared<tls::TLSSession>(m_store.acquire()->getCertificateVerifier());
+			// std::make_shared<tls::TLSSession>(m_store.acquire()->getCertificateVerifier());
+			// TODO shared
+			std::make_shared<tls::TLSSession>(m_store.lock()->getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -702,19 +720,22 @@ std::shared_ptr<const IMAPParser> IMAPConnection::getParser() const
 
 std::shared_ptr<const IMAPStore> IMAPConnection::getStore() const
 {
-	return m_store.acquire();
+	// return m_store.acquire(); TODO shared
+	return m_store.lock();
 }
 
 
 std::shared_ptr<IMAPStore> IMAPConnection::getStore()
 {
-	return m_store.acquire();
+	// return m_store.acquire(); TODO shared
+	return m_store.lock();
 }
 
 
 std::shared_ptr<session> IMAPConnection::getSession()
 {
-	return m_store.acquire()->getSession();
+	// return m_store.acquire()->getSession(); TODO shared
+	return m_store.lock()->getSession();
 }
 
 

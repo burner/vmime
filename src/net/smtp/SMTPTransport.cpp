@@ -260,7 +260,9 @@ void SMTPTransport::authenticate()
 		throw exceptions::command_error("AUTH", "ESMTP not supported.");
 	}
 
-	getAuthenticator()->setService(thisRef().dynamicCast <service>());
+	// getAuthenticator()->setService(thisRef().dynamicCast <service>()); TODO
+	// shared
+	getAuthenticator()->setService(std::dynamic_pointer_cast<service>(thisRef()));
 
 #if VMIME_HAVE_SASL_SUPPORT
 	// First, try SASL authentication
@@ -303,8 +305,11 @@ void SMTPTransport::authenticate()
 
 void SMTPTransport::authenticateSASL()
 {
-	if (!getAuthenticator().dynamicCast <security::sasl::SASLAuthenticator>())
+	// if (!getAuthenticator().dynamicCast
+	// <security::sasl::SASLAuthenticator>()) TODO shared
+	if (!std::dynamic_pointer_cast<security::sasl::SASLAuthenticator>(getAuthenticator())) {
 		throw exceptions::authentication_error("No SASL authenticator available.");
+	}
 
 	// Obtain SASL mechanisms supported by server from ESMTP extensions
 	const std::vector <string> saslMechs =
@@ -343,7 +348,10 @@ void SMTPTransport::authenticateSASL()
 		throw exceptions::authentication_error("Unable to suggest SASL mechanism.");
 
 	// Allow application to choose which mechanisms to use
-	mechList = getAuthenticator().dynamicCast <security::sasl::SASLAuthenticator>()->
+	// mechList = getAuthenticator().dynamicCast
+	// <security::sasl::SASLAuthenticator>()-> TODO shared
+		// getAcceptableMechanisms(mechList, suggestedMech); TODO shared
+	mechList = std::dynamic_pointer_cast<security::sasl::SASLAuthenticator>(getAuthenticator())->
 		getAcceptableMechanisms(mechList, suggestedMech);
 
 	if (mechList.empty())

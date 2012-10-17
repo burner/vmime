@@ -80,7 +80,8 @@ std::shared_ptr<folder> maildirStore::getRootFolder()
 		throw exceptions::illegal_state("Not connected");
 
 	return std::make_shared<maildirFolder>(folder::path(),
-		thisRef().dynamicCast <maildirStore>());
+		// thisRef().dynamicCast <maildirStore>()); TODO shared
+		std::dynamic_pointer_cast<maildirStore>(thisRef()));
 }
 
 
@@ -90,7 +91,8 @@ std::shared_ptr<folder> maildirStore::getDefaultFolder()
 		throw exceptions::illegal_state("Not connected");
 
 	return std::make_shared<maildirFolder>(folder::path::component("inbox"),
-		thisRef().dynamicCast <maildirStore>());
+		// thisRef().dynamicCast <maildirStore>()); TODO shared
+		std::dynamic_pointer_cast<maildirStore>(thisRef()));
 }
 
 
@@ -100,7 +102,8 @@ std::shared_ptr<folder> maildirStore::getFolder(const folder::path& path)
 		throw exceptions::illegal_state("Not connected");
 
 	return std::make_shared<maildirFolder>(path,
-		thisRef().dynamicCast <maildirStore>());
+		// thisRef().dynamicCast <maildirStore>()); TODO shared
+		std::dynamic_pointer_cast<maildirStore>(thisRef()));
 }
 
 
@@ -151,7 +154,9 @@ void maildirStore::connect()
 		}
 	}
 
-	m_format = maildirFormat::detect(thisRef().dynamicCast <maildirStore>());
+	// m_format = maildirFormat::detect(thisRef().dynamicCast
+	// <maildirStore>()); TODO shared
+	m_format = maildirFormat::detect(std::dynamic_pointer_cast<maildirStore>(thisRef()));
 
 	m_connected = true;
 }

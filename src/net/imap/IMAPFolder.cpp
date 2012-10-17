@@ -56,7 +56,8 @@ IMAPFolder::IMAPFolder(const folder::path& path, std::shared_ptr<IMAPStore> stor
 
 IMAPFolder::~IMAPFolder()
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (store)
 	{
@@ -136,7 +137,8 @@ const folder::path IMAPFolder::getFullPath() const
 
 void IMAPFolder::open(const int mode, bool failIfModeIsNotAvailable)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -280,7 +282,8 @@ void IMAPFolder::open(const int mode, bool failIfModeIsNotAvailable)
 
 void IMAPFolder::close(const bool expunge)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -304,7 +307,8 @@ void IMAPFolder::close(const bool expunge)
 	oldConnection->disconnect();
 
 	// Now use default store connection
-	m_connection = m_store.acquire()->connection();
+	// m_connection = m_store.acquire()->connection(); TODO shared
+	m_connection = m_store.lock()->connection();
 
 	m_open = false;
 	m_mode = -1;
@@ -329,7 +333,8 @@ void IMAPFolder::onClose()
 
 void IMAPFolder::create(const int type)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -370,7 +375,8 @@ void IMAPFolder::create(const int type)
 
 	// Notify folder created
 	events::folderEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::folderEvent::TYPE_CREATED, m_path, m_path);
 
 	notifyFolder(event);
@@ -379,7 +385,8 @@ void IMAPFolder::create(const int type)
 
 void IMAPFolder::destroy()
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -407,7 +414,8 @@ void IMAPFolder::destroy()
 
 	// Notify folder deleted
 	events::folderEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::folderEvent::TYPE_DELETED, m_path, m_path);
 
 	notifyFolder(event);
@@ -416,7 +424,8 @@ void IMAPFolder::destroy()
 
 bool IMAPFolder::exists()
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!isOpen() && !store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -511,7 +520,10 @@ std::shared_ptr<message> IMAPFolder::getMessage(const int num)
 	if (num < 1 || num > m_messageCount)
 		throw exceptions::message_not_found();
 
-	return std::make_shared<IMAPMessage>(thisRef().dynamicCast <IMAPFolder>(), num);
+	// return std::make_shared<IMAPMessage>(thisRef().dynamicCast
+	// <IMAPFolder>(), num); TODO shared
+	return
+		std::make_shared<IMAPMessage>(std::dynamic_pointer_cast<IMAPFolder>(thisRef()), num);
 }
 
 
@@ -526,7 +538,10 @@ std::vector <std::shared_ptr<message> > IMAPFolder::getMessages(const int from, 
 		throw exceptions::message_not_found();
 
 	std::vector <std::shared_ptr<message> > v;
-	std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
+	// std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast
+	// <IMAPFolder>(); TODO shared
+	std::shared_ptr<IMAPFolder> thisFolder =
+		std::dynamic_pointer_cast<IMAPFolder>(thisRef());
 
 	for (int i = from ; i <= to2 ; ++i)
 		v.push_back(std::make_shared<IMAPMessage>(thisFolder, i));
@@ -541,7 +556,10 @@ std::vector <std::shared_ptr<message> > IMAPFolder::getMessages(const std::vecto
 		throw exceptions::illegal_state("Folder not open");
 
 	std::vector <std::shared_ptr<message> > v;
-	std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
+	// std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast
+	// <IMAPFolder>(); TODO shared
+	std::shared_ptr<IMAPFolder> thisFolder =
+		std::dynamic_pointer_cast<IMAPFolder>(thisRef());
 
 	for (std::vector <int>::const_iterator it = nums.begin() ; it != nums.end() ; ++it)
 		v.push_back(std::make_shared<IMAPMessage>(thisFolder, *it));
@@ -644,7 +662,10 @@ std::vector <std::shared_ptr<message> > IMAPFolder::getMessagesByUID(const std::
 
 		if (!msgUID.empty())
 		{
-			std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast <IMAPFolder>();
+			// std::shared_ptr<IMAPFolder> thisFolder = thisRef().dynamicCast
+			// <IMAPFolder>(); TODO shared
+			std::shared_ptr<IMAPFolder> thisFolder =
+				std::dynamic_pointer_cast<IMAPFolder>(thisRef());
 			messages.push_back(std::make_shared<IMAPMessage>(thisFolder, msgNum, msgFullUID));
 		}
 	}
@@ -664,7 +685,8 @@ int IMAPFolder::getMessageCount()
 
 std::shared_ptr<folder> IMAPFolder::getFolder(const folder::path::component& name)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -675,7 +697,8 @@ std::shared_ptr<folder> IMAPFolder::getFolder(const folder::path::component& nam
 
 std::vector <std::shared_ptr<folder> > IMAPFolder::getFolders(const bool recursive)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!isOpen() && !store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -766,7 +789,8 @@ std::vector <std::shared_ptr<folder> > IMAPFolder::getFolders(const bool recursi
 void IMAPFolder::fetchMessages(std::vector <std::shared_ptr<message> >& msg, const int options,
                                utility::progressListener* progress)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -782,7 +806,10 @@ void IMAPFolder::fetchMessages(std::vector <std::shared_ptr<message> >& msg, con
 	for (std::vector <std::shared_ptr<message> >::iterator it = msg.begin() ; it != msg.end() ; ++it)
 	{
 		list.push_back((*it)->getNumber());
-		numberToMsg[(*it)->getNumber()] = (*it).dynamicCast <IMAPMessage>();
+		// numberToMsg[(*it)->getNumber()] = (*it).dynamicCast
+		// <IMAPMessage>(); TODO shared
+		numberToMsg[(*it)->getNumber()] =
+			std::dynamic_pointer_cast<IMAPMessage>(*it);
 	}
 
 	// Send the request
@@ -855,14 +882,19 @@ void IMAPFolder::fetchMessages(std::vector <std::shared_ptr<message> >& msg, con
 
 void IMAPFolder::fetchMessage(std::shared_ptr<message> msg, const int options)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 	else if (!isOpen())
 		throw exceptions::illegal_state("Folder not open");
 
-	msg.dynamicCast <IMAPMessage>()->fetch(thisRef().dynamicCast <IMAPFolder>(), options);
+	// msg.dynamicCast <IMAPMessage>()->fetch(thisRef().dynamicCast
+	// <IMAPFolder>(), options); TODO shared
+	std::dynamic_pointer_cast<IMAPMessage>(msg)->fetch(
+		std::dynamic_pointer_cast<IMAPFolder>(thisRef()), options
+	);
 }
 
 
@@ -879,19 +911,23 @@ std::shared_ptr<folder> IMAPFolder::getParent()
 	if (m_path.isEmpty())
 		return NULL;
 	else
-		return std::make_shared<IMAPFolder>(m_path.getParent(), m_store.acquire());
+		// return std::make_shared<IMAPFolder>(m_path.getParent(),
+		// m_store.acquire()); TODO shared
+		return std::make_shared<IMAPFolder>(m_path.getParent(), m_store.lock());
 }
 
 
 std::shared_ptr<const store> IMAPFolder::getStore() const
 {
-	return m_store.acquire();
+	// return m_store.acquire(); TODO shared
+	return m_store.lock();
 }
 
 
 std::shared_ptr<store> IMAPFolder::getStore()
 {
-	return m_store.acquire();
+	// return m_store.acquire(); TODO shared
+	return m_store.lock();
 }
 
 
@@ -913,13 +949,15 @@ void IMAPFolder::unregisterMessage(IMAPMessage* msg)
 
 void IMAPFolder::onStoreDisconnected()
 {
-	m_store = NULL;
+	// m_store = NULL; TODO shared
+	m_store.reset();
 }
 
 
 void IMAPFolder::deleteMessage(const int num)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -963,7 +1001,8 @@ void IMAPFolder::deleteMessage(const int num)
 	nums.push_back(num);
 
 	events::messageChangedEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageChangedEvent::TYPE_FLAGS, nums);
 
 	notifyMessageChanged(event);
@@ -972,7 +1011,8 @@ void IMAPFolder::deleteMessage(const int num)
 
 void IMAPFolder::deleteMessages(const int from, const int to)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (from < 1 || (to < from && to != -1))
 		throw exceptions::invalid_argument();
@@ -1030,7 +1070,8 @@ void IMAPFolder::deleteMessages(const int from, const int to)
 		nums[j] = i;
 
 	events::messageChangedEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageChangedEvent::TYPE_FLAGS, nums);
 
 	notifyMessageChanged(event);
@@ -1039,7 +1080,8 @@ void IMAPFolder::deleteMessages(const int from, const int to)
 
 void IMAPFolder::deleteMessages(const std::vector <int>& nums)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (nums.empty())
 		throw exceptions::invalid_argument();
@@ -1093,7 +1135,8 @@ void IMAPFolder::deleteMessages(const std::vector <int>& nums)
 
 	// Notify message flags changed
 	events::messageChangedEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageChangedEvent::TYPE_FLAGS, list);
 
 	notifyMessageChanged(event);
@@ -1102,7 +1145,8 @@ void IMAPFolder::deleteMessages(const std::vector <int>& nums)
 
 void IMAPFolder::setMessageFlags(const int from, const int to, const int flags, const int mode)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (from < 1 || (to < from && to != -1))
 		throw exceptions::invalid_argument();
@@ -1184,7 +1228,8 @@ void IMAPFolder::setMessageFlags(const int from, const int to, const int flags, 
 		nums[j] = i;
 
 	events::messageChangedEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageChangedEvent::TYPE_FLAGS, nums);
 
 	notifyMessageChanged(event);
@@ -1193,7 +1238,8 @@ void IMAPFolder::setMessageFlags(const int from, const int to, const int flags, 
 
 void IMAPFolder::setMessageFlags(const std::vector <int>& nums, const int flags, const int mode)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1264,7 +1310,8 @@ void IMAPFolder::setMessageFlags(const std::vector <int>& nums, const int flags,
 
 	// Notify message flags changed
 	events::messageChangedEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageChangedEvent::TYPE_FLAGS, nums);
 
 	notifyMessageChanged(event);
@@ -1327,7 +1374,8 @@ void IMAPFolder::addMessage(std::shared_ptr<vmime::message> msg, const int flags
 void IMAPFolder::addMessage(utility::inputStream& is, const int size, const int flags,
                             vmime::datetime* date, utility::progressListener* progress)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1429,7 +1477,8 @@ void IMAPFolder::addMessage(utility::inputStream& is, const int size, const int 
 	nums.push_back(m_messageCount + 1);
 
 	events::messageCountEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageCountEvent::TYPE_ADDED, nums);
 
 	m_messageCount++;
@@ -1442,7 +1491,8 @@ void IMAPFolder::addMessage(utility::inputStream& is, const int size, const int 
 		if ((*it) != this && (*it)->getFullPath() == m_path)
 		{
 			events::messageCountEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::messageCountEvent::TYPE_ADDED, nums);
 
 			(*it)->m_messageCount++;
@@ -1454,7 +1504,8 @@ void IMAPFolder::addMessage(utility::inputStream& is, const int size, const int 
 
 void IMAPFolder::expunge()
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1519,7 +1570,8 @@ void IMAPFolder::expunge()
 
 	// Notify message expunged
 	events::messageCountEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::messageCountEvent::TYPE_REMOVED, nums);
 
 	notifyMessageCount(event);
@@ -1533,7 +1585,8 @@ void IMAPFolder::expunge()
 			(*it)->m_messageCount = m_messageCount;
 
 			events::messageCountEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::messageCountEvent::TYPE_REMOVED, nums);
 
 			(*it)->notifyMessageCount(event);
@@ -1544,7 +1597,8 @@ void IMAPFolder::expunge()
 
 void IMAPFolder::rename(const folder::path& newPath)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1585,7 +1639,8 @@ void IMAPFolder::rename(const folder::path& newPath)
 	m_name = newPath.getLastComponent();
 
 	events::folderEvent event
-		(thisRef().dynamicCast <folder>(),
+		// (thisRef().dynamicCast <folder>(), TODO shared
+		(std::dynamic_pointer_cast<folder>(thisRef()),
 		 events::folderEvent::TYPE_RENAMED, oldPath, newPath);
 
 	notifyFolder(event);
@@ -1600,7 +1655,8 @@ void IMAPFolder::rename(const folder::path& newPath)
 			(*it)->m_name = newPath.getLastComponent();
 
 			events::folderEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::folderEvent::TYPE_RENAMED, oldPath, newPath);
 
 			(*it)->notifyFolder(event);
@@ -1612,7 +1668,8 @@ void IMAPFolder::rename(const folder::path& newPath)
 			(*it)->m_path.renameParent(oldPath, newPath);
 
 			events::folderEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::folderEvent::TYPE_RENAMED, oldPath, (*it)->m_path);
 
 			(*it)->notifyFolder(event);
@@ -1623,7 +1680,8 @@ void IMAPFolder::rename(const folder::path& newPath)
 
 void IMAPFolder::copyMessage(const folder::path& dest, const int num)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1649,7 +1707,8 @@ void IMAPFolder::copyMessage(const folder::path& dest, const int num)
 		if ((*it)->getFullPath() == dest)
 		{
 			events::messageCountEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::messageCountEvent::TYPE_ADDED, nums);
 
 			(*it)->m_messageCount++;
@@ -1661,7 +1720,8 @@ void IMAPFolder::copyMessage(const folder::path& dest, const int num)
 
 void IMAPFolder::copyMessages(const folder::path& dest, const int from, const int to)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1698,7 +1758,8 @@ void IMAPFolder::copyMessages(const folder::path& dest, const int from, const in
 		if ((*it)->getFullPath() == dest)
 		{
 			events::messageCountEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::messageCountEvent::TYPE_ADDED, nums);
 
 			(*it)->m_messageCount += count;
@@ -1710,7 +1771,8 @@ void IMAPFolder::copyMessages(const folder::path& dest, const int from, const in
 
 void IMAPFolder::copyMessages(const folder::path& dest, const std::vector <int>& nums)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -1729,7 +1791,8 @@ void IMAPFolder::copyMessages(const folder::path& dest, const std::vector <int>&
 		if ((*it)->getFullPath() == dest)
 		{
 			events::messageCountEvent event
-				((*it)->thisRef().dynamicCast <folder>(),
+				// ((*it)->thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 				 events::messageCountEvent::TYPE_ADDED, nums);
 
 			(*it)->m_messageCount += count;
@@ -1766,7 +1829,8 @@ void IMAPFolder::copyMessages(const string& set, const folder::path& dest)
 
 void IMAPFolder::status(int& count, int& unseen)
 {
-	std::shared_ptr<IMAPStore> store = m_store.acquire();
+	// std::shared_ptr<IMAPStore> store = m_store.acquire(); TODO shared
+	std::shared_ptr<IMAPStore> store = m_store.lock();
 
 	count = 0;
 	unseen = 0;
@@ -1852,7 +1916,8 @@ void IMAPFolder::status(int& count, int& unseen)
 				nums[j] = i;
 
 			events::messageCountEvent event
-				(thisRef().dynamicCast <folder>(),
+				// (thisRef().dynamicCast <folder>(), TODO shared
+				(std::dynamic_pointer_cast<folder>(thisRef()),
 				 events::messageCountEvent::TYPE_ADDED, nums);
 
 			notifyMessageCount(event);
@@ -1866,7 +1931,9 @@ void IMAPFolder::status(int& count, int& unseen)
 					(*it)->m_messageCount = count;
 
 					events::messageCountEvent event
-						((*it)->thisRef().dynamicCast <folder>(),
+						// ((*it)->thisRef().dynamicCast <folder>(), TODO
+						// shared
+						(std::dynamic_pointer_cast<folder>((*it)->thisRef()),
 						 events::messageCountEvent::TYPE_ADDED, nums);
 
 					(*it)->notifyMessageCount(event);

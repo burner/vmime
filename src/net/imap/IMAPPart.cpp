@@ -88,7 +88,8 @@ std::shared_ptr<structure> IMAPPart::getStructure()
 
 std::shared_ptr<const IMAPPart> IMAPPart::getParent() const
 {
-	return m_parent.acquire();
+	// return m_parent.acquire(); TODO shared
+	return m_parent.lock();
 }
 
 

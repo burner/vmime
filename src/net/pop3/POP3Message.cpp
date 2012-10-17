@@ -44,7 +44,8 @@ POP3Message::POP3Message(std::shared_ptr<POP3Folder> folder, const int num)
 
 POP3Message::~POP3Message()
 {
-	std::shared_ptr<POP3Folder> folder = m_folder.acquire();
+	// std::shared_ptr<POP3Folder> folder = m_folder.acquire(); TODO shared
+	std::shared_ptr<POP3Folder> folder = m_folder.lock();
 
 	if (folder)
 		folder->unregisterMessage(this);
@@ -53,7 +54,8 @@ POP3Message::~POP3Message()
 
 void POP3Message::onFolderClosed()
 {
-	m_folder = NULL;
+	// m_folder = NULL; TODO shared
+	m_folder.reset();
 }
 
 
@@ -120,7 +122,9 @@ void POP3Message::extract(utility::outputStream& os,
 	utility::progressListener* progress, const int start,
 	const int length, const bool /* peek */) const
 {
-	std::shared_ptr<const POP3Folder> folder = m_folder.acquire();
+	// std::shared_ptr<const POP3Folder> folder = m_folder.acquire(); TODO
+	// shared
+	std::shared_ptr<const POP3Folder> folder = m_folder.lock();
 
 	if (!folder)
 		throw exceptions::illegal_state("Folder closed");
@@ -134,17 +138,24 @@ void POP3Message::extract(utility::outputStream& os,
 	std::ostringstream oss;
 	oss << "RETR " << m_num;
 
-	folder.constCast <POP3Folder>()->m_store.acquire()->sendRequest(oss.str());
+	// folder.constCast
+	// <POP3Folder>()->m_store.acquire()->sendRequest(oss.str()); TODO shared
+	std::const_pointer_cast<POP3Folder>(folder)->m_store.lock()->sendRequest(oss.str());
 
 	try
 	{
 		POP3Folder::MessageMap::const_iterator it =
 			folder->m_messages.find(const_cast <POP3Message*>(this));
 
-		const int totalSize = (it != folder.constCast <POP3Folder>()->m_messages.end())
+		// const int totalSize = (it != folder.constCast
+		// <POP3Folder>()->m_messages.end()) TODO shared
+			// ? (*it).second : 0; TODO shared
+		const int totalSize = (it != std::const_pointer_cast<POP3Folder>(folder)->m_messages.end())
 			? (*it).second : 0;
 
-		folder.constCast <POP3Folder>()->m_store.acquire()->
+		// folder.constCast <POP3Folder>()->m_store.acquire()-> TODO shared
+			// readResponse(os, progress, totalSize); TODO shared
+		std::const_pointer_cast<POP3Folder>(folder)->m_store.lock()->
 			readResponse(os, progress, totalSize);
 	}
 	catch (exceptions::command_error& e)
@@ -172,7 +183,8 @@ void POP3Message::fetchPartHeader(std::shared_ptr<part> /* p */)
 
 void POP3Message::fetch(std::shared_ptr<POP3Folder> msgFolder, const int options)
 {
-	std::shared_ptr<POP3Folder> folder = m_folder.acquire();
+	// std::shared_ptr<POP3Folder> folder = m_folder.acquire(); TODO shared
+	std::shared_ptr<POP3Folder> folder = m_folder.lock();
 
 	if (folder != msgFolder)
 		throw exceptions::folder_not_found();
@@ -197,12 +209,14 @@ void POP3Message::fetch(std::shared_ptr<POP3Folder> msgFolder, const int options
 	std::ostringstream oss;
 	oss << "TOP " << m_num << " 0";
 
-	folder->m_store.acquire()->sendRequest(oss.str());
+	// folder->m_store.acquire()->sendRequest(oss.str()); TODO shared
+	folder->m_store.lock()->sendRequest(oss.str());
 
 	try
 	{
 		string buffer;
-		folder->m_store.acquire()->readResponse(buffer, true);
+		// folder->m_store.acquire()->readResponse(buffer, true); TODO shared
+		folder->m_store.lock()->readResponse(buffer, true);
 
 		m_header = std::make_shared<header>();
 		m_header->parse(buffer);

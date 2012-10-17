@@ -53,15 +53,16 @@ private:
 
 	friend class maildirStore;
 	friend class maildirMessage;
-	friend class vmime::creator;  // std::make_shared<maildirFolder>
+	//friend class vmime::creator;  // std::make_shared<maildirFolder> TODO
+	//shared
 
+public:
 
+	// TODO shared were private
 	maildirFolder(const folder::path& path, std::shared_ptr<maildirStore> store);
 	maildirFolder(const maildirFolder&) : folder() { }
 
 	~maildirFolder();
-
-public:
 
 	int getMode() const;
 
