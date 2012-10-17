@@ -61,14 +61,17 @@ std::shared_ptr<SASLSession> SASLContext::createSession
 	 std::shared_ptr<authenticator> auth, std::shared_ptr<SASLMechanism> mech)
 {
 	return std::make_shared<SASLSession>
-		(serviceName, thisRef().dynamicCast <SASLContext>(), auth, mech);
+		// (serviceName, thisRef().dynamicCast <SASLContext>(), auth, mech);
+		// TODO shared
+		(serviceName, std::dynamic_pointer_cast<SASLContext>(thisRef()), auth, mech);
 }
 
 
 std::shared_ptr<SASLMechanism> SASLContext::createMechanism(const string& name)
 {
 	return SASLMechanismFactory::getInstance()->create
-		(thisRef().dynamicCast <SASLContext>(), name);
+		// (thisRef().dynamicCast <SASLContext>(), name); TODO shared
+		(std::dynamic_pointer_cast<SASLContext>(thisRef()), name);
 }
 
 

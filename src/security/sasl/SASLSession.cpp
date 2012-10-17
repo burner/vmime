@@ -64,12 +64,16 @@ SASLSession::~SASLSession()
 
 void SASLSession::init()
 {
-	std::shared_ptr<SASLAuthenticator> saslAuth = m_auth.dynamicCast <SASLAuthenticator>();
+	// std::shared_ptr<SASLAuthenticator> saslAuth = m_auth.dynamicCast
+	// <SASLAuthenticator>(); TODO shared
+	std::shared_ptr<SASLAuthenticator> saslAuth = std::dynamic_pointer_cast<SASLAuthenticator>(m_auth);
 
 	if (saslAuth)
 	{
 		saslAuth->setSASLMechanism(m_mech);
-		saslAuth->setSASLSession(thisRef().dynamicCast <SASLSession>());
+		// saslAuth->setSASLSession(thisRef().dynamicCast <SASLSession>());
+		// TODO shared
+		saslAuth->setSASLSession(std::dynamic_pointer_cast<SASLSession>(thisRef()));
 	}
 }
 
@@ -96,14 +100,17 @@ bool SASLSession::evaluateChallenge
 	(const byte_t* challenge, const int challengeLen,
 	 byte_t** response, int* responseLen)
 {
-	return m_mech->step(thisRef().dynamicCast <SASLSession>(),
+	// return m_mech->step(thisRef().dynamicCast <SASLSession>(), TODO shared
+	return m_mech->step(std::dynamic_pointer_cast<SASLSession>(thisRef()),
 		challenge, challengeLen, response, responseLen);
 }
 
 
 std::shared_ptr<net::socket> SASLSession::getSecuredSocket(std::shared_ptr<net::socket> sok)
 {
-	return std::make_shared<SASLSocket>(thisRef().dynamicCast <SASLSession>(), sok);
+	// return std::make_shared<SASLSocket>(thisRef().dynamicCast
+	// <SASLSession>(), sok); TODO shared
+	return std::make_shared<SASLSocket>(std::dynamic_pointer_cast<SASLSession>(thisRef()), sok);
 }
 
 

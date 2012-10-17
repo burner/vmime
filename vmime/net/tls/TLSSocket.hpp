@@ -49,6 +49,8 @@ class TLSSocket : public socket
 
 protected:
 
+public:
+	// TODO shared was protected
 	/** Create a new socket object that adds a security layer
 	  * around an existing socket.
 	  *
@@ -57,7 +59,6 @@ protected:
 	  */
 	TLSSocket(std::shared_ptr<TLSSession> session, std::shared_ptr<socket> sok);
 
-public:
 
 	~TLSSocket();
 

@@ -246,7 +246,8 @@ int X509Certificate::getVersion() const
 bool X509Certificate::equals(std::shared_ptr<const certificate> other) const
 {
 	std::shared_ptr<const X509Certificate> otherX509 =
-		other.dynamicCast <const X509Certificate>();
+		// other.dynamicCast <const X509Certificate>(); TODO shared
+		std::dynamic_pointer_cast<const X509Certificate>(other);
 
 	if (!otherX509)
 		return false;

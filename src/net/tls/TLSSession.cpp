@@ -261,7 +261,8 @@ TLSSession::~TLSSession()
 std::shared_ptr<TLSSocket> TLSSession::getSocket(std::shared_ptr<socket> sok)
 {
 	return std::make_shared<TLSSocket>
-		(thisRef().dynamicCast <TLSSession>(), sok);
+		// (thisRef().dynamicCast <TLSSession>(), sok); TODO shared
+		(std::dynamic_pointer_cast<TLSSession>(thisRef()), sok);
 }
 
 

@@ -197,7 +197,8 @@ void maildirPart::initStructure(const bodyPart& part)
 	else
 	{
 		m_structure = std::make_shared<maildirStructure>
-			(thisRef().dynamicCast <maildirPart>(),
+			// (thisRef().dynamicCast <maildirPart>(), TODO shared
+			(std::dynamic_pointer_cast<maildirPart>(thisRef()),
 			 part.getBody()->getPartList());
 	}
 }
@@ -236,7 +237,8 @@ maildirMessage::maildirMessage(std::shared_ptr<maildirFolder> folder, const int 
 
 maildirMessage::~maildirMessage()
 {
-	std::shared_ptr<maildirFolder> folder = m_folder.acquire();
+	// std::shared_ptr<maildirFolder> folder = m_folder.acquire(); TODO shared
+	std::shared_ptr<maildirFolder> folder = m_folder.lock();
 
 	if (folder)
 		folder->unregisterMessage(this);
@@ -245,7 +247,8 @@ maildirMessage::~maildirMessage()
 
 void maildirMessage::onFolderClosed()
 {
-	m_folder = NULL;
+	// m_folder = NULL; TODO shared
+	m_folder.reset();
 }
 
 
@@ -314,7 +317,8 @@ int maildirMessage::getFlags() const
 
 void maildirMessage::setFlags(const int flags, const int mode)
 {
-	std::shared_ptr<maildirFolder> folder = m_folder.acquire();
+	// std::shared_ptr<maildirFolder> folder = m_folder.acquire(); TODO shared
+	std::shared_ptr<maildirFolder> folder = m_folder.lock();
 
 	if (!folder)
 		throw exceptions::folder_not_found();
@@ -335,7 +339,9 @@ void maildirMessage::extractPart(std::shared_ptr<const part> p, utility::outputS
 	utility::progressListener* progress, const int start,
 	const int length, const bool peek) const
 {
-	std::shared_ptr<const maildirPart> mp = p.dynamicCast <const maildirPart>();
+	// std::shared_ptr<const maildirPart> mp = p.dynamicCast <const
+	// maildirPart>(); TODO shared
+	std::shared_ptr<const maildirPart> mp = std::dynamic_pointer_cast<const maildirPart>(p);
 
 	extractImpl(os, progress, mp->getBodyParsedOffset(), mp->getBodyParsedLength(),
 		start, length, peek);
@@ -346,7 +352,9 @@ void maildirMessage::extractImpl(utility::outputStream& os, utility::progressLis
 	const int start, const int length, const int partialStart, const int partialLength,
 	const bool /* peek */) const
 {
-	std::shared_ptr<const maildirFolder> folder = m_folder.acquire();
+	// std::shared_ptr<const maildirFolder> folder = m_folder.acquire(); TODO
+	// shared
+	std::shared_ptr<const maildirFolder> folder = m_folder.lock();
 
 	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
@@ -391,9 +399,12 @@ void maildirMessage::extractImpl(utility::outputStream& os, utility::progressLis
 
 void maildirMessage::fetchPartHeader(std::shared_ptr<part> p)
 {
-	std::shared_ptr<maildirFolder> folder = m_folder.acquire();
+	// std::shared_ptr<maildirFolder> folder = m_folder.acquire(); TODO shared
+	std::shared_ptr<maildirFolder> folder = m_folder.lock();
 
-	std::shared_ptr<maildirPart> mp = p.dynamicCast <maildirPart>();
+	// std::shared_ptr<maildirPart> mp = p.dynamicCast <maildirPart>(); TODO
+	// shared
+	std::shared_ptr<maildirPart> mp = std::dynamic_pointer_cast<maildirPart>(p);
 
 	std::shared_ptr<utility::fileSystemFactory> fsf = platform::getHandler()->getFileSystemFactory();
 
@@ -427,7 +438,8 @@ void maildirMessage::fetchPartHeader(std::shared_ptr<part> p)
 
 void maildirMessage::fetch(std::shared_ptr<maildirFolder> msgFolder, const int options)
 {
-	std::shared_ptr<maildirFolder> folder = m_folder.acquire();
+	// std::shared_ptr<maildirFolder> folder = m_folder.acquire(); TODO shared
+	std::shared_ptr<maildirFolder> folder = m_folder.lock();
 
 	if (folder != msgFolder)
 		throw exceptions::folder_not_found();
@@ -502,7 +514,9 @@ void maildirMessage::fetch(std::shared_ptr<maildirFolder> msgFolder, const int o
 		// Extract structure
 		if (options & folder::FETCH_STRUCTURE)
 		{
-			m_structure = std::make_shared<maildirStructure>(null, msg);
+			// m_structure = std::make_shared<maildirStructure>(null, msg);
+			// TODO shared
+			m_structure = std::make_shared<maildirStructure>(nullptr, msg);
 		}
 
 		// Extract some header fields or whole header

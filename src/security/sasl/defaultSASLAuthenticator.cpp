@@ -96,7 +96,8 @@ const string defaultSASLAuthenticator::getAnonymousToken() const
 
 const string defaultSASLAuthenticator::getServiceName() const
 {
-	return m_saslSession.acquire()->getServiceName();
+	// return m_saslSession.acquire()->getServiceName(); TODO shared
+	return m_saslSession.lock()->getServiceName();
 }
 
 
@@ -121,7 +122,8 @@ void defaultSASLAuthenticator::setSASLSession(std::shared_ptr<SASLSession> sess)
 
 std::shared_ptr<SASLSession> defaultSASLAuthenticator::getSASLSession() const
 {
-	return m_saslSession.acquire().constCast <SASLSession>();
+	// return m_saslSession.acquire().constCast <SASLSession>(); TODO shared
+	return std::const_pointer_cast<SASLSession>(m_saslSession.lock());
 }
 
 

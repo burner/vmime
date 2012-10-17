@@ -73,10 +73,14 @@ void defaultCertificateVerifier::verifyX509(std::shared_ptr<certificateChain> ch
 		for (unsigned int i = 0 ; i < chain->getCount() - 1 ; ++i)
 		{
 			std::shared_ptr<X509Certificate> cert =
-				chain->getAt(i).dynamicCast <X509Certificate>();
+				// chain->getAt(i).dynamicCast <X509Certificate>(); TODO
+				// shared
+				std::dynamic_pointer_cast<X509Certificate>(chain->getAt(i));
 
 			std::shared_ptr<X509Certificate> next =
-				chain->getAt(i + 1).dynamicCast <X509Certificate>();
+				// chain->getAt(i + 1).dynamicCast <X509Certificate>(); TODO
+				// shared
+				std::dynamic_pointer_cast<X509Certificate>(chain->getAt(i + 1));
 
 			if (!cert->checkIssuer(next))
 			{
@@ -93,7 +97,8 @@ void defaultCertificateVerifier::verifyX509(std::shared_ptr<certificateChain> ch
 	for (unsigned int i = 0 ; i < chain->getCount() ; ++i)
 	{
 		std::shared_ptr<X509Certificate> cert =
-			chain->getAt(i).dynamicCast <X509Certificate>();
+			// chain->getAt(i).dynamicCast <X509Certificate>(); TODO shared
+			std::dynamic_pointer_cast<X509Certificate>(chain->getAt(i));
 
 		const datetime begin = cert->getActivationDate();
 		const datetime end = cert->getExpirationDate();
@@ -110,7 +115,9 @@ void defaultCertificateVerifier::verifyX509(std::shared_ptr<certificateChain> ch
 	// -- First, verify that the the last certificate in the chain was
 	// -- issued by a third-party that we trust
 	std::shared_ptr<X509Certificate> lastCert =
-		chain->getAt(chain->getCount() - 1).dynamicCast <X509Certificate>();
+		// chain->getAt(chain->getCount() - 1).dynamicCast
+		// <X509Certificate>(); TODO shared
+		std::dynamic_pointer_cast<X509Certificate>(chain->getAt(chain->getCount() - 1));
 
 	bool trusted = false;
 
@@ -126,7 +133,8 @@ void defaultCertificateVerifier::verifyX509(std::shared_ptr<certificateChain> ch
 	// -- root CAs, compare the subject's certificate against the
 	// -- trusted certificates
 	std::shared_ptr<X509Certificate> firstCert =
-		chain->getAt(0).dynamicCast <X509Certificate>();
+		// chain->getAt(0).dynamicCast <X509Certificate>(); TODO shared
+		std::dynamic_pointer_cast<X509Certificate>(chain->getAt(0));
 
 	for (unsigned int i = 0 ; !trusted && i < m_x509TrustedCerts.size() ; ++i)
 	{

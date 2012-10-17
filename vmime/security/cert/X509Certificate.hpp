@@ -42,14 +42,15 @@ namespace cert {
   */
 class X509Certificate : public certificate
 {
-	friend class vmime::creator;
+	// friend class vmime::creator; TODO shared
 
 protected:
 
+public:
+
+	// TODO shared were protected
 	X509Certificate();
 	X509Certificate(const X509Certificate&);
-
-public:
 
 	~X509Certificate();
 

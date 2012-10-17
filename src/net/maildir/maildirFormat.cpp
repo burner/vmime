@@ -52,7 +52,8 @@ maildirFormat::context::context(std::shared_ptr<maildirStore> store)
 
 std::shared_ptr<maildirStore> maildirFormat::context::getStore() const
 {
-	return m_store.acquire().constCast <maildirStore>();
+	// return m_store.acquire().constCast <maildirStore>(); TODO shared
+	return std::const_pointer_cast<maildirStore>(m_store.lock());
 }
 
 
