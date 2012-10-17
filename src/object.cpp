@@ -34,20 +34,23 @@ namespace vmime
 
 object::object()
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
-	: m_thisRef(std::make_shared<object>(this))
+	//: m_thisRef(std::make_shared<object>(this))
+	: m_thisRef(std::shared_ptr<object>(this))
 {
 }
 
 
 object::object(const object&)
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
-	: m_thisRef(std::make_shared<object>(this))
+	//: m_thisRef(std::make_shared<object>(this))
+	: m_thisRef(std::shared_ptr<object>(this))
 {
 }
 
 object::object(object* const)
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
-	: m_thisRef(std::make_shared<object>(this))
+	//: m_thisRef(std::make_shared<object>(this))
+	: m_thisRef(std::shared<object>(this))
 {
 }
 
@@ -68,14 +71,14 @@ object::~object()
 std::shared_ptr<object> object::thisRef()
 {
 	// m_refMgr->addStrong(); TODO shared
-	return m_thisRef;
+	return m_thisRef.lock();
 }
 
 
 std::shared_ptr<const object> object::thisRef() const
 {
 	// m_refMgr->addStrong(); TODO shared
-	return m_thisRef;
+	return m_thisRef.lock();
 }
 
 
