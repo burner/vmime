@@ -56,7 +56,8 @@ private:
 
 public:
 	// TODO shared was private
-	POP3Folder(const folder::path& path, std::shared_ptr<POP3Store> store);
+	// POP3Folder(const folder::path& path, std::shared_ptr<POP3Store> store); TODO shared
+	POP3Folder(const folder::path& path, POP3Store* store);
 	POP3Folder(const POP3Folder&) : folder() { }
 	~POP3Folder();
 
@@ -113,8 +114,8 @@ public:
 
 	std::shared_ptr<folder> getParent();
 
-	std::shared_ptr<const store> getStore() const;
-	std::shared_ptr<store> getStore();
+	//std::shared_ptr<const store> getStore() const;
+	//std::shared_ptr<store> getStore();
 
 
 	void fetchMessages(std::vector <std::shared_ptr<message> >& msg, const int options, utility::progressListener* progress = NULL);
@@ -134,7 +135,8 @@ private:
 	void onClose();
 
 
-	std::weak_ptr<POP3Store> m_store;
+	// std::weak_ptr<POP3Store> m_store; TODO shared
+	POP3Store* m_store;
 
 	folder::path m_path;
 	folder::path::component m_name;

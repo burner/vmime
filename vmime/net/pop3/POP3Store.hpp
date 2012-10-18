@@ -89,7 +89,8 @@ private:
 		RESPONSE_ERR
 	};
 
-	void authenticate(const messageId& randomMID);
+	static void authenticate(const messageId& randomMID, std::shared_ptr<POP3Store> store);
+	void authenticateImpl(const messageId& randomMID, std::shared_ptr<POP3Store> thisRef);
 #if VMIME_HAVE_SASL_SUPPORT
 	void authenticateSASL();
 #endif // VMIME_HAVE_SASL_SUPPORT

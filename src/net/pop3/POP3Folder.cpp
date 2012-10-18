@@ -36,7 +36,7 @@ namespace net {
 namespace pop3 {
 
 
-POP3Folder::POP3Folder(const folder::path& path, std::shared_ptr<POP3Store> store)
+POP3Folder::POP3Folder(const folder::path& path, POP3Store* store)
 	: m_store(store), m_path(path),
 	  m_name(path.isEmpty() ? folder::path::component("") : path.getLastComponent()),
 	  m_mode(-1), m_open(false)
@@ -48,7 +48,6 @@ POP3Folder::POP3Folder(const folder::path& path, std::shared_ptr<POP3Store> stor
 POP3Folder::~POP3Folder()
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
 
 	if (store)
 	{
@@ -108,7 +107,7 @@ const folder::path POP3Folder::getFullPath() const
 void POP3Folder::open(const int mode, bool failIfModeIsNotAvailable)
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -153,7 +152,7 @@ void POP3Folder::open(const int mode, bool failIfModeIsNotAvailable)
 void POP3Folder::close(const bool expunge)
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -200,7 +199,7 @@ void POP3Folder::destroy()
 bool POP3Folder::exists()
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -218,7 +217,7 @@ bool POP3Folder::isOpen() const
 std::shared_ptr<message> POP3Folder::getMessage(const int num)
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -235,7 +234,7 @@ std::shared_ptr<message> POP3Folder::getMessage(const int num)
 std::vector <std::shared_ptr<message> > POP3Folder::getMessages(const int from, const int to)
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	const int to2 = (to == -1 ? m_messageCount : to);
 
@@ -272,7 +271,7 @@ std::vector <std::shared_ptr<message> > POP3Folder::getMessagesByUID(const std::
 std::vector <std::shared_ptr<message> > POP3Folder::getMessages(const std::vector <int>& nums)
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -298,7 +297,7 @@ std::vector <std::shared_ptr<message> > POP3Folder::getMessages(const std::vecto
 int POP3Folder::getMessageCount()
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -312,7 +311,7 @@ int POP3Folder::getMessageCount()
 std::shared_ptr<folder> POP3Folder::getFolder(const folder::path::component& name)
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -324,7 +323,7 @@ std::shared_ptr<folder> POP3Folder::getFolder(const folder::path::component& nam
 std::vector <std::shared_ptr<folder> > POP3Folder::getFolders(const bool /* recursive */)
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -347,7 +346,7 @@ void POP3Folder::fetchMessages(std::vector <std::shared_ptr<message> >& msg, con
                                utility::progressListener* progress)
 {
 	//std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -466,7 +465,7 @@ void POP3Folder::fetchMessages(std::vector <std::shared_ptr<message> >& msg, con
 void POP3Folder::fetchMessage(std::shared_ptr<message> msg, const int options)
 {
 	// std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -570,12 +569,12 @@ std::shared_ptr<folder> POP3Folder::getParent()
 	else {
 		// return std::make_shared<POP3Folder>(m_path.getParent(),
 		// m_store.acquire()); TODO shared
-		return std::make_shared<POP3Folder>(m_path.getParent(), m_store.lock());
+		return std::make_shared<POP3Folder>(m_path.getParent(), m_store);
 	}
 }
 
 
-std::shared_ptr<const store> POP3Folder::getStore() const
+/*std::shared_ptr<const store> POP3Folder::getStore() const
 {
 	// return m_store.acquire(); TODO shared
 	return m_store.lock();
@@ -586,7 +585,7 @@ std::shared_ptr<store> POP3Folder::getStore()
 {
 	// return m_store.acquire(); TODO shared
 	return m_store.lock();
-}
+}*/
 
 
 void POP3Folder::registerMessage(POP3Message* msg)
@@ -611,7 +610,7 @@ void POP3Folder::onStoreDisconnected()
 void POP3Folder::deleteMessage(const int num)
 {
 	// std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
@@ -659,7 +658,7 @@ void POP3Folder::deleteMessage(const int num)
 void POP3Folder::deleteMessages(const int from, const int to)
 {
 	// std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (from < 1 || (to < from && to != -1))
 		throw exceptions::invalid_argument();
@@ -717,7 +716,7 @@ void POP3Folder::deleteMessages(const int from, const int to)
 void POP3Folder::deleteMessages(const std::vector <int>& nums)
 {
 	// std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (nums.empty())
 		throw exceptions::invalid_argument();
@@ -829,7 +828,7 @@ void POP3Folder::copyMessages(const folder::path& /* dest */, const std::vector 
 void POP3Folder::status(int& count, int& unseen)
 {
 	// std::shared_ptr<POP3Store> store = m_store.acquire(); TODO shared
-	std::shared_ptr<POP3Store> store = m_store.lock();
+	POP3Store* store = m_store;
 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");

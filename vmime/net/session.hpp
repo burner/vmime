@@ -66,7 +66,7 @@ public:
 	  */
 	//std::shared_ptr<transport> getTransport
 	//	(std::shared_ptr<security::authenticator> auth = NULL);
-	static std::shared_ptr<transport> getTransport(std::shared_ptr<session> sess,
+	std::shared_ptr<transport> getTransport(std::shared_ptr<session> sess,
 		std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a transport service instance for the specified protocol.
@@ -108,7 +108,7 @@ public:
 	// std::shared_ptr<store>
 	// getStore(std::shared_ptr<security::authenticator> auth = NULL); TODO
 	// shared
-	static std::shared_ptr<store> getStore(std::shared_ptr<session> sess, 
+	std::shared_ptr<store> getStore(std::shared_ptr<session> sess, 
 			std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a store service instance for the specified protocol.

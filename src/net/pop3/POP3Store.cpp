@@ -98,7 +98,8 @@ std::shared_ptr<folder> POP3Store::getDefaultFolder()
 	//return std::make_shared<POP3Folder>(folder::path(folder::path::component("INBOX")), TODO shared
 		//thisRef().dynamicCast <POP3Store>()); TODO shared
 	return std::make_shared<POP3Folder>(folder::path(folder::path::component("INBOX")),
-		std::dynamic_pointer_cast<POP3Store>(thisRef()));
+		// std::dynamic_pointer_cast<POP3Store>(thisRef())); TODO shared
+		this);
 }
 
 
@@ -110,7 +111,8 @@ std::shared_ptr<folder> POP3Store::getRootFolder()
 	//return std::make_shared<POP3Folder>(folder::path(), TODO shared
 		//thisRef().dynamicCast <POP3Store>()); TODO shared
 	return std::make_shared<POP3Folder>(folder::path(),
-		std::dynamic_pointer_cast<POP3Store>(thisRef()));
+		// std::dynamic_pointer_cast<POP3Store>(thisRef())); TODO shared
+		this);
 }
 
 
@@ -122,7 +124,8 @@ std::shared_ptr<folder> POP3Store::getFolder(const folder::path& path)
 	//return std::make_shared<POP3Folder>(path, TODO shared
 		//thisRef().dynamicCast <POP3Store>()); TODO shared
 	return std::make_shared<POP3Folder>(path,
-		std::dynamic_pointer_cast<POP3Store>(thisRef()));
+		// std::dynamic_pointer_cast<POP3Store>(thisRef())); TODO shared
+		this);
 }
 
 
@@ -220,11 +223,14 @@ void POP3Store::connect()
 	authenticate(messageId(response));
 }
 
+void POP3Store::authenticate(const messageId& randomMID, std::shared_ptr<POP3Store> store) {
+	store->authenticateImpl(randomMID, store);
+}
 
-void POP3Store::authenticate(const messageId& randomMID)
+void POP3Store::authenticateImpl(const messageId& randomMID, std::shared_ptr<POP3Store> thisRef)
 {
-	//getAuthenticator()->setService(thisRef().dynamicCast <service>()); TODO shared
-	getAuthenticator()->setService(std::dynamic_pointer_cast<service>(thisRef()));
+	// getAuthenticator()->setService(thisRef().dynamicCast <service>()); TODO shared TODO shared
+	getAuthenticator()->setService(std::dynamic_pointer_cast<service>(this)); // TODO shared
 
 #if VMIME_HAVE_SASL_SUPPORT
 	// First, try SASL authentication
