@@ -282,7 +282,7 @@ public:
 
 private:
 
-	void setParentPart(std::shared_ptr<bodyPart> parent);
+	void setParentPart(std::weak_ptr<bodyPart> parent);
 
 
 	string m_prologText;

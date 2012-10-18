@@ -43,10 +43,14 @@ class bodyPart : public component
 {
 	friend class body;
 
-public:
-
+protected:
 	bodyPart();
-	bodyPart(std::weak_ptr<vmime::bodyPart> parentPart);
+
+public:
+	static std::shared_ptr<bodyPart> construct();
+	//static std::shared_ptr<bodyPart> construct();
+
+	//bodyPart(std::weak_ptr<vmime::bodyPart> parentPart);
 
 	/** Return the header section of this part.
 	  *

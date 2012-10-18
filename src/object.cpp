@@ -67,7 +67,7 @@ object::~object()
 	// m_refMgr = 0; TODO shared
 }
 
-
+/*
 std::shared_ptr<object> object::thisRef()
 {
 	// m_refMgr->addStrong(); TODO shared
@@ -94,14 +94,14 @@ std::weak_ptr<const object> object::thisWeakRef() const
 }
 
 
-/*void object::setRefManager(utility::refManager* mgr)
+void object::setRefManager(utility::refManager* mgr)
 {
 	// m_refMgr = mgr; TODO shared
 	std::err<<__FILE__<<':'<<__LINE__<<" very bad place check"<<std::endl;
-}*/
+}
 
 
-/* utility::refManager* object::getRefManager() const
+utility::refManager* object::getRefManager() const
 {
 	// return m_refMgr; TODO shared
 	std::err<<__FILE__<<':'<<__LINE__<<" very bad place check"<<std::endl;

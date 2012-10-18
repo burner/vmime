@@ -100,7 +100,9 @@ std::shared_ptr<message> parsedMessageAttachment::getMessage() const
 void parsedMessageAttachment::generateIn(std::shared_ptr<bodyPart> parent) const
 {
 	// Create and append a new part for this attachment
-	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
+	// std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>(); TODO
+	// shared
+	std::shared_ptr<bodyPart> part = bodyPart::construct();
 	parent->getBody()->appendPart(part);
 
 	// Set header fields

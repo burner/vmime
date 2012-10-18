@@ -77,25 +77,25 @@ protected:
 	  *
 	  * @return reference to self
 	  */
-	std::shared_ptr<object> thisRef();
+	//std::shared_ptr<object> thisRef();
 
 	/** Return a reference to this object (const version).
 	  *
 	  * @return reference to self
 	  */
-	std::shared_ptr<const object> thisRef() const;
+	//std::shared_ptr<const object> thisRef() const;
 
 	/** Return a weak reference to this object.
 	  *
 	  * @return weak reference to self
 	  */
-	std::weak_ptr<object> thisWeakRef();
+	//std::weak_ptr<object> thisWeakRef();
 
 	/** Return a weak reference to this object (const version).
 	  *
 	  * @return weak reference to self
 	  */
-	std::weak_ptr<const object> thisWeakRef() const;
+	//std::weak_ptr<const object> thisWeakRef() const;
 
 
 	 // void setRefManager(utility::refManager* mgr); // TODO shared
