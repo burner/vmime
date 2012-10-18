@@ -36,7 +36,7 @@
 #include "vmime/config.hpp"
 #include "vmime/types.hpp"
 #include "vmime/constants.hpp"
-#include "vmime/utility/smartPtr.hpp"
+// #include "vmime/utility/smartPtr.hpp" TODO shared
 
 
 namespace vmime

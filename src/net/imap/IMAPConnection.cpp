@@ -143,7 +143,7 @@ void IMAPConnection::connect()
 	// eg:  C: <connection to server>
 	// ---  S: * OK mydomain.org IMAP4rev1 v12.256 server ready
 
-	utility::auto_ptr <IMAPParser::greeting> greet(m_parser->readGreeting());
+	std::shared_ptr<IMAPParser::greeting> greet(m_parser->readGreeting());
 	bool needAuth = false;
 
 	if (greet->resp_cond_bye())
@@ -255,7 +255,7 @@ void IMAPConnection::authenticate()
 	send(true, "LOGIN " + IMAPUtils::quoteString(username)
 		+ " " + IMAPUtils::quoteString(password), true);
 
-	utility::auto_ptr <IMAPParser::response> resp(m_parser->readResponse());
+	std::shared_ptr<IMAPParser::response> resp(m_parser->readResponse());
 
 	if (resp->isBad())
 	{
@@ -361,7 +361,7 @@ void IMAPConnection::authenticateSASL()
 
 		for (bool cont = true ; cont ; )
 		{
-			utility::auto_ptr <IMAPParser::response> resp(m_parser->readResponse());
+			std::shared_ptr<IMAPParser::response> resp(m_parser->readResponse());
 
 			if (resp->response_done() &&
 			    resp->response_done()->response_tagged() &&
@@ -465,7 +465,7 @@ void IMAPConnection::startTLS()
 	{
 		send(true, "STARTTLS", true);
 
-		utility::auto_ptr <IMAPParser::response> resp(m_parser->readResponse());
+		std::shared_ptr<IMAPParser::response> resp(m_parser->readResponse());
 
 		if (resp->isBad() || resp->response_done()->response_tagged()->
 			resp_cond_state()->status() != IMAPParser::resp_cond_state::OK)
@@ -511,7 +511,7 @@ const std::vector <string> IMAPConnection::getCapabilities()
 {
 	send(true, "CAPABILITY", true);
 
-	utility::auto_ptr <IMAPParser::response> resp(m_parser->readResponse());
+	std::shared_ptr<IMAPParser::response> resp(m_parser->readResponse());
 
 	std::vector <string> res;
 
@@ -605,7 +605,7 @@ void IMAPConnection::initHierarchySeparator()
 {
 	send(true, "LIST \"\" \"\"", true);
 
-	vmime::utility::auto_ptr <IMAPParser::response> resp(m_parser->readResponse());
+	std::shared_ptr<IMAPParser::response> resp(m_parser->readResponse());
 
 	if (resp->isBad() || resp->response_done()->response_tagged()->
 		resp_cond_state()->status() != IMAPParser::resp_cond_state::OK)

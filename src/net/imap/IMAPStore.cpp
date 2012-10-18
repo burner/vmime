@@ -180,7 +180,7 @@ void IMAPStore::noop()
 
 	m_connection->send(true, "NOOP", true);
 
-	utility::auto_ptr <IMAPParser::response> resp(m_connection->readResponse());
+	std::shared_ptr<IMAPParser::response> resp(m_connection->readResponse());
 
 	if (resp->isBad() || resp->response_done()->response_tagged()->
 			resp_cond_state()->status() != IMAPParser::resp_cond_state::OK)

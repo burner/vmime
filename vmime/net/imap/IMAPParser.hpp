@@ -30,7 +30,7 @@
 #include "vmime/charset.hpp"
 #include "vmime/exception.hpp"
 
-#include "vmime/utility/smartPtr.hpp"
+// #include "vmime/utility/smartPtr.hpp" TODO shared
 #include "vmime/utility/stringUtils.hpp"
 #include "vmime/utility/progressListener.hpp"
 
@@ -891,7 +891,7 @@ public:
 				// quoted ::= <"> *QUOTED_CHAR <">
 				if (parser.check <one_char <'"'> >(line, &pos, true))
 				{
-					utility::auto_ptr <quoted_text> text(parser.get <quoted_text>(line, &pos));
+					std::shared_ptr<quoted_text> text(parser.get <quoted_text>(line, &pos));
 					parser.check <one_char <'"'> >(line, &pos);
 
 					if (parser.m_literalHandler != NULL)
@@ -2163,28 +2163,28 @@ public:
 			parser.check <one_char <'"'> >(line, &pos);
 			parser.check <SPACE>(line, &pos, true);
 
-			utility::auto_ptr <number> nd(parser.get <number>(line, &pos));
+			std::shared_ptr<number> nd(parser.get <number>(line, &pos));
 
 			parser.check <one_char <'-'> >(line, &pos);
 
-			utility::auto_ptr <atom> amo(parser.get <atom>(line, &pos));
+			std::shared_ptr<atom> amo(parser.get <atom>(line, &pos));
 
 			parser.check <one_char <'-'> >(line, &pos);
 
-			utility::auto_ptr <number> ny(parser.get <number>(line, &pos));
+			std::shared_ptr<number> ny(parser.get <number>(line, &pos));
 
 			parser.check <SPACE>(line, &pos, true);
 
 			// 2digit ":" 2digit ":" 2digit
-			utility::auto_ptr <number> nh(parser.get <number>(line, &pos));
+			std::shared_ptr<number> nh(parser.get <number>(line, &pos));
 
 			parser.check <one_char <':'> >(line, &pos);
 
-			utility::auto_ptr <number> nmi(parser.get <number>(line, &pos));
+			std::shared_ptr<number> nmi(parser.get <number>(line, &pos));
 
 			parser.check <one_char <':'> >(line, &pos);
 
-			utility::auto_ptr <number> ns(parser.get <number>(line, &pos));
+			std::shared_ptr<number> ns(parser.get <number>(line, &pos));
 
 			parser.check <SPACE>(line, &pos, true);
 
@@ -2194,7 +2194,7 @@ public:
 			if (!(parser.check <one_char <'+'> >(line, &pos, true)))
 				parser.check <one_char <'-'> >(line, &pos);
 
-			utility::auto_ptr <number> nz(parser.get <number>(line, &pos));
+			std::shared_ptr<number> nz(parser.get <number>(line, &pos));
 
 			parser.check <one_char <'"'> >(line, &pos);
 

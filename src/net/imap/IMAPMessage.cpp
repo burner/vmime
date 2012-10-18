@@ -344,7 +344,7 @@ void IMAPMessage::extractImpl(std::shared_ptr<const part> p, utility::outputStre
 	std::const_pointer_cast<IMAPFolder>(folder)->m_connection->send(true, command.str(), true);
 
 	// Get the response
-	utility::auto_ptr <IMAPParser::response> resp
+	std::shared_ptr<IMAPParser::response> resp
 		// (folder.constCast
 		// <IMAPFolder>()->m_connection->readResponse(&literalHandler)); TODO
 		// shared
@@ -386,7 +386,7 @@ void IMAPMessage::fetch(std::shared_ptr<IMAPFolder> msgFolder, const int options
 	folder->m_connection->send(true, command, true);
 
 	// Get the response
-	utility::auto_ptr <IMAPParser::response> resp(folder->m_connection->readResponse());
+	std::shared_ptr<IMAPParser::response> resp(folder->m_connection->readResponse());
 
 	if (resp->isBad() || resp->response_done()->response_tagged()->
 		resp_cond_state()->status() != IMAPParser::resp_cond_state::OK)
@@ -628,7 +628,7 @@ void IMAPMessage::setFlags(const int flags, const int mode)
 		folder->m_connection->send(true, command.str(), true);
 
 		// Get the response
-		utility::auto_ptr <IMAPParser::response> resp(folder->m_connection->readResponse());
+		std::shared_ptr<IMAPParser::response> resp(folder->m_connection->readResponse());
 
 		if (resp->isBad() || resp->response_done()->response_tagged()->
 			resp_cond_state()->status() != IMAPParser::resp_cond_state::OK)

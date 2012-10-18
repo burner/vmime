@@ -29,7 +29,7 @@
 
 #include "vmime/base.hpp"
 #include "vmime/utility/stringProxy.hpp"
-#include "vmime/utility/smartPtr.hpp"
+// #include "vmime/utility/smartPtr.hpp" TODO shared
 #include "vmime/utility/progressListener.hpp"
 #include "vmime/encoding.hpp"
 
