@@ -68,9 +68,7 @@ void htmlTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shar
 	if (!m_plainText->isEmpty())
 	{
 		// -- Create a new part
-		// std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>(); TODO
-		// shared
-		std::shared_ptr<bodyPart> part = bodyPart::construct();
+		std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 		parent->getBody()->appendPart(part);
 
 		// -- Set contents
@@ -81,9 +79,7 @@ void htmlTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shar
 
 	// HTML text
 	// -- Create a new part
-	// std::shared_ptr<bodyPart> htmlPart = std::make_shared<bodyPart>(); TODO
-	// shared
-	std::shared_ptr<bodyPart> htmlPart = bodyPart::construct();
+	std::shared_ptr<bodyPart> htmlPart = std::make_shared<bodyPart>();
 
 	// -- Set contents
 	htmlPart->getBody()->setContents(m_text,
@@ -94,9 +90,7 @@ void htmlTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shar
 	if (!m_objects.empty())
 	{
 		// Create a "multipart/related" body part
-		// std::shared_ptr<bodyPart> relPart = std::make_shared<bodyPart>();
-		// TODO shared
-		std::shared_ptr<bodyPart> relPart = bodyPart::construct();
+		std::shared_ptr<bodyPart> relPart = std::make_shared<bodyPart>();
 		parent->getBody()->appendPart(relPart);
 
 		relPart->getHeader()->ContentType()->
@@ -109,9 +103,7 @@ void htmlTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shar
 		for (std::vector <std::shared_ptr<embeddedObject> >::const_iterator it = m_objects.begin() ;
 		     it != m_objects.end() ; ++it)
 		{
-			// std::shared_ptr<bodyPart> objPart =
-			// std::make_shared<bodyPart>(); TODO shared
-			std::shared_ptr<bodyPart> objPart = bodyPart::construct();
+			std::shared_ptr<bodyPart> objPart = std::make_shared<bodyPart>();
 			relPart->getBody()->appendPart(objPart);
 
 			string id = (*it)->getId();

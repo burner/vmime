@@ -27,13 +27,6 @@
 namespace vmime
 {
 
-std::shared_ptr<bodyPart> bodyPart::construct() {
-	bodyPart* tmp = new bodyPart;
-	std::shared_ptr<bodyPart> ret(tmp);
-	ret->getBody()->setParentPart(std::weak_ptr<bodyPart>(ret));
-	return ret;
-}
-
 
 bodyPart::bodyPart()
 	: m_header(std::make_shared<header>()),
@@ -41,18 +34,18 @@ bodyPart::bodyPart()
 	  //, m_parent(NULL) TODO shared
 {
 	//m_body->setParentPart(thisRef().dynamicCast <bodyPart>()); TODO shared
-//	m_body->setParentPart(std::dynamic_pointer_cast<bodyPart>(thisRef()));
+	m_body->setParentPart(std::dynamic_pointer_cast<bodyPart>(thisRef()));
 }
 
 
-/*bodyPart::bodyPart(std::weak_ptr<vmime::bodyPart> parentPart)
+bodyPart::bodyPart(std::weak_ptr<vmime::bodyPart> parentPart)
 	: m_header(std::make_shared<header>()),
 	  m_body(std::make_shared<body>()),
 	  m_parent(parentPart)
 {
 	// m_body->setParentPart(thisRef().dynamicCast <bodyPart>()); TODO shared
 	m_body->setParentPart(std::dynamic_pointer_cast<bodyPart>(thisRef()));
-}*/
+}
 
 
 void bodyPart::parseImpl
@@ -91,8 +84,7 @@ void bodyPart::generateImpl(utility::outputStream& os, const string::size_type m
 
 std::shared_ptr<component> bodyPart::clone() const
 {
-	// std::shared_ptr<bodyPart> p = std::make_shared<bodyPart>(); TODO shared
-	std::shared_ptr<bodyPart> p = bodyPart::construct();
+	std::shared_ptr<bodyPart> p = std::make_shared<bodyPart>();
 
 	//p->m_parent = null; TODO shared
 

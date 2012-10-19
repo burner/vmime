@@ -101,9 +101,7 @@ std::shared_ptr<message> messageBuilder::construct() const
 			(mediaType(mediaTypes::MULTIPART, mediaTypes::MULTIPART_MIXED));
 
 		// Create a sub-part "multipart/alternative" for text parts
-		// std::shared_ptr<bodyPart> subPart = std::make_shared<bodyPart>();
-		// TODO shared
-		std::shared_ptr<bodyPart> subPart = bodyPart::construct();
+		std::shared_ptr<bodyPart> subPart = std::make_shared<bodyPart>();
 		msg->getBody()->appendPart(subPart);
 
 		subPart->getHeader()->ContentType()->setValue

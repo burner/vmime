@@ -197,9 +197,7 @@ std::shared_ptr<message> MDNHelper::buildMDN(const sendableMDNInfos& mdnInfos,
 std::shared_ptr<bodyPart> MDNHelper::createFirstMDNPart(const sendableMDNInfos& /* mdnInfos */,
                                              const string& text, const charset& ch)
 {
-	// std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>(); TODO
-	// shared
-	std::shared_ptr<bodyPart> part = bodyPart::construct();
+	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 	// Header
 	std::shared_ptr<header> hdr = part->getHeader();
@@ -222,9 +220,7 @@ std::shared_ptr<bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos&
                                               const string& reportingUA,
                                               const std::vector <string>& reportingUAProducts)
 {
-	// std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>(); TODO
-	// shared
-	std::shared_ptr<bodyPart> part = bodyPart::construct();
+	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 	// Header
 	std::shared_ptr<header> hdr = part->getHeader();
@@ -309,9 +305,7 @@ std::shared_ptr<bodyPart> MDNHelper::createSecondMDNPart(const sendableMDNInfos&
 
 std::shared_ptr<bodyPart> MDNHelper::createThirdMDNPart(const sendableMDNInfos& mdnInfos)
 {
-	// std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>(); TODO
-	// shared
-	std::shared_ptr<bodyPart> part = bodyPart::construct();
+	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 	// Header
 	std::shared_ptr<header> hdr = part->getHeader();

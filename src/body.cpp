@@ -273,9 +273,7 @@ void body::parseImpl
 
 			if (index > 0)
 			{
-				// std::shared_ptr<bodyPart> part =
-				// std::make_shared<bodyPart>(); TODO shared
-				std::shared_ptr<bodyPart> part = bodyPart::construct();
+				std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 				// End before start may happen on empty bodyparts (directly
 				// successive boundaries without even a line-break)
@@ -330,9 +328,7 @@ void body::parseImpl
 		// Last part was not found: recover from missing boundary
 		if (!lastPart && pos == utility::stream::npos)
 		{
-			// std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
-			// TODO shared
-			std::shared_ptr<bodyPart> part = bodyPart::construct();
+			std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 
 			try
 			{
@@ -709,12 +705,10 @@ const encoding body::getEncoding() const
 }
 
 
-void body::setParentPart(std::weak_ptr<bodyPart> parent)
+void body::setParentPart(std::shared_ptr<bodyPart> parent)
 {
 	m_part = parent;
-	// m_header = (parent != NULL ? parent.lock()->getHeader() : NULL); TODO
-	// shared
-	m_header = (parent.lock() ? parent.lock()->getHeader() : NULL);
+	m_header = (parent != NULL ? parent->getHeader() : NULL);
 }
 
 

@@ -212,9 +212,7 @@ void attachmentHelper::addAttachment(std::shared_ptr<message> msg, std::shared_p
 		{
 			// Create a new container part for the parts that were in
 			// the root part of the message
-			// std::shared_ptr<bodyPart> container =
-			// std::make_shared<bodyPart>(); TODO shared
-			std::shared_ptr<bodyPart> container = bodyPart::construct();
+			std::shared_ptr<bodyPart> container = std::make_shared<bodyPart>();
 
 			try
 			{
@@ -251,9 +249,7 @@ void attachmentHelper::addAttachment(std::shared_ptr<message> msg, std::shared_p
 			// The message is a simple (RFC-822) message, and do not
 			// contains any MIME part. Move the contents from the
 			// root to a new child part.
-			// std::shared_ptr<bodyPart> child = std::make_shared<bodyPart>();
-			// TODO shared
-			std::shared_ptr<bodyPart> child = bodyPart::construct();
+			std::shared_ptr<bodyPart> child = std::make_shared<bodyPart>();
 
 			if (msg->getHeader()->hasField(fields::CONTENT_TYPE))
 			{

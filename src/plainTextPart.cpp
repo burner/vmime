@@ -60,9 +60,7 @@ int plainTextPart::getPartCount() const
 void plainTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shared_ptr<bodyPart> parent) const
 {
 	// Create a new part
-	// std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>(); TODO
-	// shared
-	std::shared_ptr<bodyPart> part = bodyPart::construct();
+	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
 	parent->getBody()->appendPart(part);
 
 	// Set contents

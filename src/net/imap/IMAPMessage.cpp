@@ -719,9 +719,7 @@ void IMAPMessage::constructParsedMessage(std::shared_ptr<bodyPart> parentPart, s
 		{
 			std::shared_ptr<class part> part = str->getPartAt(i);
 
-			// std::shared_ptr<bodyPart> childPart =
-			// std::make_shared<bodyPart>(); TODO shared
-			std::shared_ptr<bodyPart> childPart = bodyPart::construct();
+			std::shared_ptr<bodyPart> childPart = std::make_shared<bodyPart>();
 
 			// Copy header
 			std::shared_ptr<const header> hdr = part->getHeader();
