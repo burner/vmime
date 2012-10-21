@@ -476,7 +476,7 @@ private:
 	std::shared_ptr<vmime::net::store> createAndConnectStore()
 	{
 		std::shared_ptr<vmime::net::session> session =
-			std::make_shared<vmime::net::session>();
+			vmime::factory<vmime::net::session>::create();
 
 		std::shared_ptr<vmime::net::store> store =
 			session->getStore(getStoreURL());

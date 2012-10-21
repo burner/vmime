@@ -87,11 +87,12 @@ VMIME_TEST_SUITE_BEGIN
 "The text\r\n"
 "";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = std::make_shared<vmime::defaultAttachment>
-			(std::make_shared<vmime::stringContentHandler>("test"),
+		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>
+			(vmime::factory<vmime::stringContentHandler>::create("test"),
 				vmime::mediaType("image/jpeg"));
 
 		vmime::attachmentHelper::addAttachment(msg, att);
@@ -116,11 +117,12 @@ VMIME_TEST_SUITE_BEGIN
 "--foo--\r\n"
 "";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = std::make_shared<vmime::defaultAttachment>
-			(std::make_shared<vmime::stringContentHandler>("test"),
+		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>
+			(vmime::factory<vmime::stringContentHandler>::create("test"),
 				vmime::mediaType("image/jpeg"));
 
 		vmime::attachmentHelper::addAttachment(msg, att);
@@ -140,11 +142,12 @@ VMIME_TEST_SUITE_BEGIN
 "\r\n"
 "TWVzc2FnZSBib2R5";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = std::make_shared<vmime::defaultAttachment>
-			(std::make_shared<vmime::stringContentHandler>("test"),
+		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>
+			(vmime::factory<vmime::stringContentHandler>::create("test"),
 				vmime::mediaType("image/jpeg"));
 
 		vmime::attachmentHelper::addAttachment(msg, att);
@@ -159,7 +162,8 @@ VMIME_TEST_SUITE_BEGIN
 	{
 		vmime::string data = "Content-Disposition: attachment\r\n\r\nFoo\r\n";
 
-		std::shared_ptr<vmime::bodyPart> p = std::make_shared<vmime::bodyPart>();
+		std::shared_ptr<vmime::bodyPart> p =
+			vmime::factory<vmime::bodyPart>::create();
 		p->parse(data);
 
 		VASSERT_EQ("1", true, vmime::attachmentHelper::isBodyPartAnAttachment(p));
@@ -171,7 +175,8 @@ VMIME_TEST_SUITE_BEGIN
 	{
 		vmime::string data = "Content-Type: multipart/*\r\n\r\nFoo\r\n";
 
-		std::shared_ptr<vmime::bodyPart> p = std::make_shared<vmime::bodyPart>();
+		std::shared_ptr<vmime::bodyPart> p =
+			vmime::factory<vmime::bodyPart>::create();
 		p->parse(data);
 
 		VASSERT_EQ("1", false, vmime::attachmentHelper::isBodyPartAnAttachment(p));
@@ -188,7 +193,8 @@ VMIME_TEST_SUITE_BEGIN
 	{
 		vmime::string data = "Content-Type: application/octet-stream\r\n\r\nFoo\r\n";
 
-		std::shared_ptr<vmime::bodyPart> p = std::make_shared<vmime::bodyPart>();
+		std::shared_ptr<vmime::bodyPart> p =
+			vmime::factory<vmime::bodyPart>::create();
 		p->parse(data);
 
 		VASSERT_EQ("1", true, vmime::attachmentHelper::isBodyPartAnAttachment(p));
@@ -203,7 +209,8 @@ VMIME_TEST_SUITE_BEGIN
 			"Content-Id: bar\r\n"
 			"\r\nFoo\r\n";
 
-		std::shared_ptr<vmime::bodyPart> p = std::make_shared<vmime::bodyPart>();
+		std::shared_ptr<vmime::bodyPart> p =
+			vmime::factory<vmime::bodyPart>::create();
 		p->parse(data);
 
 		VASSERT_EQ("1", false, vmime::attachmentHelper::isBodyPartAnAttachment(p));
@@ -219,7 +226,8 @@ VMIME_TEST_SUITE_BEGIN
 			"\r\n"
 			"Foo bar baz";
 
-		std::shared_ptr<vmime::bodyPart> part = std::make_shared<vmime::bodyPart>();
+		std::shared_ptr<vmime::bodyPart> part =
+			vmime::factory<vmime::bodyPart>::create();
 		part->parse(data);
 
 		std::shared_ptr<const vmime::attachment> att =
@@ -252,7 +260,8 @@ VMIME_TEST_SUITE_BEGIN
 "\r\n"
 "Message body";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
 		const vmime::string attData =
@@ -262,7 +271,8 @@ VMIME_TEST_SUITE_BEGIN
 "\r\n"
 "QXR0YWNoZWQgbWVzc2FnZSBib2R5";
 
-		std::shared_ptr<vmime::message> amsg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> amsg =
+			vmime::factory<vmime::message>::create();
 		amsg->parse(attData);
 
 		vmime::attachmentHelper::addAttachment(msg, amsg);
@@ -279,7 +289,8 @@ VMIME_TEST_SUITE_BEGIN
 
 		attCth->extract(attDataOutOs);
 
-		std::shared_ptr<vmime::message> amsgOut = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> amsgOut =
+			vmime::factory<vmime::message>::create();
 		amsgOut->parse(attDataOut);
 
 		std::shared_ptr<vmime::header> hdr = amsgOut->getHeader();
@@ -309,7 +320,8 @@ VMIME_TEST_SUITE_BEGIN
 "FooBar\r\n"
 "--foo--\r\n";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
 		VASSERT_EQ("0", 2, msg->getBody()->getPartCount());

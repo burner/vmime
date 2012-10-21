@@ -45,9 +45,10 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testSingleLineResponse()
 	{
-		std::shared_ptr<testSocket> socket = std::make_shared<testSocket>();
+		std::shared_ptr<testSocket> socket =
+			vmime::factory<testSocket>::create();
 		std::shared_ptr<vmime::net::timeoutHandler> toh =
-			std::make_shared<testTimeoutHandler>();
+			vmime::factory<testTimeoutHandler>::create();
 
 		socket->localSend("123 Response Text\r\n");
 
@@ -61,9 +62,10 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testSingleLineResponseLF()
 	{
-		std::shared_ptr<testSocket> socket = std::make_shared<testSocket>();
+		std::shared_ptr<testSocket> socket =
+			vmime::factory<testSocket>::create();
 		std::shared_ptr<vmime::net::timeoutHandler> toh =
-			std::make_shared<testTimeoutHandler>();
+			vmime::factory<testTimeoutHandler>::create();
 
 		socket->localSend("123 Response Text\n");
 
@@ -77,9 +79,10 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testMultiLineResponse()
 	{
-		std::shared_ptr<testSocket> socket = std::make_shared<testSocket>();
+		std::shared_ptr<testSocket> socket =
+			vmime::factory<testSocket>::create();
 		std::shared_ptr<vmime::net::timeoutHandler> toh =
-			std::make_shared<testTimeoutHandler>();
+			vmime::factory<testTimeoutHandler>::create();
 
 		socket->localSend
 		(
@@ -103,9 +106,10 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testMultiLineResponseDifferentCode()
 	{
-		std::shared_ptr<testSocket> socket = std::make_shared<testSocket>();
+		std::shared_ptr<testSocket> socket =
+			vmime::factory<testSocket>::create();
 		std::shared_ptr<vmime::net::timeoutHandler> toh =
-			std::make_shared<testTimeoutHandler>();
+			vmime::factory<testTimeoutHandler>::create();
 
 		socket->localSend
 		(
@@ -129,9 +133,10 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testIncompleteMultiLineResponse()
 	{
-		std::shared_ptr<testSocket> socket = std::make_shared<testSocket>();
+		std::shared_ptr<testSocket> socket =
+			vmime::factory<testSocket>::create();
 		std::shared_ptr<vmime::net::timeoutHandler> toh =
-			std::make_shared<testTimeoutHandler>(1);
+			vmime::factory<testTimeoutHandler>::create(1);
 
 		socket->localSend
 		(
@@ -147,9 +152,10 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testIntermediateResponse()
 	{
-		std::shared_ptr<testSocket> socket = std::make_shared<testSocket>();
+		std::shared_ptr<testSocket> socket =
+			vmime::factory<testSocket>::create();
 		std::shared_ptr<vmime::net::timeoutHandler> toh =
-			std::make_shared<testTimeoutHandler>(1);
+			vmime::factory<testTimeoutHandler>::create(1);
 
 		socket->localSend
 		(
@@ -167,9 +173,10 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testNoResponseText()
 	{
-		std::shared_ptr<testSocket> socket = std::make_shared<testSocket>();
+		std::shared_ptr<testSocket> socket =
+			vmime::factory<testSocket>::create();
 		std::shared_ptr<vmime::net::timeoutHandler> toh =
-			std::make_shared<testTimeoutHandler>(1);
+			vmime::factory<testTimeoutHandler>::create(1);
 
 		socket->localSend
 		(

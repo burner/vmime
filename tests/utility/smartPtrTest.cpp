@@ -82,7 +82,7 @@ VMIME_TEST_SUITE_BEGIN
 	void testRefCounting()
 	{
 		bool o1_alive;
-		std::shared_ptr<R> r1 = std::make_shared<R>(&o1_alive);
+		std::shared_ptr<R> r1 = vmime::factory<R>::create(&o1_alive);
 
 		VASSERT("1", r1.get() != 0);
 		VASSERT("2", o1_alive);
@@ -96,7 +96,7 @@ VMIME_TEST_SUITE_BEGIN
 		VASSERT_EQ("7", 2, r1->weakCount());
 
 		bool o2_alive;
-		std::shared_ptr<R> r3 = std::make_shared<R>(&o2_alive);
+		std::shared_ptr<R> r3 = vmime::factory<R>::create(&o2_alive);
 
 		r2 = r3;
 
@@ -141,7 +141,7 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testWeakRef()
 	{
-		std::shared_ptr<A> r1 = std::make_shared<A>();
+		std::shared_ptr<A> r1 = vmime::factory<A>::create();
 		std::weak_ptr<A> w1 = r1;
 
 		VASSERT("1", r1.get() != 0);
@@ -165,14 +165,14 @@ VMIME_TEST_SUITE_BEGIN
 	void testCast()
 	{
 		// Explicit upcast
-		std::shared_ptr<A> r1 = std::make_shared<C>();
+		std::shared_ptr<A> r1 = vmime::factory<C>::create();
 		std::shared_ptr<C> r2 = r1.dynamicCast <C>();
 
 		VASSERT("1", r2.get() == dynamic_cast <C*>(r1.get()));
 		VASSERT("2", 0 == r1.dynamicCast <B>().get());
 
 		// Implicit downcast
-		std::shared_ptr<D> r3 = std::make_shared<D>();
+		std::shared_ptr<D> r3 = vmime::factory<D>::create();
 		std::shared_ptr<A> r4 = r3;
 
 		VASSERT("3", r4.get() == dynamic_cast <A*>(r3.get()));
@@ -181,10 +181,10 @@ VMIME_TEST_SUITE_BEGIN
 	void testContainer()
 	{
 		bool o1_alive;
-		std::shared_ptr<R> r1 = std::make_shared<R>(&o1_alive);
+		std::shared_ptr<R> r1 = vmime::factory<R>::create(&o1_alive);
 
 		bool o2_alive;
-		std::shared_ptr<R> r2 = std::make_shared<R>(&o2_alive);
+		std::shared_ptr<R> r2 = vmime::factory<R>::create(&o2_alive);
 
 		std::vector <std::shared_ptr<R> > v1;
 		v1.push_back(r1);
@@ -219,9 +219,9 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testCompare()
 	{
-		std::shared_ptr<A> r1 = std::make_shared<A>();
-		std::shared_ptr<A> r2 = std::make_shared<B>();
-		std::shared_ptr<A> r3 = std::make_shared<C>();
+		std::shared_ptr<A> r1 = vmime::factory<A>::create();
+		std::shared_ptr<A> r2 = vmime::factory<B>::create();
+		std::shared_ptr<A> r3 = vmime::factory<C>::create();
 		std::shared_ptr<A> r4 = r1;
 
 		VASSERT("1", r1 != r2);

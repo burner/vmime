@@ -259,12 +259,12 @@ public:
 
 	std::shared_ptr<vmime::net::socket> create()
 	{
-		return std::make_shared<T>();
+		return vmime::factory<T>::create();
 	}
 
 	std::shared_ptr<vmime::net::socket> create(std::shared_ptr<vmime::net::timeoutHandler> /* th */)
 	{
-		return std::make_shared<T>();
+		return vmime::factory<T>::create();
 	}
 };
 

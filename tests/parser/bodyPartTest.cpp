@@ -107,7 +107,7 @@ VMIME_TEST_SUITE_BEGIN
 	{
 		vmime::bodyPart p1;
 		p1.getHeader()->getField("Foo")->setValue(vmime::string("bar"));
-		p1.getBody()->setContents(std::make_shared<vmime::stringContentHandler>("Baz"));
+		p1.getBody()->setContents(vmime::factory<vmime::stringContentHandler>::create("Baz"));
 
 		VASSERT_EQ("1", "Foo: bar\r\n\r\nBaz", p1.generate());
 	}
@@ -164,7 +164,8 @@ VMIME_TEST_SUITE_BEGIN
 			"--=_+ZWjySayKqSf2CyrfnNpaAcO6-G1HpoXdHZ4YyswAWqEY39Q--\r\n"
 			"Epilog text";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 
 		std::string istr(testmail);
 
@@ -207,10 +208,12 @@ VMIME_TEST_SUITE_BEGIN
 	/** Ensure '7bit' encoding is used when body is 7-bit only. */
 	void testGenerate7bit()
 	{
-		std::shared_ptr<vmime::plainTextPart> p1 = std::make_shared<vmime::plainTextPart>();
-		p1->setText(std::make_shared<vmime::stringContentHandler>("Part1 is US-ASCII only."));
+		std::shared_ptr<vmime::plainTextPart> p1 =
+			vmime::factory<vmime::plainTextPart>::create();
+		p1->setText(vmime::factory<vmime::stringContentHandler>::create("Part1 is US-ASCII only."));
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		p1->generateIn(msg, msg);
 
 		std::shared_ptr<vmime::header> header1 = msg->getBody()->getPartAt(0)->getHeader();
@@ -219,10 +222,12 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testTextUsageForQPEncoding()
 	{
-		std::shared_ptr<vmime::plainTextPart> part = std::make_shared<vmime::plainTextPart>();
-		part->setText(std::make_shared<vmime::stringContentHandler>("Part1-line1\r\nPart1-line2\r\n\x89"));
+		std::shared_ptr<vmime::plainTextPart> part =
+			vmime::factory<vmime::plainTextPart>::create();
+		part->setText(vmime::factory<vmime::stringContentHandler>::create("Part1-line1\r\nPart1-line2\r\n\x89"));
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		part->generateIn(msg, msg);
 
 		std::shared_ptr<vmime::body> body = msg->getBody()->getPartAt(0)->getBody();
@@ -302,9 +307,10 @@ VMIME_TEST_SUITE_BEGIN
 		    << "--MY-BOUNDARY--\r\n";
 
 		std::shared_ptr<vmime::utility::inputStreamStringAdapter> is =
-			std::make_shared<vmime::utility::inputStreamStringAdapter>(oss.str());
+			vmime::factory<vmime::utility::inputStreamStringAdapter>::create(oss.str());
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(is, oss.str().length());
 
 		std::shared_ptr<vmime::body> body1 = msg->getBody()->getPartAt(0)->getBody();

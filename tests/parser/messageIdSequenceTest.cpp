@@ -68,13 +68,13 @@ VMIME_TEST_SUITE_BEGIN
 	void testGenerate()
 	{
 		vmime::messageIdSequence s1;
-		s1.appendMessageId(std::make_shared<vmime::messageId>("a", "b"));
+		s1.appendMessageId(vmime::factory<vmime::messageId>::create("a", "b"));
 
 		VASSERT_EQ("1", "<a@b>", s1.generate());
 
 		vmime::messageIdSequence s2;
-		s2.appendMessageId(std::make_shared<vmime::messageId>("a", "b"));
-		s2.appendMessageId(std::make_shared<vmime::messageId>("c", "d"));
+		s2.appendMessageId(vmime::factory<vmime::messageId>::create("a", "b"));
+		s2.appendMessageId(vmime::factory<vmime::messageId>::create("c", "d"));
 
 		VASSERT_EQ("2", "<a@b> <c@d>", s2.generate());
 	}

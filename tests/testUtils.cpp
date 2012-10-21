@@ -184,7 +184,7 @@ bool testTimeoutHandler::handleTimeOut()
 
 std::shared_ptr<vmime::net::timeoutHandler> testTimeoutHandlerFactory::create()
 {
-	return std::make_shared<testTimeoutHandler>();
+	return vmime::factory<testTimeoutHandler>::create();
 }
 
 
