@@ -64,7 +64,7 @@ stringContentHandler::~stringContentHandler()
 
 std::shared_ptr<contentHandler> stringContentHandler::clone() const
 {
-	return std::make_shared<stringContentHandler>(*this);
+	return vmime::factory<stringContentHandler>::create(*this);
 }
 
 

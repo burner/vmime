@@ -61,7 +61,7 @@ streamContentHandler::streamContentHandler(const streamContentHandler& cts)
 
 std::shared_ptr<contentHandler> streamContentHandler::clone() const
 {
-	return std::make_shared<streamContentHandler>(*this);
+	return vmime::factory<streamContentHandler>::create(*this);
 }
 
 

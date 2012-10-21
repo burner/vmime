@@ -179,13 +179,10 @@ std::shared_ptr<address> address::parseNext(const string& buffer, const string::
 	if (pos != start)
 	{
 		std::shared_ptr<address> parsedAddress = isGroup ? 
-			std::dynamic_pointer_cast<address>(std::make_shared<mailboxGroup>()) :
-			std::dynamic_pointer_cast<address>(std::make_shared<mailbox>());
-		/*std::shared_ptr<address> parsedAddress = isGroup TODO: check if above line do the expected
-			? std::make_shared<mailboxGroup>().dynamicCast <address>()
-			: std::make_shared<mailbox>().dynamicCast <address>();
-		*/
-
+			std::dynamic_pointer_cast<address>(
+				vmime::factory<mailboxGroup>::create()) :
+			std::dynamic_pointer_cast<address>(
+				vmime::factory<mailbox>::create());
 		parsedAddress->parse(buffer, start, pos, NULL);
 		parsedAddress->setParsedBounds(start, pos);
 

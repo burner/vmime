@@ -68,15 +68,17 @@ private:
 	class registeredEncoderImpl : public registeredEncoder
 	{
 		//friend class vmime::creator; TODO shared_ptr
+		//friend class vmime::factory<registeredEncoderImpl<E>>;
+
+	protected:
 
 	public:
-
 		// TODO shared was protected
 		registeredEncoderImpl(const string& name) : m_name(name) { }
 
 		std::shared_ptr<encoder> create() const
 		{
-			return std::make_shared<E>();
+			return vmime::factory<E>::create();
 		}
 
 		const string& getName() const
@@ -101,7 +103,22 @@ public:
 	template <class E>
 	void registerName(const string& name)
 	{
-		m_encoders.push_back(std::make_shared<registeredEncoderImpl <E> >(utility::stringUtils::toLower(name)));
+		//m_encoders.push_back(std::make_shared<registeredEncoderImpl <E>
+		//>(utility::stringUtils::toLower(name))); TODO shared
+		//std::shared_ptr<registeredEncoderImpl<E>> tmpStd =
+		//	vmime::factory<registeredEncoderImpl<E>>(
+		//	);
+		registeredEncoderImpl<E>* tmp = new registeredEncoderImpl<E>(
+				utility::stringUtils::toLower(name)
+				);
+		std::shared_ptr<object> tmpStd = tmp->thisRef();
+		m_encoders.push_back(
+			std::dynamic_pointer_cast<registeredEncoderImpl<E>>(tmpStd)
+			//tmpStd
+			//vmime::factory<registeredEncoderImpl<E>>::create(
+			//	utility::stringUtils::toLower(name)
+			//)
+		);
 	}
 
 	/** Create a new encoder instance from an encoding name.

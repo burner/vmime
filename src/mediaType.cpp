@@ -126,7 +126,7 @@ mediaType& mediaType::operator=(const string& type)
 
 std::shared_ptr<component> mediaType::clone() const
 {
-	return std::make_shared<mediaType>(m_type, m_subType);
+	return vmime::factory<mediaType>::create(m_type, m_subType);
 }
 
 

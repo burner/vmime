@@ -108,7 +108,7 @@ bool sendmailTransport::isSecuredConnection() const
 
 std::shared_ptr<connectionInfos> sendmailTransport::getConnectionInfos() const
 {
-	return std::make_shared<defaultConnectionInfos>("localhost", static_cast <port_t>(0));
+	return vmime::factory<defaultConnectionInfos>::create("localhost", static_cast <port_t>(0));
 }
 
 

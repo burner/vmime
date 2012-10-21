@@ -41,14 +41,14 @@ namespace vmime
 
 class parameterizedHeaderField : virtual public headerField
 {
-	//friend class vmime::creator;  // create ref TODO shared_ptr
+	friend class vmime::factory<parameterizedHeaderField>;
 
 protected:
+	parameterizedHeaderField(); // TODO shared was proteced
 
 public:
 	// Protected constructor to prevent the user from creating
 	// new objects without using 'headerFieldFactory'
-	parameterizedHeaderField(); // TODO shared was proteced
 
 
 	~parameterizedHeaderField();

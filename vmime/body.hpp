@@ -114,7 +114,7 @@ public:
 	  *
 	  * @return number of parts
 	  */
-	int getPartCount() const;
+	size_t getPartCount() const;
 
 	/** Tests whether the list of parts is empty.
 	  *

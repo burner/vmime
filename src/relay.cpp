@@ -250,7 +250,7 @@ relay& relay::operator=(const relay& other)
 
 std::shared_ptr<component> relay::clone() const
 {
-	return std::make_shared<relay>(*this);
+	return vmime::factory<relay>::create(*this);
 }
 
 

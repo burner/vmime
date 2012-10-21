@@ -66,7 +66,7 @@ const std::shared_ptr<const contentHandler> parsedMessageAttachment::getData() c
 
 		m_msg->generate(os);
 
-		m_data = std::make_shared<stringContentHandler>(oss.str());
+		m_data = vmime::factory<stringContentHandler>::create(oss.str());
 	}
 
 	return m_data;
@@ -100,7 +100,7 @@ std::shared_ptr<message> parsedMessageAttachment::getMessage() const
 void parsedMessageAttachment::generateIn(std::shared_ptr<bodyPart> parent) const
 {
 	// Create and append a new part for this attachment
-	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
+	std::shared_ptr<bodyPart> part = vmime::factory<bodyPart>::create();
 	parent->getBody()->appendPart(part);
 
 	// Set header fields

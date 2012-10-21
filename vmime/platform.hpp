@@ -132,7 +132,7 @@ public:
 	template <class TYPE>
 	static void setHandler()
 	{
-		sm_handler = std::make_shared<TYPE>();
+		sm_handler = vmime::factory<TYPE>::create();
 	}
 
 	static std::shared_ptr<handler> getHandler()

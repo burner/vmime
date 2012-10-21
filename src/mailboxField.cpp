@@ -46,7 +46,7 @@ mailboxField::mailboxField(const mailboxField&)
 void mailboxField::parse(const string& buffer, const string::size_type position,
 	const string::size_type end, string::size_type* newPosition)
 {
-	std::shared_ptr<mailbox> mbox = std::make_shared<mailbox>();
+	std::shared_ptr<mailbox> mbox = vmime::factory<mailbox>::create();
 
 	// Here, we cannot simply call "m_mailbox.parse()" because it
 	// may have more than one address specified (even if this field

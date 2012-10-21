@@ -66,7 +66,6 @@ std::shared_ptr<transport> session::getTransport
 {
 	//std::shared_ptr<session> sess = thisRef().dynamicCast <session>(); TODO shared
 	std::shared_ptr<service> sv = serviceFactory::getInstance()->create(sess, protocol, auth); //TODO shared
-	//std::shared_ptr<service> sv = std::make_shared<service>(sess, protocol, auth);
 
 	if (sv->getType() != service::TYPE_TRANSPORT)
 		throw exceptions::no_service_available();

@@ -232,7 +232,7 @@ const encoding encoding::decide(std::shared_ptr<const contentHandler> data,
 
 std::shared_ptr<component> encoding::clone() const
 {
-	return std::make_shared<encoding>(*this);
+	return vmime::factory<encoding>::create(*this);
 }
 
 

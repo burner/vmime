@@ -50,16 +50,17 @@ private:
 	friend class IMAPMessagePartContentHandler;
 	// friend class vmime::creator;  // std::make_shared<IMAPMessage> TODO
 	// shared
+	friend class vmime::factory<IMAPMessage>;
 
 
-public:
-	// TODO shared were private
 	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num);
-	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num, const uid& uniqueId);
+	IMAPMessage(std::shared_ptr<IMAPFolder> folder, const int num, 
+		const uid& uniqueId);
 	IMAPMessage(const IMAPMessage&) : message() { }
 
 	~IMAPMessage();
 
+public:
 	int getNumber() const;
 
 	const uid getUniqueId() const;

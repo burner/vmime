@@ -60,7 +60,7 @@ std::shared_ptr<SASLSession> SASLContext::createSession
 	(const string& serviceName,
 	 std::shared_ptr<authenticator> auth, std::shared_ptr<SASLMechanism> mech)
 {
-	return std::make_shared<SASLSession>
+	return vmime::factory<SASLSession>::create
 		// (serviceName, thisRef().dynamicCast <SASLContext>(), auth, mech);
 		// TODO shared
 		(serviceName, std::dynamic_pointer_cast<SASLContext>(thisRef()), auth, mech);

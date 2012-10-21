@@ -182,7 +182,7 @@ public:
 	  *
 	  * @return number of fields
 	  */
-	int getFieldCount() const;
+	size_t getFieldCount() const;
 
 	/** Tests whether the list of fields is empty.
 	  *

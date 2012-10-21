@@ -126,7 +126,7 @@ bool charset::operator!=(const charset& value) const
 
 std::shared_ptr<component> charset::clone() const
 {
-	return std::make_shared<charset>(m_name);
+	return vmime::factory<charset>::create(m_name);
 }
 
 

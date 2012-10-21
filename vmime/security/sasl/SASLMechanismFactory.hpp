@@ -66,7 +66,7 @@ private:
 
 		std::shared_ptr<SASLMechanism> create(std::shared_ptr<SASLContext> ctx, const string& name)
 		{
-			return std::make_shared<T>(ctx, name);
+			return vmime::factory<T>::create(ctx, name);
 		}
 	};
 
@@ -86,7 +86,7 @@ public:
 	void registerMechanism(const string& name)
 	{
 		m_mechs.insert(MapType::value_type(name,
-			std::make_shared<registeredMechanismImpl <MECH_CLASS> >()));
+			vmime::factory<registeredMechanismImpl <MECH_CLASS> >::create()));
 	}
 
 	/** Create a mechanism object given its name.

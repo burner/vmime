@@ -49,17 +49,17 @@ service::service(std::shared_ptr<session> sess, const serviceInfos& /* infos */,
 	{
 #if VMIME_HAVE_SASL_SUPPORT
 		//m_auth = vmime::create TODO shared
-		m_auth = std::make_shared
-			<security::sasl::defaultSASLAuthenticator>();
+		m_auth =
+			vmime::factory<security::sasl::defaultSASLAuthenticator>::create();
 #else
 		//m_auth = vmime::create TODO shared
-		m_auth = std::make_shared
-			<security::defaultAuthenticator>();
+		m_auth = vmime::factory<security::defaultAuthenticator>::create();
 #endif // VMIME_HAVE_SASL_SUPPORT
 	}
 
 #if VMIME_HAVE_TLS_SUPPORT
-	m_certVerifier = std::make_shared<security::cert::defaultCertificateVerifier>();
+	m_certVerifier =
+		vmime::factory<security::cert::defaultCertificateVerifier>::create();
 #endif // VMIME_HAVE_TLS_SUPPORT
 
 	m_socketFactory = platform::getHandler()->getSocketFactory();

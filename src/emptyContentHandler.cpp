@@ -35,7 +35,7 @@ emptyContentHandler::emptyContentHandler()
 
 std::shared_ptr<contentHandler> emptyContentHandler::clone() const
 {
-	return std::make_shared<emptyContentHandler>();
+	return vmime::factory<emptyContentHandler>::create();
 }
 
 

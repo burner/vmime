@@ -41,7 +41,7 @@ IMAPMessagePartContentHandler::IMAPMessagePartContentHandler
 
 std::shared_ptr<contentHandler> IMAPMessagePartContentHandler::clone() const
 {
-	return std::make_shared<IMAPMessagePartContentHandler>
+	return vmime::factory<IMAPMessagePartContentHandler>::create
 		// (m_message.acquire().constCast <IMAPMessage>(), TODO shared
 		(std::const_pointer_cast<IMAPMessage>(m_message.lock()),
 		 // m_part.acquire().constCast <part>(), TODO shared

@@ -478,13 +478,13 @@ void posixSocket::throwSocketError(const int err)
 std::shared_ptr<vmime::net::socket> posixSocketFactory::create()
 {
 	std::shared_ptr<vmime::net::timeoutHandler> th = NULL;
-	return std::make_shared<posixSocket>(th);
+	return vmime::factory<posixSocket>::create(th);
 }
 
 
 std::shared_ptr<vmime::net::socket> posixSocketFactory::create(std::shared_ptr<vmime::net::timeoutHandler> th)
 {
-	return std::make_shared<posixSocket>(th);
+	return vmime::factory<posixSocket>::create(th);
 }
 
 

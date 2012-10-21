@@ -94,11 +94,11 @@ namespace posix {
 posixHandler::posixHandler()
 {
 #if VMIME_HAVE_MESSAGING_FEATURES
-	m_socketFactory = std::make_shared<posixSocketFactory>();
+	m_socketFactory = vmime::factory<posixSocketFactory>::create();
 #endif
 #if VMIME_HAVE_FILESYSTEM_FEATURES
-	m_fileSysFactory = std::make_shared<posixFileSystemFactory>();
-	m_childProcFactory = std::make_shared<posixChildProcessFactory>();
+	m_fileSysFactory = vmime::factory<posixFileSystemFactory>::create();
+	m_childProcFactory = vmime::factory<posixChildProcessFactory>::create();
 #endif
 }
 

@@ -213,7 +213,7 @@ void mailboxGroup::copyFrom(const component& other)
 
 std::shared_ptr<component> mailboxGroup::clone() const
 {
-	return std::make_shared<mailboxGroup>(*this);
+	return vmime::factory<mailboxGroup>::create(*this);
 }
 
 

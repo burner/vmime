@@ -417,7 +417,7 @@ std::shared_ptr<message> maildirFolder::getMessage(const int num)
 	if (num < 1 || num > m_messageCount)
 		throw exceptions::message_not_found();
 
-	return std::make_shared<maildirMessage>
+	return vmime::factory<maildirMessage>::create
 		// (thisRef().dynamicCast <maildirFolder>(), num); TODO shared
 		(std::dynamic_pointer_cast<maildirFolder>(thisRef()), num);
 }
@@ -439,7 +439,7 @@ std::vector <std::shared_ptr<message> > maildirFolder::getMessages(const int fro
 		std::dynamic_pointer_cast<maildirFolder>(thisRef());
 
 	for (int i = from ; i <= to2 ; ++i)
-		v.push_back(std::make_shared<maildirMessage>(thisFolder, i));
+		v.push_back(vmime::factory<maildirMessage>::create(thisFolder, i));
 
 	return (v);
 }
@@ -457,7 +457,7 @@ std::vector <std::shared_ptr<message> > maildirFolder::getMessages(const std::ve
 		std::dynamic_pointer_cast<maildirFolder>(thisRef());
 
 	for (std::vector <int>::const_iterator it = nums.begin() ; it != nums.end() ; ++it)
-		v.push_back(std::make_shared<maildirMessage>(thisFolder, *it));
+		v.push_back(vmime::factory<maildirMessage>::create(thisFolder, *it));
 
 	return (v);
 }
@@ -489,7 +489,7 @@ std::shared_ptr<folder> maildirFolder::getFolder(const folder::path::component& 
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 
-	return std::make_shared<maildirFolder>(m_path / name, store);
+	return vmime::factory<maildirFolder>::create(m_path / name, store);
 }
 
 
@@ -524,7 +524,7 @@ void maildirFolder::listFolders(std::vector <std::shared_ptr<folder> >& list, co
 		for (unsigned int i = 0, n = pathList.size() ; i < n ; ++i)
 		{
 			std::shared_ptr<maildirFolder> subFolder =
-				std::make_shared<maildirFolder>(pathList[i], store);
+				vmime::factory<maildirFolder>::create(pathList[i], store);
 
 			list.push_back(subFolder);
 		}
@@ -1346,7 +1346,7 @@ std::shared_ptr<folder> maildirFolder::getParent()
 	else
 		// return std::make_shared<maildirFolder>(m_path.getParent(),
 		// m_store.acquire()); TODO shared
-		return std::make_shared<maildirFolder>(m_path.getParent(),
+		return vmime::factory<maildirFolder>::create(m_path.getParent(),
 				m_store.lock());
 }
 

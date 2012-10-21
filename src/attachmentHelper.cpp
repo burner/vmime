@@ -144,12 +144,12 @@ std::shared_ptr<const attachment> attachmentHelper::getBodyPartAttachment
 	if (type.getType() == mediaTypes::MESSAGE &&
 	    type.getSubType() == mediaTypes::MESSAGE_RFC822)
 	{
-		return std::make_shared<generatedMessageAttachment>(part);
+		return vmime::factory<generatedMessageAttachment>::create(part);
 	}
 	else
 	{
 		return std::dynamic_pointer_cast<const attachment>(
-				std::make_shared<bodyPartAttachment>(part)
+				vmime::factory<bodyPartAttachment>::create(part)
 			);
 	}
 }
@@ -212,7 +212,8 @@ void attachmentHelper::addAttachment(std::shared_ptr<message> msg, std::shared_p
 		{
 			// Create a new container part for the parts that were in
 			// the root part of the message
-			std::shared_ptr<bodyPart> container = std::make_shared<bodyPart>();
+			std::shared_ptr<bodyPart> container =
+				vmime::factory<bodyPart>::create();
 
 			try
 			{
@@ -249,7 +250,7 @@ void attachmentHelper::addAttachment(std::shared_ptr<message> msg, std::shared_p
 			// The message is a simple (RFC-822) message, and do not
 			// contains any MIME part. Move the contents from the
 			// root to a new child part.
-			std::shared_ptr<bodyPart> child = std::make_shared<bodyPart>();
+			std::shared_ptr<bodyPart> child = vmime::factory<bodyPart>::create();
 
 			if (msg->getHeader()->hasField(fields::CONTENT_TYPE))
 			{
@@ -264,7 +265,7 @@ void attachmentHelper::addAttachment(std::shared_ptr<message> msg, std::shared_p
 			}
 
 			child->getBody()->setContents(msg->getBody()->getContents());
-			msg->getBody()->setContents(std::make_shared<emptyContentHandler>());
+			msg->getBody()->setContents(vmime::factory<emptyContentHandler>::create());
 
 			msg->getBody()->appendPart(child);
 		}
@@ -309,7 +310,8 @@ std::shared_ptr<bodyPart> attachmentHelper::findBodyPart
 // static
 void attachmentHelper::addAttachment(std::shared_ptr<message> msg, std::shared_ptr<message> amsg)
 {
-	std::shared_ptr<attachment> att = std::make_shared<parsedMessageAttachment>(amsg);
+	std::shared_ptr<attachment> att =
+		vmime::factory<parsedMessageAttachment>::create(amsg);
 	addAttachment(msg, att);
 }
 

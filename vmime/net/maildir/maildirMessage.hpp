@@ -45,16 +45,15 @@ class maildirMessage : public message
 	friend class maildirFolder;
 	// friend class vmime::creator;  // std::make_shared<maildirMessage> TODO
 	// shared
+	friend class vmime::factory<maildirMessage>;
 
 private:
-
-public:
-
-	//TODO shared were private
 	maildirMessage(std::shared_ptr<maildirFolder> folder, const int num);
 	maildirMessage(const maildirMessage&) : message() { }
 
 	~maildirMessage();
+
+public:
 
 	int getNumber() const;
 

@@ -46,10 +46,10 @@ class TLSSession;
 class TLSSocket : public socket
 {
 	//friend class vmime::creator; TODO shared
+	friend class vmime::factory<TLSSocket>;
 
 protected:
 
-public:
 	// TODO shared was protected
 	/** Create a new socket object that adds a security layer
 	  * around an existing socket.
@@ -59,7 +59,7 @@ public:
 	  */
 	TLSSocket(std::shared_ptr<TLSSession> session, std::shared_ptr<socket> sok);
 
-
+public:
 	~TLSSocket();
 
 

@@ -43,12 +43,13 @@ class IMAPPart : public part
 private:
 
 	// friend class vmime::creator; TODO shared
+	friend class vmime::factory<IMAPPart>;
+	IMAPPart(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body_type_mpart* mpart);
+	IMAPPart(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body_type_1part* part);
 
 public:
 
 	// TODO shared were private
-	IMAPPart(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body_type_mpart* mpart);
-	IMAPPart(std::shared_ptr<IMAPPart> parent, const int number, const IMAPParser::body_type_1part* part);
 
 	std::shared_ptr<const structure> getStructure() const;
 	std::shared_ptr<structure> getStructure();

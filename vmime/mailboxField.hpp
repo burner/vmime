@@ -44,13 +44,13 @@ namespace vmime
 class mailboxField : public headerField
 {
 	// friend class vmime::creator;  // create ref TODO shared
+	friend class vmime::factory<mailboxField>;
 
 protected:
-
-
-public:
 	mailboxField();
 	mailboxField(const mailboxField&); // TODO shared was proceted 
+
+public:
 
 	void parse(const string& buffer, const string::size_type position, const string::size_type end, string::size_type* newPosition = NULL);
 };

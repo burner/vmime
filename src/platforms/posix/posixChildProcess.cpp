@@ -45,7 +45,7 @@ namespace posix {
 
 std::shared_ptr<utility::childProcess> posixChildProcessFactory::create(const utility::file::path& path) const
 {
-	return std::make_shared<posixChildProcess>(path);
+	return vmime::factory<posixChildProcess>::create(path);
 }
 
 
@@ -313,7 +313,7 @@ void posixChildProcess::start(const std::vector <string> args, const int flags)
 
 	if (flags & FLAG_REDIRECT_STDIN)
 	{
-		m_stdIn = std::make_shared<outputStreamPosixPipeAdapter>(m_pipe[1]);
+		m_stdIn = vmime::factory<outputStreamPosixPipeAdapter>::create(m_pipe[1]);
 	}
 	else
 	{
@@ -323,7 +323,7 @@ void posixChildProcess::start(const std::vector <string> args, const int flags)
 
 	if (flags & FLAG_REDIRECT_STDOUT)
 	{
-		m_stdOut = std::make_shared<inputStreamPosixPipeAdapter>(m_pipe[0]);
+		m_stdOut = vmime::factory<inputStreamPosixPipeAdapter>::create(m_pipe[0]);
 	}
 	else
 	{

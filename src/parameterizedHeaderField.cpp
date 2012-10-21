@@ -314,7 +314,8 @@ void parameterizedHeaderField::parseImpl(const string& buffer, const string::siz
 			const paramInfo& info = (*it).second;
 
 			// Append this parameter to the list
-			std::shared_ptr<parameter> param = std::make_shared<parameter>((*it).first);
+			std::shared_ptr<parameter> param =
+				vmime::factory<parameter>::create((*it).first);
 
 			param->parse(info.value);
 			param->setParsedBounds(info.start, info.end);
@@ -424,7 +425,7 @@ std::shared_ptr<parameter> parameterizedHeaderField::getParameter(const string& 
 	// If no parameter with this name can be found, create a new one
 	if (pos == end)
 	{
-		std::shared_ptr<parameter> param = std::make_shared<parameter>(paramName);
+		std::shared_ptr<parameter> param = vmime::factory<parameter>::create(paramName);
 
 		appendParameter(param);
 

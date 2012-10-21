@@ -78,7 +78,7 @@ bool posixFileIterator::hasMoreElements() const
 
 std::shared_ptr<vmime::utility::file> posixFileIterator::nextElement()
 {
-	std::shared_ptr<posixFile> file = std::make_shared<posixFile>
+	std::shared_ptr<posixFile> file = vmime::factory<posixFile>::create
 		(m_path / vmime::utility::file::path::component(m_dirEntry->d_name));
 
 	getNextElement();
@@ -262,7 +262,7 @@ std::shared_ptr<vmime::utility::outputStream> posixFileWriter::getOutputStream()
 	if ((fd = ::open(m_nativePath.c_str(), O_WRONLY, 0660)) == -1)
 		posixFileSystemFactory::reportError(m_path, errno);
 
-	return std::make_shared<posixFileWriterOutputStream>(m_path, fd);
+	return vmime::factory<posixFileWriterOutputStream>::create(m_path, fd);
 }
 
 
@@ -284,7 +284,7 @@ std::shared_ptr<vmime::utility::inputStream> posixFileReader::getInputStream()
 	if ((fd = ::open(m_nativePath.c_str(), O_RDONLY, 0640)) == -1)
 		posixFileSystemFactory::reportError(m_path, errno);
 
-	return std::make_shared<posixFileReaderInputStream>(m_path, fd);
+	return vmime::factory<posixFileReaderInputStream>::create(m_path, fd);
 }
 
 
@@ -419,7 +419,7 @@ std::shared_ptr<vmime::utility::file> posixFile::getParent() const
 	if (m_path.isEmpty())
 		return NULL;
 	else
-		return std::make_shared<posixFile>(m_path.getParent());
+		return vmime::factory<posixFile>::create(m_path.getParent());
 }
 
 
@@ -464,13 +464,13 @@ void posixFile::remove()
 
 std::shared_ptr<vmime::utility::fileWriter> posixFile::getFileWriter()
 {
-	return std::make_shared<posixFileWriter>(m_path, m_nativePath);
+	return vmime::factory<posixFileWriter>::create(m_path, m_nativePath);
 }
 
 
 std::shared_ptr<vmime::utility::fileReader> posixFile::getFileReader()
 {
-	return std::make_shared<posixFileReader>(m_path, m_nativePath);
+	return vmime::factory<posixFileReader>::create(m_path, m_nativePath);
 }
 
 
@@ -479,7 +479,7 @@ std::shared_ptr<vmime::utility::fileIterator> posixFile::getFiles() const
 	if (!isDirectory())
 		throw vmime::exceptions::not_a_directory(m_path);
 
-	return std::make_shared<posixFileIterator>(m_path, m_nativePath);
+	return vmime::factory<posixFileIterator>::create(m_path, m_nativePath);
 }
 
 
@@ -507,7 +507,7 @@ void posixFile::createDirectoryImpl(const vmime::utility::file::path& fullPath,
 
 std::shared_ptr<vmime::utility::file> posixFileSystemFactory::create(const vmime::utility::file::path& path) const
 {
-	return std::make_shared<posixFile>(path);
+	return vmime::factory<posixFile>::create(path);
 }
 
 

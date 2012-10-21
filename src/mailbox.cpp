@@ -467,7 +467,7 @@ mailbox& mailbox::operator=(const mailbox& other)
 
 std::shared_ptr<component>mailbox::clone() const
 {
-	return std::make_shared<mailbox>(*this);
+	return vmime::factory<mailbox>::create(*this);
 }
 
 

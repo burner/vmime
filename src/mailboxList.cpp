@@ -178,7 +178,7 @@ const std::vector <std::shared_ptr<mailbox> > mailboxList::getMailboxList()
 
 std::shared_ptr<component> mailboxList::clone() const
 {
-	return std::make_shared<mailboxList>(*this);
+	return vmime::factory<mailboxList>::create(*this);
 }
 
 

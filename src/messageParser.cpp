@@ -39,7 +39,7 @@ namespace vmime
 
 messageParser::messageParser(const string& buffer)
 {
-	std::shared_ptr<message> msg = std::make_shared<message>();
+	std::shared_ptr<message> msg = vmime::factory<message>::create();
 	msg->parse(buffer);
 
 	parse(msg);

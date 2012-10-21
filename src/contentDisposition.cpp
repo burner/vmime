@@ -91,7 +91,7 @@ bool contentDisposition::operator!=(const contentDisposition& value) const
 
 std::shared_ptr<component> contentDisposition::clone() const
 {
-	return std::make_shared<contentDisposition>(*this);
+	return vmime::factory<contentDisposition>::create(*this);
 }
 
 

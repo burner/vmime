@@ -57,7 +57,7 @@ text::text(const string& t)
 
 text::text(const word& w)
 {
-	appendWord(std::make_shared<word>(w));
+	appendWord(vmime::factory<word>::create(w));
 }
 
 
@@ -99,7 +99,7 @@ void text::copyFrom(const component& other)
 	removeAllWords();
 
 	for (std::vector <std::shared_ptr<word> >::const_iterator i = t.m_words.begin() ; i != t.m_words.end() ; ++i)
-		m_words.push_back(std::make_shared<word>(**i));
+		m_words.push_back(vmime::factory<word>::create(**i));
 }
 
 
@@ -233,13 +233,13 @@ const std::vector <std::shared_ptr<word> > text::getWordList()
 
 std::shared_ptr<component> text::clone() const
 {
-	return std::make_shared<text>(*this);
+	return vmime::factory<text>::create(*this);
 }
 
 
 std::shared_ptr<text> text::newFromString(const string& in, const charset& ch)
 {
-	std::shared_ptr<text> t = std::make_shared<text>();
+	std::shared_ptr<text> t = vmime::factory<text>::create();
 
 	t->createFromString(in, ch);
 
@@ -270,7 +270,7 @@ void text::createFromString(const string& in, const charset& ch)
 	// If there are "too much" non-ASCII chars, encode everything
 	if (alwaysEncode || asciiPercent < 60)  // less than 60% ASCII chars
 	{
-		appendWord(std::make_shared<word>(in, ch));
+		appendWord(vmime::factory<word>::create(in, ch));
 	}
 	// Else, only encode words which need it
 	else
@@ -305,7 +305,7 @@ void text::createFromString(const string& in, const charset& ch)
 							w->getBuffer() += ' ';
 						}
 
-						appendWord(std::make_shared<word>(chunk, ch));
+						appendWord(vmime::factory<word>::create(chunk, ch));
 
 						prevIs8bit = true;
 						++count;
@@ -320,7 +320,7 @@ void text::createFromString(const string& in, const charset& ch)
 					}
 					else
 					{
-						appendWord(std::make_shared<word>
+						appendWord(vmime::factory<word>::create
 							(chunk, charset(charsets::US_ASCII)));
 
 						prevIs8bit = false;
@@ -367,7 +367,7 @@ void text::encodeAndFold(utility::outputStream& os, const string::size_type maxL
 
 std::shared_ptr<text> text::decodeAndUnfold(const string& in)
 {
-	std::shared_ptr<text> t = std::make_shared<text>();
+	std::shared_ptr<text> t = vmime::factory<text>::create();
 
 	decodeAndUnfold(in, t.get());
 

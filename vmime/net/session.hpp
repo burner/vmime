@@ -46,11 +46,13 @@ class transport;
 
 class session : public object
 {
-public:
-
+protected:
 	session();
 	session(const session& sess);
 	session(const propertySet& props);
+
+public:
+
 
 	virtual ~session();
 

@@ -41,7 +41,9 @@ class store : public service
 {
 protected:
 
-	store(std::shared_ptr<session> sess, const serviceInfos& infos, std::shared_ptr<security::authenticator> auth)
+	store(std::shared_ptr<session> sess, 
+			const serviceInfos& infos,
+			std::shared_ptr<security::authenticator> auth)
 		: service(sess, infos, auth) { }
 
 public:

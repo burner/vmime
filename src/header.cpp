@@ -101,7 +101,7 @@ void header::generateImpl(utility::outputStream& os, const string::size_type max
 
 std::shared_ptr<component> header::clone() const
 {
-	std::shared_ptr<header> hdr = std::make_shared<header>();
+	std::shared_ptr<header> hdr = vmime::factory<header>::create();
 
 	hdr->m_fields.reserve(m_fields.size());
 
@@ -295,7 +295,7 @@ void header::removeAllFields(const string& fieldName)
 }
 
 
-int header::getFieldCount() const
+size_t header::getFieldCount() const
 {
 	return (m_fields.size());
 }

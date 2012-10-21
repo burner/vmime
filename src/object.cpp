@@ -36,6 +36,7 @@ object::object()
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
+	: thisShr(std::shared_ptr<object>(this))
 {
 }
 
@@ -44,6 +45,7 @@ object::object(const object&)
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
+	: thisShr(std::shared_ptr<object>(this))
 {
 }
 
@@ -51,6 +53,7 @@ object::object(object* const)
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
+	: thisShr(std::shared_ptr<object>(this))
 {
 }
 
@@ -72,13 +75,27 @@ std::shared_ptr<object> object::thisRef()
 {
 	// m_refMgr->addStrong(); TODO shared
 	//return m_thisRef.lock();
+	if(thisShr) {
+		std::shared_ptr<object> ret(this->thisShr);
+		this->thisWeak = this->thisShr;
+		this->thisShr.reset();
+		return ret;
+	}
+	return this->thisWeak.lock();
 }
 
 
-std::shared_ptr<const object> object::thisRef() const
+/*std::shared_ptr<const object> object::thisRef() 
 {
 	// m_refMgr->addStrong(); TODO shared
 	//return m_thisRef.lock();
+	if(thisShr) {
+		std::shared_ptr<const object> ret(this->thisShr);
+		this->thisWeak = this->thisShr;
+		this->thisShr.reset();
+		return ret;
+	}
+	return std::dynamic_pointer_cast<const object>(this->thisWeak.lock());
 }
 
 
@@ -94,7 +111,7 @@ std::weak_ptr<const object> object::thisWeakRef() const
 }
 
 
-/*void object::setRefManager(utility::refManager* mgr)
+void object::setRefManager(utility::refManager* mgr)
 {
 	// m_refMgr = mgr; TODO shared
 	std::err<<__FILE__<<':'<<__LINE__<<" very bad place check"<<std::endl;

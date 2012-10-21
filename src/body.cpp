@@ -45,7 +45,7 @@ namespace vmime
 
 
 body::body()
-	: m_contents(std::make_shared<emptyContentHandler>())
+	: m_contents(vmime::factory<emptyContentHandler>::create())
 	//, m_part(NULL) TODO shared_ptr
 	//, m_header(nullptr) TODO shared_ptr
 {
@@ -273,7 +273,8 @@ void body::parseImpl
 
 			if (index > 0)
 			{
-				std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
+				std::shared_ptr<bodyPart> part =
+					vmime::factory<bodyPart>::create();
 
 				// End before start may happen on empty bodyparts (directly
 				// successive boundaries without even a line-break)
@@ -323,12 +324,12 @@ void body::parseImpl
 			}
 		}
 
-		m_contents = std::make_shared<emptyContentHandler>();
+		m_contents = vmime::factory<emptyContentHandler>::create();
 
 		// Last part was not found: recover from missing boundary
 		if (!lastPart && pos == utility::stream::npos)
 		{
-			std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
+			std::shared_ptr<bodyPart> part = vmime::factory<bodyPart>::create();
 
 			try
 			{
@@ -383,10 +384,10 @@ void body::parseImpl
 		const utility::stream::size_type length = end - position;
 
 		std::shared_ptr<utility::inputStream> contentStream =
-			std::make_shared<utility::seekableInputStreamRegionAdapter>
+			vmime::factory<utility::seekableInputStreamRegionAdapter>::create
 				(parser->getUnderlyingStream(), position, length);
 
-		m_contents = std::make_shared<streamContentHandler>(contentStream, length, enc);
+		m_contents = vmime::factory<streamContentHandler>::create(contentStream, length, enc);
 	}
 
 	setParsedBounds(position, end);
@@ -722,7 +723,7 @@ bool body::isRootPart() const
 
 std::shared_ptr<component> body::clone() const
 {
-	std::shared_ptr<body> bdy = std::make_shared<body>();
+	std::shared_ptr<body> bdy = vmime::factory<body>::create();
 
 	bdy->copyFrom(*this);
 
@@ -955,7 +956,7 @@ void body::removeAllParts()
 }
 
 
-int body::getPartCount() const
+size_t body::getPartCount() const
 {
 	return (m_parts.size());
 }

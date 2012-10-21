@@ -38,12 +38,13 @@ namespace vmime
 class contentTypeField : public parameterizedHeaderField
 {
 	//friend class vmime::creator;  // create ref TODO shared_ptr
+	friend class vmime::factory<contentTypeField>;
 
 protected:
-
-public:
 	contentTypeField(); // TODO shared was protected
 	contentTypeField(contentTypeField&);
+
+public:
 
 
 	/** Return the value of the "boundary" parameter. Boundary is a

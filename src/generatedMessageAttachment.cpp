@@ -31,7 +31,7 @@ namespace vmime
 
 
 generatedMessageAttachment::generatedMessageAttachment(std::shared_ptr<const bodyPart> part)
-	: m_bpa(std::make_shared<bodyPartAttachment>(part))
+	: m_bpa(vmime::factory<bodyPartAttachment>::create(part))
 {
 }
 
@@ -89,7 +89,7 @@ std::shared_ptr<message> generatedMessageAttachment::getMessage() const
 		getData()->extract(os);
 
 		// Parse message
-		m_msg = std::make_shared<message>();
+		m_msg = vmime::factory<message>::create();
 		m_msg->parse(oss.str());
 	}
 

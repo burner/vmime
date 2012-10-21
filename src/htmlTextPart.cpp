@@ -39,8 +39,8 @@ namespace vmime
 
 
 htmlTextPart::htmlTextPart()
-	: m_plainText(std::make_shared<emptyContentHandler>()),
-	  m_text(std::make_shared<emptyContentHandler>())
+	: m_plainText(vmime::factory<emptyContentHandler>::create()),
+	  m_text(vmime::factory<emptyContentHandler>::create())
 {
 }
 
@@ -68,7 +68,7 @@ void htmlTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shar
 	if (!m_plainText->isEmpty())
 	{
 		// -- Create a new part
-		std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
+		std::shared_ptr<bodyPart> part = vmime::factory<bodyPart>::create();
 		parent->getBody()->appendPart(part);
 
 		// -- Set contents
@@ -79,7 +79,7 @@ void htmlTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shar
 
 	// HTML text
 	// -- Create a new part
-	std::shared_ptr<bodyPart> htmlPart = std::make_shared<bodyPart>();
+	std::shared_ptr<bodyPart> htmlPart = vmime::factory<bodyPart>::create();
 
 	// -- Set contents
 	htmlPart->getBody()->setContents(m_text,
@@ -90,7 +90,7 @@ void htmlTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shar
 	if (!m_objects.empty())
 	{
 		// Create a "multipart/related" body part
-		std::shared_ptr<bodyPart> relPart = std::make_shared<bodyPart>();
+		std::shared_ptr<bodyPart> relPart = vmime::factory<bodyPart>::create();
 		parent->getBody()->appendPart(relPart);
 
 		relPart->getHeader()->ContentType()->
@@ -103,7 +103,8 @@ void htmlTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shar
 		for (std::vector <std::shared_ptr<embeddedObject> >::const_iterator it = m_objects.begin() ;
 		     it != m_objects.end() ; ++it)
 		{
-			std::shared_ptr<bodyPart> objPart = std::make_shared<bodyPart>();
+			std::shared_ptr<bodyPart> objPart =
+				vmime::factory<bodyPart>::create();
 			relPart->getBody()->appendPart(objPart);
 
 			string id = (*it)->getId();
@@ -183,7 +184,7 @@ void htmlTextPart::addEmbeddedObject(const bodyPart& part, const string& id)
 		// No "Content-type" field: assume "application/octet-stream".
 	}
 
-	m_objects.push_back(std::make_shared<embeddedObject>
+	m_objects.push_back(vmime::factory<embeddedObject>::create
 		// (part.getBody()->getContents()->clone().dynamicCast
 		// <contentHandler>(), TODO shared
 		(std::dynamic_pointer_cast<contentHandler>(part.getBody()->getContents()->clone()),
@@ -269,7 +270,7 @@ void htmlTextPart::parse(std::shared_ptr<const bodyPart> message, std::shared_pt
 	// Extract plain text, if any.
 	if (!findPlainTextPart(*message, *parent, *textPart))
 	{
-		m_plainText = std::make_shared<emptyContentHandler>();
+		m_plainText = vmime::factory<emptyContentHandler>::create();
 	}
 }
 
@@ -445,7 +446,7 @@ const string htmlTextPart::addObject(std::shared_ptr<contentHandler> data,
 	const messageId mid(messageId::generateId());
 	const string id = mid.getId();
 
-	m_objects.push_back(std::make_shared<embeddedObject>(data, enc, id, type));
+	m_objects.push_back(vmime::factory<embeddedObject>::create(data, enc, id, type));
 
 	return "CID:" + id;
 }
@@ -459,7 +460,8 @@ const string htmlTextPart::addObject(std::shared_ptr<contentHandler> data, const
 
 const string htmlTextPart::addObject(const string& data, const mediaType& type)
 {
-	std::shared_ptr<stringContentHandler> cts = std::make_shared<stringContentHandler>(data);
+	std::shared_ptr<stringContentHandler> cts =
+		vmime::factory<stringContentHandler>::create(data);
 	return addObject(cts, encoding::decide(cts), type);
 }
 

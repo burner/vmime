@@ -82,16 +82,17 @@ std::shared_ptr<const maildirFormat::context> maildirFormat::getContext() const
 // static
 std::shared_ptr<maildirFormat> maildirFormat::detect(std::shared_ptr<maildirStore> store)
 {
-	std::shared_ptr<context> ctx = std::make_shared<context>(store);
+	std::shared_ptr<context> ctx = vmime::factory<context>::create(store);
 
 	// Try Courier format
-	std::shared_ptr<maildirFormat> fmt = std::make_shared<format::courierMaildirFormat>(ctx);
+	std::shared_ptr<maildirFormat> fmt =
+		vmime::factory<format::courierMaildirFormat>::create(ctx);
 
 	if (fmt->supports())
 		return fmt;
 
 	// Default is KMail format
-	return std::make_shared<format::kmailMaildirFormat>(ctx);
+	return vmime::factory<format::kmailMaildirFormat>::create(ctx);
 }
 
 

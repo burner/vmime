@@ -75,7 +75,7 @@ public:
 		if (m_header != NULL)
 			return (*m_header);
 		else
-			return (*(m_header = std::make_shared<header>()));
+			return (*(m_header = vmime::factory<header>::create()));
 	}
 
 	int getHeaderParsedOffset() const { return (m_headerParsedOffset); }
@@ -119,7 +119,8 @@ public:
 
 	maildirStructure(std::shared_ptr<maildirPart> parent, const bodyPart& part)
 	{
-		std::shared_ptr<maildirPart> mpart = std::make_shared<maildirPart>(parent, 0, part);
+		std::shared_ptr<maildirPart> mpart =
+			vmime::factory<maildirPart>::create(parent, 0, part);
 		mpart->initStructure(part);
 
 		m_parts.push_back(mpart);
@@ -129,7 +130,8 @@ public:
 	{
 		for (unsigned int i = 0 ; i < list.size() ; ++i)
 		{
-			std::shared_ptr<maildirPart> mpart = std::make_shared<maildirPart>(parent, i, *list[i]);
+			std::shared_ptr<maildirPart> mpart =
+				vmime::factory<maildirPart>::create(parent, i, *list[i]);
 			mpart->initStructure(*list[i]);
 
 			m_parts.push_back(mpart);
@@ -166,7 +168,8 @@ private:
 };
 
 
-std::shared_ptr<maildirStructure> maildirStructure::m_emptyStructure = std::make_shared<maildirStructure>();
+std::shared_ptr<maildirStructure> maildirStructure::m_emptyStructure =
+vmime::factory<maildirStructure>::create();
 
 
 
@@ -196,7 +199,7 @@ void maildirPart::initStructure(const bodyPart& part)
 		m_structure = NULL;
 	else
 	{
-		m_structure = std::make_shared<maildirStructure>
+		m_structure = vmime::factory<maildirStructure>::create
 			// (thisRef().dynamicCast <maildirPart>(), TODO shared
 			(std::dynamic_pointer_cast<maildirPart>(thisRef()),
 			 part.getBody()->getPartList());
@@ -516,7 +519,7 @@ void maildirMessage::fetch(std::shared_ptr<maildirFolder> msgFolder, const int o
 		{
 			// m_structure = std::make_shared<maildirStructure>(null, msg);
 			// TODO shared
-			m_structure = std::make_shared<maildirStructure>(nullptr, msg);
+			m_structure = vmime::factory<maildirStructure>::create(nullptr, msg);
 		}
 
 		// Extract some header fields or whole header
@@ -536,7 +539,7 @@ std::shared_ptr<header> maildirMessage::getOrCreateHeader()
 	if (m_header != NULL)
 		return (m_header);
 	else
-		return (m_header = std::make_shared<header>());
+		return (m_header = vmime::factory<header>::create());
 }
 
 
@@ -547,7 +550,8 @@ std::shared_ptr<vmime::message> maildirMessage::getParsedMessage()
 
 	extract(os);
 
-	std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+	std::shared_ptr<vmime::message> msg =
+		vmime::factory<vmime::message>::create();
 	msg->parse(oss.str());
 
 	return msg;

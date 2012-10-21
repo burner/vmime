@@ -54,7 +54,6 @@ class POP3Store : public store
 	friend class POP3Message;
 
 public:
-
 	POP3Store(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth, const bool secured = false);
 	~POP3Store();
 
@@ -89,8 +88,8 @@ private:
 		RESPONSE_ERR
 	};
 
-	static void authenticate(const messageId& randomMID, std::shared_ptr<POP3Store> store);
-	void authenticateImpl(const messageId& randomMID, std::shared_ptr<POP3Store> thisRef);
+	void authenticate(const messageId& randomMID);
+	void authenticateImpl(const messageId& randomMID);
 #if VMIME_HAVE_SASL_SUPPORT
 	void authenticateSASL();
 #endif // VMIME_HAVE_SASL_SUPPORT

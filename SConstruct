@@ -297,7 +297,7 @@ libvmime_messaging_proto_sources = [
 		]
 	],
 	[
-		'sendmail',
+'sendmail',
 		[
 			'net/sendmail/sendmailServiceInfos.cpp', 'net/sendmail/sendmailServiceInfos.hpp',
 			'net/sendmail/sendmailTransport.cpp',    'net/sendmail/sendmailTransport.hpp'
@@ -719,6 +719,7 @@ if os.name != 'posix':
 				newProtoList.append(p)
 
 		messaging_protocols = newProtoList
+
 
 # Check sendmail path
 if IsProtocolSupported(messaging_protocols, 'sendmail'):

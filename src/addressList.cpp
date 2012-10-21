@@ -136,7 +136,7 @@ addressList& addressList::operator=(const mailboxList& other)
 
 std::shared_ptr<component> addressList::clone() const
 {
-	return std::make_shared<addressList>(*this);
+	return vmime::factory<addressList>::create(*this);
 }
 
 
@@ -266,7 +266,7 @@ const std::vector <std::shared_ptr<component> > addressList::getChildComponents(
 
 std::shared_ptr<mailboxList> addressList::toMailboxList() const
 {
-	std::shared_ptr<mailboxList> res = std::make_shared<mailboxList>();
+	std::shared_ptr<mailboxList> res = vmime::factory<mailboxList>::create();
 
 	for (std::vector <std::shared_ptr<address> >::const_iterator it = m_list.begin() ;
 	     it != m_list.end() ; ++it)

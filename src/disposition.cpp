@@ -46,7 +46,7 @@ disposition::disposition(const string& actionMode, const string& sendingMode,
 
 std::shared_ptr<component> disposition::clone() const
 {
-	std::shared_ptr<disposition> disp = std::make_shared<disposition>();
+	std::shared_ptr<disposition> disp = vmime::factory<disposition>::create();
 
 	disp->m_actionMode = m_actionMode;
 	disp->m_sendingMode = m_sendingMode;

@@ -49,10 +49,9 @@ class IMAPStore;
 class IMAPConnection : public object
 {
 public:
-
-	IMAPConnection(std::shared_ptr<IMAPStore> store, std::shared_ptr<security::authenticator> auth);
+	IMAPConnection(std::shared_ptr<IMAPStore> store, 
+		std::shared_ptr<security::authenticator> auth);
 	~IMAPConnection();
-
 
 	void connect();
 	bool isConnected() const;

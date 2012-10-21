@@ -54,13 +54,13 @@ private:
 	friend class IMAPMessage;
 	// friend class vmime::creator;  // std::make_shared<IMAPFolder> TODO
 	// shared
+	friend class vmime::factory<IMAPFolder>;
 
-
-public:
-	// TODO shared were private
-	IMAPFolder(const folder::path& path, std::shared_ptr<IMAPStore> store, const int type = TYPE_UNDEFINED, const int flags = FLAG_UNDEFINED);
+	IMAPFolder(const folder::path& path, std::shared_ptr<IMAPStore> store, 
+		const int type = TYPE_UNDEFINED, const int flags = FLAG_UNDEFINED);
 	IMAPFolder(const IMAPFolder&) : folder() { }
 
+public:
 	~IMAPFolder();
 
 

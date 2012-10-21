@@ -43,15 +43,16 @@ class headerField : public component
 	friend class header;
 
 	//friend class vmime::creator;  // create ref TODO shared_ptr
+	friend class vmime::factory<headerField>;
 
 protected:
+	headerField(); // TODO shared was proteced
+	headerField(const string& fieldName);
 
 public:
 
 	// Protected constructor to prevent the user from creating
 	// new objects without using 'headerFieldFactory'
-	headerField(); // TODO shared was proteced
-	headerField(const string& fieldName);
 
 	~headerField();
 

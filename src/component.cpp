@@ -77,7 +77,7 @@ void component::parse
 	else
 	{
 		std::shared_ptr<utility::parserInputStreamAdapter> parser =
-			std::make_shared<utility::parserInputStreamAdapter>(seekableStream);
+			vmime::factory<utility::parserInputStreamAdapter>::create(seekableStream);
 
 		parseImpl(parser, position, end, newPosition);
 	}
@@ -137,10 +137,10 @@ void component::parseImpl
 	 const string::size_type end, string::size_type* newPosition)
 {
 	std::shared_ptr<utility::seekableInputStream> stream =
-		std::make_shared<utility::inputStreamStringAdapter>(buffer);
+		vmime::factory<utility::inputStreamStringAdapter>::create(buffer);
 
 	std::shared_ptr<utility::parserInputStreamAdapter> parser =
-		std::make_shared<utility::parserInputStreamAdapter>(stream);
+		vmime::factory<utility::parserInputStreamAdapter>::create(stream);
 
 	parseImpl(parser, position, end, newPosition);
 }

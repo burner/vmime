@@ -145,7 +145,7 @@ void IMAPFolder::open(const int mode, bool failIfModeIsNotAvailable)
 
 	// Open a connection for this folder
 	std::shared_ptr<IMAPConnection> connection =
-		std::make_shared<IMAPConnection>(store, store->getAuthenticator());
+		vmime::factory<IMAPConnection>::create(store, store->getAuthenticator());
 
 	try
 	{
@@ -520,10 +520,10 @@ std::shared_ptr<message> IMAPFolder::getMessage(const int num)
 	if (num < 1 || num > m_messageCount)
 		throw exceptions::message_not_found();
 
-	// return std::make_shared<IMAPMessage>(thisRef().dynamicCast
+	// return vmime::factory<IMAPMessage>::create(thisRef().dynamicCast
 	// <IMAPFolder>(), num); TODO shared
 	return
-		std::make_shared<IMAPMessage>(std::dynamic_pointer_cast<IMAPFolder>(thisRef()), num);
+		vmime::factory<IMAPMessage>::create(std::dynamic_pointer_cast<IMAPFolder>(thisRef()), num);
 }
 
 
@@ -544,7 +544,7 @@ std::vector <std::shared_ptr<message> > IMAPFolder::getMessages(const int from, 
 		std::dynamic_pointer_cast<IMAPFolder>(thisRef());
 
 	for (int i = from ; i <= to2 ; ++i)
-		v.push_back(std::make_shared<IMAPMessage>(thisFolder, i));
+		v.push_back(vmime::factory<IMAPMessage>::create(thisFolder, i));
 
 	return (v);
 }
@@ -562,7 +562,7 @@ std::vector <std::shared_ptr<message> > IMAPFolder::getMessages(const std::vecto
 		std::dynamic_pointer_cast<IMAPFolder>(thisRef());
 
 	for (std::vector <int>::const_iterator it = nums.begin() ; it != nums.end() ; ++it)
-		v.push_back(std::make_shared<IMAPMessage>(thisFolder, *it));
+		v.push_back(vmime::factory<IMAPMessage>::create(thisFolder, *it));
 
 	return (v);
 }
@@ -666,7 +666,7 @@ std::vector <std::shared_ptr<message> > IMAPFolder::getMessagesByUID(const std::
 			// <IMAPFolder>(); TODO shared
 			std::shared_ptr<IMAPFolder> thisFolder =
 				std::dynamic_pointer_cast<IMAPFolder>(thisRef());
-			messages.push_back(std::make_shared<IMAPMessage>(thisFolder, msgNum, msgFullUID));
+			messages.push_back(vmime::factory<IMAPMessage>::create(thisFolder, msgNum, msgFullUID));
 		}
 	}
 
@@ -691,7 +691,7 @@ std::shared_ptr<folder> IMAPFolder::getFolder(const folder::path::component& nam
 	if (!store)
 		throw exceptions::illegal_state("Store disconnected");
 
-	return std::make_shared<IMAPFolder>(m_path / name, store);
+	return vmime::factory<IMAPFolder>::create(m_path / name, store);
 }
 
 
@@ -776,7 +776,7 @@ std::vector <std::shared_ptr<folder> > IMAPFolder::getFolders(const bool recursi
 			const class IMAPParser::mailbox_flag_list* mailbox_flag_list =
 				mailboxData->mailbox_list()->mailbox_flag_list();
 
-			v.push_back(std::make_shared<IMAPFolder>(path, store,
+			v.push_back(vmime::factory<IMAPFolder>::create(path, store,
 				IMAPUtils::folderTypeFromFlags(mailbox_flag_list),
 				IMAPUtils::folderFlagsFromFlags(mailbox_flag_list)));
 		}
@@ -911,9 +911,8 @@ std::shared_ptr<folder> IMAPFolder::getParent()
 	if (m_path.isEmpty())
 		return NULL;
 	else
-		// return std::make_shared<IMAPFolder>(m_path.getParent(),
 		// m_store.acquire()); TODO shared
-		return std::make_shared<IMAPFolder>(m_path.getParent(), m_store.lock());
+		return vmime::factory<IMAPFolder>::create(m_path.getParent(), m_store.lock());
 }
 
 

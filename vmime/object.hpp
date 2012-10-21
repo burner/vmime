@@ -35,18 +35,6 @@
 namespace vmime
 {
 
-template< class D_ >
-struct CreatoR
-{
-	template< class T_, typename... Args_ >
-	static
-	std::shared_ptr< D_ >
-	crt( std::shared_ptr<T_> this_ptr, Args_&&... args )
-	{
-	  return std::make_shared< D_ >( this_ptr, std::forward<Args_>( args) ...  );
-	}
-};
-
 /** Base object for all objects in the library. This implements
   * reference counting and auto-deletion.
   */
@@ -70,7 +58,6 @@ public: // TODO shared
 
 	virtual ~object();
 
-protected:
 #ifndef VMIME_BUILDING_DOC
 
 	/** Return a reference to this object.
@@ -83,19 +70,19 @@ protected:
 	  *
 	  * @return reference to self
 	  */
-	std::shared_ptr<const object> thisRef() const;
+	//std::shared_ptr<const object> thisRef() const;
 
 	/** Return a weak reference to this object.
 	  *
 	  * @return weak reference to self
 	  */
-	std::weak_ptr<object> thisWeakRef();
+	//std::weak_ptr<object> thisWeakRef(); TODO shared
 
 	/** Return a weak reference to this object (const version).
 	  *
 	  * @return weak reference to self
 	  */
-	std::weak_ptr<const object> thisWeakRef() const;
+	//std::weak_ptr<const object> thisWeakRef() const; TODO shared
 
 
 	 // void setRefManager(utility::refManager* mgr); // TODO shared
@@ -104,6 +91,8 @@ protected:
 #endif // VMIME_BUILDING_DOC
 
 private:
+	std::shared_ptr<object> thisShr;
+	std::weak_ptr<object> thisWeak;
 
 	 // mutable utility::refManager* m_refMgr; // TODO shared
 };

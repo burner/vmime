@@ -35,7 +35,7 @@ namespace vmime
 
 
 plainTextPart::plainTextPart()
-	: m_text(std::make_shared<emptyContentHandler>())
+	: m_text(vmime::factory<emptyContentHandler>::create())
 {
 }
 
@@ -60,7 +60,7 @@ int plainTextPart::getPartCount() const
 void plainTextPart::generateIn(std::shared_ptr<bodyPart> /* message */, std::shared_ptr<bodyPart> parent) const
 {
 	// Create a new part
-	std::shared_ptr<bodyPart> part = std::make_shared<bodyPart>();
+	std::shared_ptr<bodyPart> part = vmime::factory<bodyPart>::create();
 	parent->getBody()->appendPart(part);
 
 	// Set contents

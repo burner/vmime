@@ -60,7 +60,9 @@ namespace net {
 namespace pop3 {
 
 
-POP3Store::POP3Store(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth, const bool secured)
+POP3Store::POP3Store(std::shared_ptr<session> sess, 
+		std::shared_ptr<security::authenticator> auth, 
+		const bool secured)
 	: store(sess, getInfosInstance(), auth), m_socket(NULL),
 	  m_authentified(false), m_timeoutHandler(NULL),
 	  m_isPOP3S(secured), m_secured(false)
@@ -95,11 +97,8 @@ std::shared_ptr<folder> POP3Store::getDefaultFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	//return std::make_shared<POP3Folder>(folder::path(folder::path::component("INBOX")), TODO shared
-		//thisRef().dynamicCast <POP3Store>()); TODO shared
-	return std::make_shared<POP3Folder>(folder::path(folder::path::component("INBOX")),
-		// std::dynamic_pointer_cast<POP3Store>(thisRef())); TODO shared
-		this);
+	return vmime::factory<POP3Folder>::create(folder::path::component("INBOX"),
+		 std::dynamic_pointer_cast<POP3Store>(thisRef()));
 }
 
 
@@ -108,11 +107,8 @@ std::shared_ptr<folder> POP3Store::getRootFolder()
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	//return std::make_shared<POP3Folder>(folder::path(), TODO shared
-		//thisRef().dynamicCast <POP3Store>()); TODO shared
-	return std::make_shared<POP3Folder>(folder::path(),
-		// std::dynamic_pointer_cast<POP3Store>(thisRef())); TODO shared
-		this);
+	return vmime::factory<POP3Folder>::create(folder::path(),
+		 std::dynamic_pointer_cast<POP3Store>(thisRef()));
 }
 
 
@@ -121,11 +117,8 @@ std::shared_ptr<folder> POP3Store::getFolder(const folder::path& path)
 	if (!isConnected())
 		throw exceptions::illegal_state("Not connected");
 
-	//return std::make_shared<POP3Folder>(path, TODO shared
-		//thisRef().dynamicCast <POP3Store>()); TODO shared
-	return std::make_shared<POP3Folder>(path,
-		// std::dynamic_pointer_cast<POP3Store>(thisRef())); TODO shared
-		this);
+	return vmime::factory<POP3Folder>::create(path,
+		 std::dynamic_pointer_cast<POP3Store>(thisRef()));
 }
 
 
@@ -154,7 +147,7 @@ void POP3Store::connect()
 	if (m_isPOP3S)  // dedicated port/POP3S
 	{
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			std::make_shared<tls::TLSSession>(getCertificateVerifier());
+			vmime::factory<tls::TLSSession>::create(getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -162,12 +155,12 @@ void POP3Store::connect()
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = std::make_shared<tls::TLSSecuredConnectionInfos>(address, port, tlsSession, tlsSocket);
+		m_cntInfos = vmime::factory<tls::TLSSecuredConnectionInfos>::create(address, port, tlsSession, tlsSocket);
 	}
 	else
 #endif // VMIME_HAVE_TLS_SUPPORT
 	{
-		m_cntInfos = std::make_shared<defaultConnectionInfos>(address, port);
+		m_cntInfos = vmime::factory<defaultConnectionInfos>::create(address, port);
 	}
 
 	m_socket->connect(address, port);
@@ -223,14 +216,18 @@ void POP3Store::connect()
 	authenticate(messageId(response));
 }
 
-void POP3Store::authenticate(const messageId& randomMID, std::shared_ptr<POP3Store> store) {
-	store->authenticateImpl(randomMID, store);
+void POP3Store::authenticate(const messageId& randomMID) {
+	getAuthenticator()->setService(
+		std::dynamic_pointer_cast<service>(thisRef())
+	);
 }
 
-void POP3Store::authenticateImpl(const messageId& randomMID, std::shared_ptr<POP3Store> thisRef)
+void POP3Store::authenticateImpl(const messageId& randomMID)
 {
 	// getAuthenticator()->setService(thisRef().dynamicCast <service>()); TODO shared TODO shared
-	getAuthenticator()->setService(std::dynamic_pointer_cast<service>(this)); // TODO shared
+	getAuthenticator()->setService(std::dynamic_pointer_cast<service>(
+		thisRef()
+	)); // TODO shared
 
 #if VMIME_HAVE_SASL_SUPPORT
 	// First, try SASL authentication
@@ -416,7 +413,7 @@ void POP3Store::authenticateSASL()
 	std::vector <std::shared_ptr<security::sasl::SASLMechanism> > mechList;
 
 	std::shared_ptr<security::sasl::SASLContext> saslContext =
-		std::make_shared<security::sasl::SASLContext>();
+		vmime::factory<security::sasl::SASLContext>::create();
 
 	for (unsigned int i = 0 ; i < saslMechs.size() ; ++i)
 	{
@@ -561,7 +558,7 @@ void POP3Store::startTLS()
 			throw exceptions::command_error("STLS", response);
 
 		std::shared_ptr<tls::TLSSession> tlsSession =
-			std::make_shared<tls::TLSSession>(getCertificateVerifier());
+			vmime::factory<tls::TLSSession>::create(getCertificateVerifier());
 
 		std::shared_ptr<tls::TLSSocket> tlsSocket =
 			tlsSession->getSocket(m_socket);
@@ -571,7 +568,7 @@ void POP3Store::startTLS()
 		m_socket = tlsSocket;
 
 		m_secured = true;
-		m_cntInfos = std::make_shared<tls::TLSSecuredConnectionInfos>
+		m_cntInfos = vmime::factory<tls::TLSSecuredConnectionInfos>::create
 			(m_cntInfos->getHost(), m_cntInfos->getPort(), tlsSession, tlsSocket);
 	}
 	catch (exceptions::command_error&)
