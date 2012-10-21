@@ -23,6 +23,7 @@
 
 #include "vmime/types.hpp"
 #include "vmime/object.hpp"
+#include <iostream>
 
 
 #ifndef VMIME_BUILDING_DOC
@@ -63,9 +64,21 @@ object& object::operator=(const object&)
 	return *this;
 }
 
+struct NullDeleter {void operator()(object* o) {} };
 
 object::~object()
 {
+	object* tmp = NULL;
+	std::cout<<thisShr.use_count()<<std::endl;
+	if(thisShr) {
+		thisShr.reset(tmp, NullDeleter());
+		//thisShr.swap(tmp);
+	} else {
+		thisShr.reset(tmp, NullDeleter());
+		//thisShr.swap(tmp);
+		//thisWeak.reset(tmp, NullDeleter());
+	}
+	std::cout<<thisShr.use_count()<<std::endl;
 	// delete m_refMgr; TODO shared
 	// m_refMgr = 0; TODO shared
 }

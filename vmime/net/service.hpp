@@ -52,6 +52,7 @@ namespace net {
 
 class service : public object
 {
+	friend class vmime::factory<service>;
 protected:
 
 	service(std::shared_ptr<session> sess, const serviceInfos& infos, std::shared_ptr<security::authenticator> auth);

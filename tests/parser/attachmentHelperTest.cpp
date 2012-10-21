@@ -91,7 +91,7 @@ VMIME_TEST_SUITE_BEGIN
 			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>
+		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>::create
 			(vmime::factory<vmime::stringContentHandler>::create("test"),
 				vmime::mediaType("image/jpeg"));
 
@@ -121,7 +121,7 @@ VMIME_TEST_SUITE_BEGIN
 			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>
+		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>::create
 			(vmime::factory<vmime::stringContentHandler>::create("test"),
 				vmime::mediaType("image/jpeg"));
 
@@ -146,7 +146,7 @@ VMIME_TEST_SUITE_BEGIN
 			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>
+		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>::create
 			(vmime::factory<vmime::stringContentHandler>::create("test"),
 				vmime::mediaType("image/jpeg"));
 
