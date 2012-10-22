@@ -26,6 +26,7 @@
 
 
 #include "vmime/types.hpp"
+#include "vmime/factory.hpp"
 
 #include <vector>
 #include <memory>
@@ -46,13 +47,14 @@ class object : public std::enable_shared_from_this< object >
 
 	// friend class utility::refManager; // TODO shared
 	//std::shared_ptr<object> m_thisRef;
-
+	friend class vmime::factory<vmime::object>;
 
 public: // TODO shared
 	
 	object();
 	object(const object&);
 	object(object* const);
+	virtual void initAfterCreate() {} // TODO make private if possible
 
 	object& operator=(const object&);
 

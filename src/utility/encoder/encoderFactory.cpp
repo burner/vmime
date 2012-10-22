@@ -39,6 +39,29 @@ namespace encoder {
 
 encoderFactory::encoderFactory()
 {
+	/*// Register some default encoders
+	registerName <b64Encoder>("base64");
+	registerName <qpEncoder>("quoted-printable");
+	registerName <uuEncoder>("uuencode");
+	registerName <sevenBitEncoder>("7bit");
+	registerName <eightBitEncoder>("8bit");
+	registerName <binaryEncoder>("binary");
+
+	// Also register some non-standard encoding names
+	registerName <sevenBitEncoder>("7-bit");
+	registerName <eightBitEncoder>("8-bit");
+
+	// Finally, register some bogus encoding names, for compatibility
+	registerName <qpEncoder>("bmoted-printable");
+	*/
+}
+
+
+encoderFactory::~encoderFactory()
+{
+}
+
+void encoderFactory::initAfterCreate() {
 	// Register some default encoders
 	registerName <b64Encoder>("base64");
 	registerName <qpEncoder>("quoted-printable");
@@ -53,11 +76,6 @@ encoderFactory::encoderFactory()
 
 	// Finally, register some bogus encoding names, for compatibility
 	registerName <qpEncoder>("bmoted-printable");
-}
-
-
-encoderFactory::~encoderFactory()
-{
 }
 
 

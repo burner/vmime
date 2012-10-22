@@ -46,6 +46,7 @@ private:
 
 public:
 	~encoderFactory();
+	void initAfterCreate();
 
 	// static encoderFactory* getInstance(); TODO shared
 	static std::shared_ptr<encoderFactory> getInstance();

@@ -24,6 +24,7 @@
 
 #include <memory>
 
+#include "vmime/base.hpp"
 #include "vmime/address.hpp"
 
 #include "vmime/mailbox.hpp"

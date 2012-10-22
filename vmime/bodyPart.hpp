@@ -48,6 +48,8 @@ public:
 	bodyPart();
 	bodyPart(std::weak_ptr<vmime::bodyPart> parentPart);
 
+	void initAfterCreate();
+
 	/** Return the header section of this part.
 	  *
 	  * @return header section
