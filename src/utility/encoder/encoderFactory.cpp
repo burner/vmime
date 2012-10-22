@@ -61,10 +61,11 @@ encoderFactory::~encoderFactory()
 }
 
 
-encoderFactory* encoderFactory::getInstance()
+std::shared_ptr<encoderFactory> encoderFactory::getInstance()
 {
-	static encoderFactory instance;
-	return (&instance);
+	static std::shared_ptr<encoderFactory> instance =
+		vmime::factory<encoderFactory>::create();
+	return instance;
 }
 
 

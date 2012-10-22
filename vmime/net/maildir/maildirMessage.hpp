@@ -51,9 +51,8 @@ private:
 	maildirMessage(std::shared_ptr<maildirFolder> folder, const int num);
 	maildirMessage(const maildirMessage&) : message() { }
 
-	~maildirMessage();
-
 public:
+	~maildirMessage();
 
 	int getNumber() const;
 

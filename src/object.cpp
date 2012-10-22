@@ -32,28 +32,28 @@ namespace vmime
 {
 
 
-object::object()
+object::object() : enable_shared_from_this()
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
-	: thisShr(std::shared_ptr<object>(this))
+	//: thisShr(std::shared_ptr<object>(this))
 {
 }
 
 
-object::object(const object&)
+object::object(const object&): enable_shared_from_this()
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
-	: thisShr(std::shared_ptr<object>(this))
+	//: thisShr(std::shared_ptr<object>(this))
 {
 }
 
-object::object(object* const)
+object::object(object* const) : enable_shared_from_this()
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
-	: thisShr(std::shared_ptr<object>(this))
+	//: thisShr(std::shared_ptr<object>(this))
 {
 }
 
@@ -75,13 +75,14 @@ std::shared_ptr<object> object::thisRef()
 {
 	// m_refMgr->addStrong(); TODO shared
 	//return m_thisRef.lock();
-	if(thisShr) {
+	/*if(thisShr) {
 		std::shared_ptr<object> ret(this->thisShr);
 		this->thisWeak = this->thisShr;
 		this->thisShr.reset();
 		return ret;
 	}
-	return this->thisWeak.lock();
+	return this->thisWeak.lock();*/
+	return this->shared_from_this();
 }
 
 

@@ -58,9 +58,9 @@ private:
 		const uid& uniqueId);
 	IMAPMessage(const IMAPMessage&) : message() { }
 
-	~IMAPMessage();
-
 public:
+	~IMAPMessage();
+	
 	int getNumber() const;
 
 	const uid getUniqueId() const;

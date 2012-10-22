@@ -49,13 +49,15 @@ namespace vmime
 		public:
 		template<typename... Args_ > static
 		std::shared_ptr< D_ > create(Args_&&... args ) {
-			D_* tmp = new D_(std::forward<Args_>(args) ...);
-			return std::dynamic_pointer_cast<D_>(tmp->thisRef());
+			//D_* tmp = new D_(std::forward<Args_>(args) ...);
+			//return std::dynamic_pointer_cast<D_>(tmp->thisRef());
+			return std::shared_ptr<D_>(new D_(std::forward<Args_>(args) ...));
 		}
 
 		static std::shared_ptr<D_> create() {
-			D_* tmp = new D_();
-			return std::dynamic_pointer_cast<D_>(tmp->thisRef());
+			//D_* tmp = new D_();
+			//return std::dynamic_pointer_cast<D_>(tmp->thisRef());
+			return std::shared_ptr<D_>(new D_());
 		}
 	};
 

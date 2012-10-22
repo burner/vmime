@@ -51,9 +51,10 @@ private:
 
 	POP3Message(std::shared_ptr<POP3Folder> folder, const int num);
 	POP3Message(const POP3Message&) : message() { }
-	~POP3Message();
 
 public:
+	~POP3Message();
+
 	int getNumber() const;
 
 	const uid getUniqueId() const;

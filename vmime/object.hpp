@@ -39,13 +39,13 @@ namespace vmime
   * reference counting and auto-deletion.
   */
 
-class object
+class object : public std::enable_shared_from_this< object >
 {
 	// template <class T> friend class utility::ref; TODO shared
 	// template <class T> friend class utility::weak_ref;
 
 	// friend class utility::refManager; // TODO shared
-	std::shared_ptr<object> m_thisRef;
+	//std::shared_ptr<object> m_thisRef;
 
 
 public: // TODO shared
@@ -91,8 +91,8 @@ public: // TODO shared
 #endif // VMIME_BUILDING_DOC
 
 private:
-	std::shared_ptr<object> thisShr;
-	std::weak_ptr<object> thisWeak;
+	//std::shared_ptr<object> thisShr;
+	//std::weak_ptr<object> thisWeak;
 
 	 // mutable utility::refManager* m_refMgr; // TODO shared
 };

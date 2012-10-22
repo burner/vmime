@@ -46,6 +46,7 @@ class transport;
 
 class session : public object
 {
+	friend class vmime::factory<session>;
 protected:
 	session();
 	session(const session& sess);
@@ -68,8 +69,7 @@ public:
 	  */
 	//std::shared_ptr<transport> getTransport
 	//	(std::shared_ptr<security::authenticator> auth = NULL);
-	std::shared_ptr<transport> getTransport(std::shared_ptr<session> sess,
-		std::shared_ptr<security::authenticator> auth = NULL);
+	std::shared_ptr<transport> getTransport(std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a transport service instance for the specified protocol.
 	  *
@@ -79,9 +79,9 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new transport service
 	  */
-	static std::shared_ptr<transport> getTransport
+	std::shared_ptr<transport> getTransport
 		// (const string& protocol, TODO shared
-		(const string& protocol, std::shared_ptr<session> sess,
+		(const string& protocol,
 		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a transport service instance for the specified URL.
@@ -92,9 +92,9 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new transport service
 	  */
-	static std::shared_ptr<transport> getTransport
+	std::shared_ptr<transport> getTransport
 		// (const utility::url& url, TODO shared
-		(const utility::url& url, std::shared_ptr<session> sess,
+		(const utility::url& url,
 		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a transport service instance for the protocol specified
@@ -110,8 +110,7 @@ public:
 	// std::shared_ptr<store>
 	// getStore(std::shared_ptr<security::authenticator> auth = NULL); TODO
 	// shared
-	std::shared_ptr<store> getStore(std::shared_ptr<session> sess, 
-			std::shared_ptr<security::authenticator> auth = NULL);
+	std::shared_ptr<store> getStore(std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a store service instance for the specified protocol.
 	  *
@@ -121,10 +120,9 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new store service
 	  */
-	static std::shared_ptr<store> getStore
+	std::shared_ptr<store> getStore
 		// (const string& protocol, TODO shared
-		(const string& protocol, std::shared_ptr<session> sess,
-		 std::shared_ptr<security::authenticator> auth = NULL);
+		(const string& protocol, std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Return a store service instance for the specified URL.
 	  *
@@ -134,9 +132,9 @@ public:
 	  * credentials by reading the session properties "auth.username" and "auth.password".
 	  * @return a new store service
 	  */
-	static std::shared_ptr<store> getStore
+	std::shared_ptr<store> getStore
 		// (const utility::url& url, TODO shared
-		(const utility::url& url, std::shared_ptr<session> sess,
+		(const utility::url& url, 
 		 std::shared_ptr<security::authenticator> auth = NULL);
 
 	/** Properties for the session and for the services.

@@ -60,9 +60,10 @@ private:
 	maildirFolder(const folder::path& path, 
 			std::shared_ptr<maildirStore> store);
 	maildirFolder(const maildirFolder&) : folder() { }
-	~maildirFolder();
 
 public:
+	~maildirFolder();
+
 	int getMode() const;
 
 	int getType();
