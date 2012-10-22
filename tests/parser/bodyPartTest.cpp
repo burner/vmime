@@ -48,7 +48,8 @@ VMIME_TEST_SUITE_BEGIN
 		(const vmime::string& buffer, const vmime::component& c)
 	{
 		return vmime::string(buffer.begin() + c.getParsedOffset(),
-		                     buffer.begin() + c.getParsedOffset() + c.getParsedLength());
+		                     buffer.begin() + c.getParsedOffset() +
+							 c.getParsedLength()); 
 	}
 
 	static const vmime::string extractContents(const std::shared_ptr<const vmime::contentHandler> cts)
@@ -65,25 +66,26 @@ VMIME_TEST_SUITE_BEGIN
 	void testParse()
 	{
 		vmime::string str1 = "HEADER\r\n\r\nBODY";
-		vmime::bodyPart p1;
-		p1.parse(str1);
+		auto p1(vmime::factory<vmime::bodyPart>::create());
+		p1->parse(str1);
 
-		VASSERT_EQ("1", "HEADER\r\n\r\n", extractComponentString(str1, *p1.getHeader()));
-		VASSERT_EQ("2", "BODY", extractComponentString(str1, *p1.getBody()));
+		VASSERT_EQ("1", "HEADER\r\n\r\n", extractComponentString(str1, *p1->getHeader()));
+		VASSERT_EQ("2", "BODY", extractComponentString(str1, *p1->getBody()));
 
 		vmime::string str2 = "HEADER\n\nBODY";
-		vmime::bodyPart p2;
-		p2.parse(str2);
+		auto p2(vmime::factory<vmime::bodyPart>::create());
+		p2->parse(str2);
 
-		VASSERT_EQ("3", "HEADER\n\n", extractComponentString(str2, *p2.getHeader()));
-		VASSERT_EQ("4", "BODY", extractComponentString(str2, *p2.getBody()));
+		VASSERT_EQ("3", "HEADER\n\n", extractComponentString(str2, *p2->getHeader()));
+		VASSERT_EQ("4", "BODY", extractComponentString(str2, *p2->getBody()));
 
 		vmime::string str3 = "HEADER\r\n\nBODY";
-		vmime::bodyPart p3;
-		p3.parse(str3);
+		auto p3(vmime::factory<vmime::bodyPart>::create());
+		//vmime::bodyPart p3;
+		p3->parse(str3);
 
-		VASSERT_EQ("5", "HEADER\r\n\n", extractComponentString(str3, *p3.getHeader()));
-		VASSERT_EQ("6", "BODY", extractComponentString(str3, *p3.getBody()));
+		VASSERT_EQ("5", "HEADER\r\n\n", extractComponentString(str3, *p3->getHeader()));
+		VASSERT_EQ("6", "BODY", extractComponentString(str3, *p3->getBody()));
 	}
 
 	void testParseMissingLastBoundary()
