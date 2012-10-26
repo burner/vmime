@@ -45,8 +45,10 @@ service::service(std::shared_ptr<session> sess, const serviceInfos& /* infos */,
                  std::shared_ptr<security::authenticator> auth)
 	: m_session(sess), m_auth(auth)
 {
-	if (!auth)
-	{
+}
+
+void service::initAfterCreate() {
+	if (!m_auth) {
 #if VMIME_HAVE_SASL_SUPPORT
 		//m_auth = vmime::create TODO shared
 		m_auth =
