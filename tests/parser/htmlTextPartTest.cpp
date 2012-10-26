@@ -78,7 +78,8 @@ VMIME_TEST_SUITE_BEGIN
 "--LEVEL1--\r\n"
 "";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(msgString);
 
 		// Sanity checks
@@ -133,7 +134,8 @@ VMIME_TEST_SUITE_BEGIN
 "--LEVEL1--\r\n"
 "";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(msgString);
 
 		// Sanity checks
@@ -203,7 +205,8 @@ VMIME_TEST_SUITE_BEGIN
 "--LEVEL1--\r\n"
 "";
 
-		std::shared_ptr<vmime::message> msg = std::make_shared<vmime::message>();
+		std::shared_ptr<vmime::message> msg =
+			vmime::factory<vmime::message>::create();
 		msg->parse(msgString);
 
 		// Sanity checks

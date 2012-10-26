@@ -37,6 +37,10 @@ message::message()
 {
 }
 
+void message::initAfterCreate() {
+	bodyPart::initAfterCreate();	
+}
+
 
 void message::generate(utility::outputStream& os, const string::size_type maxLineLength,
 	const string::size_type curLinePos, string::size_type* newLinePos) const

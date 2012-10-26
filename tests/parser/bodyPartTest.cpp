@@ -96,22 +96,22 @@ VMIME_TEST_SUITE_BEGIN
 			"--MY-BOUNDARY\r\nHEADER1\r\n\r\nBODY1\r\n"
 			"--MY-BOUNDARY\r\nHEADER2\r\n\r\nBODY2";
 
-		vmime::bodyPart p;
-		p.parse(str);
+		auto p(vmime::factory<vmime::bodyPart>::create());
+		p->parse(str);
 
-		VASSERT_EQ("count", 2, p.getBody()->getPartCount());
+		VASSERT_EQ("count", 2, p->getBody()->getPartCount());
 
-		VASSERT_EQ("part1-body", "BODY1", extractContents(p.getBody()->getPartAt(0)->getBody()->getContents()));
-		VASSERT_EQ("part2-body", "BODY2", extractContents(p.getBody()->getPartAt(1)->getBody()->getContents()));
+		VASSERT_EQ("part1-body", "BODY1", extractContents(p->getBody()->getPartAt(0)->getBody()->getContents()));
+		VASSERT_EQ("part2-body", "BODY2", extractContents(p->getBody()->getPartAt(1)->getBody()->getContents()));
 	}
 
 	void testGenerate()
 	{
-		vmime::bodyPart p1;
-		p1.getHeader()->getField("Foo")->setValue(vmime::string("bar"));
-		p1.getBody()->setContents(vmime::factory<vmime::stringContentHandler>::create("Baz"));
+		auto p1(vmime::factory<vmime::bodyPart>::create());
+		p1->getHeader()->getField("Foo")->setValue(vmime::string("bar"));
+		p1->getBody()->setContents(vmime::factory<vmime::stringContentHandler>::create("Baz"));
 
-		VASSERT_EQ("1", "Foo: bar\r\n\r\nBaz", p1.generate());
+		VASSERT_EQ("1", "Foo: bar\r\n\r\nBaz", p1->generate());
 	}
 
 	void testPrologEpilog()
@@ -131,11 +131,11 @@ VMIME_TEST_SUITE_BEGIN
 			"--=_boundary--\r\n"
 			"Epilog text";
 
-		vmime::bodyPart part;
-		part.parse(testMail);
+		auto part(vmime::factory<vmime::bodyPart>::create());
+		part->parse(testMail);
 
-		VASSERT_EQ("prolog", "Prolog text", part.getBody()->getPrologText());
-		VASSERT_EQ("epilog", "Epilog text", part.getBody()->getEpilogText());
+		VASSERT_EQ("prolog", "Prolog text", part->getBody()->getPrologText());
+		VASSERT_EQ("epilog", "Epilog text", part->getBody()->getEpilogText());
 	}
 
 	// Test for bug fix: prolog should not be encoded
@@ -198,13 +198,13 @@ VMIME_TEST_SUITE_BEGIN
 			"--MY-BOUNDARY\r\n"
 			"--MY-BOUNDARY--\r\n";
 
-		vmime::bodyPart p;
-		p.parse(str);
+		auto p(vmime::factory<vmime::bodyPart>::create());
+		p->parse(str);
 
-		VASSERT_EQ("count", 2, p.getBody()->getPartCount());
+		VASSERT_EQ("count", 2, p->getBody()->getPartCount());
 
-		VASSERT_EQ("part1-body", "BODY1", extractContents(p.getBody()->getPartAt(0)->getBody()->getContents()));
-		VASSERT_EQ("part2-body", "", extractContents(p.getBody()->getPartAt(1)->getBody()->getContents()));
+		VASSERT_EQ("part1-body", "BODY1", extractContents(p->getBody()->getPartAt(0)->getBody()->getContents()));
+		VASSERT_EQ("part2-body", "", extractContents(p->getBody()->getPartAt(1)->getBody()->getContents()));
 	}
 
 	/** Ensure '7bit' encoding is used when body is 7-bit only. */
@@ -258,13 +258,13 @@ VMIME_TEST_SUITE_BEGIN
 			"--UNKNOWN-BOUNDARY\r\nHEADER2\r\n\r\nBODY2\r\n"
 			"--UNKNOWN-BOUNDARY--";
 
-		vmime::bodyPart p;
-		p.parse(str);
+		auto p(vmime::factory<vmime::bodyPart>::create());
+		p->parse(str);
 
-		VASSERT_EQ("count", 2, p.getBody()->getPartCount());
+		VASSERT_EQ("count", 2, p->getBody()->getPartCount());
 
-		VASSERT_EQ("part1-body", "BODY1", extractContents(p.getBody()->getPartAt(0)->getBody()->getContents()));
-		VASSERT_EQ("part2-body", "BODY2", extractContents(p.getBody()->getPartAt(1)->getBody()->getContents()));
+		VASSERT_EQ("part1-body", "BODY1", extractContents(p->getBody()->getPartAt(0)->getBody()->getContents()));
+		VASSERT_EQ("part2-body", "BODY2", extractContents(p->getBody()->getPartAt(1)->getBody()->getContents()));
 	}
 
 	void testParseVeryBigMessage()

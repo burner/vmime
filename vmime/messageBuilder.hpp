@@ -53,6 +53,8 @@ public:
 
 public:
 
+	void initAfterCreate();
+
 	/** Return the expeditor of the message (From:).
 	  *
 	  * @return expeditor of the message

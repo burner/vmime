@@ -44,6 +44,7 @@ class htmlTextPart : public textPart
 public:
 
 	htmlTextPart();
+	void initAfterCreate();
 	~htmlTextPart();
 
 	const mediaType getType() const;

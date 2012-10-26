@@ -45,15 +45,19 @@ namespace vmime
 
 
 body::body()
-	: m_contents(vmime::factory<emptyContentHandler>::create())
-	//, m_part(NULL) TODO shared_ptr
-	//, m_header(nullptr) TODO shared_ptr
+	//: m_contents(vmime::factory<emptyContentHandler>::create())
+	//: m_part(NULL) //TODO shared_ptr
+	//, m_header(NULL)// TODO shared_ptr
 {
 }
 
 
 body::~body()
 {
+}
+
+void body::initAfterCreate() {
+	m_contents = vmime::factory<emptyContentHandler>::create();
 }
 
 

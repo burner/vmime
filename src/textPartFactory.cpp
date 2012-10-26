@@ -35,11 +35,13 @@ namespace vmime
 
 textPartFactory::textPartFactory()
 {
+}
+
+void textPartFactory::initAfterCreate() {
 	// Register some default names
 	registerType <plainTextPart>(mediaType(mediaTypes::TEXT, mediaTypes::TEXT_PLAIN));
 	registerType <htmlTextPart>(mediaType(mediaTypes::TEXT, mediaTypes::TEXT_HTML));
 }
-
 
 textPartFactory::~textPartFactory()
 {

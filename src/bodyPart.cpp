@@ -29,8 +29,8 @@ namespace vmime
 
 
 bodyPart::bodyPart()
-	: m_header(vmime::factory<header>::create()),
-	  m_body(vmime::factory<body>::create())
+	//: m_header(vmime::factory<header>::create()),
+	  //m_body(vmime::factory<body>::create())
 	  //, m_parent(NULL) TODO shared
 {
 	//m_body->setParentPart(thisRef().dynamicCast <bodyPart>()); TODO shared
@@ -38,14 +38,16 @@ bodyPart::bodyPart()
 
 
 bodyPart::bodyPart(std::weak_ptr<vmime::bodyPart> parentPart)
-	: m_header(vmime::factory<header>::create()),
-	  m_body(vmime::factory<body>::create()),
-	  m_parent(parentPart)
+	//: m_header(vmime::factory<header>::create()),
+	  //m_body(vmime::factory<body>::create()),
+	  : m_parent(parentPart)
 {
 	// m_body->setParentPart(thisRef().dynamicCast <bodyPart>()); TODO shared
 }
 
 void bodyPart::initAfterCreate() {
+	m_header = vmime::factory<header>::create();
+	m_body = vmime::factory<body>::create();
 	m_body->setParentPart(std::dynamic_pointer_cast<bodyPart>(thisRef()));
 }
 

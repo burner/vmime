@@ -130,8 +130,9 @@ class initializer
 {
 public:
 
-	initializer()
-	{
+	initializer() { }
+
+	void initAfterCreate() {
 		options::getInstance();
 
 		utility::encoder::encoderFactory::getInstance();

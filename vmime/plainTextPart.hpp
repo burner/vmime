@@ -40,6 +40,8 @@ class plainTextPart : public textPart
 public:
 
 	plainTextPart();
+	void initAfterCreate();
+
 	~plainTextPart();
 
 	const mediaType getType() const;

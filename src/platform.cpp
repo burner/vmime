@@ -28,7 +28,8 @@ namespace vmime
 {
 
 
-std::shared_ptr<platform::handler> platform::sm_handler = NULL;
+// std::shared_ptr<platform::handler> platform::sm_handler = NULL; TODO shared
+std::shared_ptr<platform::handler> platform::sm_handler;
 
 
 platform::handler::~handler()

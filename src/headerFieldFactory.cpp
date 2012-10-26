@@ -44,6 +44,10 @@ namespace vmime
 
 headerFieldFactory::headerFieldFactory()
 {
+	initAfterCreate();
+}
+
+void headerFieldFactory::initAfterCreate() {
 	// Register parameterized fields
 	registerField <contentTypeField>(vmime::fields::CONTENT_TYPE);
 	registerField <parameterizedHeaderField>(vmime::fields::CONTENT_TRANSFER_ENCODING);

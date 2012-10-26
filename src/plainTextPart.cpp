@@ -35,8 +35,11 @@ namespace vmime
 
 
 plainTextPart::plainTextPart()
-	: m_text(vmime::factory<emptyContentHandler>::create())
 {
+}
+
+void plainTextPart::initAfterCreate() {
+	m_text = vmime::factory<emptyContentHandler>::create();
 }
 
 

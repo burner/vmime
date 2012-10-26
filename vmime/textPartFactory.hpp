@@ -60,6 +60,7 @@ protected:
 #endif // VMIME_BUILDING_DOC
 
 public:
+	void initAfterCreate();
 
 	static textPartFactory* getInstance();
 

@@ -56,6 +56,8 @@ public:
 	body();
 	~body();
 
+	void initAfterCreate();
+
 	/** Add a part at the end of the list.
 	  *
 	  * @param part part to append
