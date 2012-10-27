@@ -95,7 +95,9 @@ void charset::convert(utility::inputStream& in, utility::outputStream& out,
 void charset::convert(const string& in, string& out, const charset& source, const charset& dest)
 {
 	charsetConverter conv(source, dest);
-	conv.convert(in, out);
+	conv.initAfterCreate();
+	//auto conv(vmime::factory<charsetConverter>::create(source, dest));
+	//conv->convert(in, out);
 }
 
 

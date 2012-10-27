@@ -174,8 +174,7 @@ VMIME_TEST_SUITE_BEGIN
 		std::string ostr;
 		vmime::utility::outputStreamStringAdapter out(ostr);
 
-		for (int i = 0 ; i < 10 ; ++i)
-		{
+		for (int i = 0 ; i < 10 ; ++i) {
 			ostr.clear();
 
 			msg->parse(istr);
@@ -184,8 +183,10 @@ VMIME_TEST_SUITE_BEGIN
 			istr = ostr;
 		}
 
-		VASSERT_EQ("prolog", "This is a multi-part message in MIME format. Your mail reader"
-					   " does not understand MIME message format.", msg->getBody()->getPrologText());
+		VASSERT_EQ("prolog", 
+			"This is a multi-part message in MIME format. Your mail reader"
+		   " does not understand MIME message format.", 
+		   msg->getBody()->getPrologText());
 		VASSERT_EQ("epilog", "Epilog text", msg->getBody()->getEpilogText());
 	}
 
