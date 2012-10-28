@@ -29,6 +29,7 @@
 
 #include "vmime/disposition.hpp"
 #include "vmime/emptyContentHandler.hpp"
+#include "vmime/factory.hpp"
 
 
 namespace vmime

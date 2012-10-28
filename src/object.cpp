@@ -33,28 +33,28 @@ namespace vmime
 {
 
 
-object::object()
+object::object() : enable_shared_from_this()
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
-	: thisShr(std::shared_ptr<object>(this))
+	//: thisShr(std::shared_ptr<object>(this))
 {
 }
 
 
-object::object(const object&)
+object::object(const object&): enable_shared_from_this()
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
-	: thisShr(std::shared_ptr<object>(this))
+	//: thisShr(std::shared_ptr<object>(this))
 {
 }
 
-object::object(object* const)
+object::object(object* const) : enable_shared_from_this()
 	// : m_refMgr(utility::refManager::create(this)) TODO shared
 	//: m_thisRef(std::make_shared<object>(this))
 	//: m_thisRef(std::shared_ptr<object>(this))
-	: thisShr(std::shared_ptr<object>(this))
+	//: thisShr(std::shared_ptr<object>(this))
 {
 }
 
@@ -64,37 +64,21 @@ object& object::operator=(const object&)
 	return *this;
 }
 
-struct NullDeleter {void operator()(object* o) {} };
-
-object::~object()
-{
-	object* tmp = NULL;
-	std::cout<<thisShr.use_count()<<std::endl;
-	if(thisShr) {
-		thisShr.reset(tmp, NullDeleter());
-		//thisShr.swap(tmp);
-	} else {
-		thisShr.reset(tmp, NullDeleter());
-		//thisShr.swap(tmp);
-		//thisWeak.reset(tmp, NullDeleter());
-	}
-	std::cout<<thisShr.use_count()<<std::endl;
-	// delete m_refMgr; TODO shared
-	// m_refMgr = 0; TODO shared
-}
+object::~object() { }
 
 
 std::shared_ptr<object> object::thisRef()
 {
 	// m_refMgr->addStrong(); TODO shared
 	//return m_thisRef.lock();
-	if(thisShr) {
+	/*if(thisShr) {
 		std::shared_ptr<object> ret(this->thisShr);
 		this->thisWeak = this->thisShr;
 		this->thisShr.reset();
 		return ret;
 	}
-	return this->thisWeak.lock();
+	return this->thisWeak.lock();*/
+	return this->shared_from_this();
 }
 
 

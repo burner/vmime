@@ -55,6 +55,8 @@ protected:
 
 public:
 
+	void initAfterCreate();
+
 	static headerFieldFactory* getInstance();
 
 #ifndef VMIME_BUILDING_DOC

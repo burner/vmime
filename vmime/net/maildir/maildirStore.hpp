@@ -57,6 +57,9 @@ class maildirStore : public store
 public:
 
 	maildirStore(std::shared_ptr<session> sess, std::shared_ptr<security::authenticator> auth);
+	/*void initAfterCreate() {
+		store::initAfterCreate();
+	}*/
 	~maildirStore();
 
 	const string getProtocolName() const;

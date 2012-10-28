@@ -343,12 +343,16 @@ VMIME_TEST_SUITE_BEGIN
 
 	void testWordGenerateMultiBytes()
 	{
+		auto w1(vmime::factory<vmime::word>::create(
+			"aaa\xc3\xa9zzz", vmime::charset("utf-8")));
 		// Ensure we don't encode a non-integral number of characters
 		VASSERT_EQ("1", "=?utf-8?Q?aaa?==?utf-8?Q?=C3=A9?==?utf-8?Q?zzz?=",
-			cleanGeneratedWords(vmime::word("aaa\xc3\xa9zzz", vmime::charset("utf-8")).generate(16)));
+			cleanGeneratedWords((*w1).generate(16)));
 
+		auto w2(vmime::factory<vmime::word>::create(
+			"aaa\xc3\xa9zzz", vmime::charset("utf-8")));
 		VASSERT_EQ("2", "=?utf-8?Q?aaa=C3=A9?==?utf-8?Q?zzz?=",
-			cleanGeneratedWords(vmime::word("aaa\xc3\xa9zzz", vmime::charset("utf-8")).generate(17)));
+			cleanGeneratedWords((*w2).generate(17)));
 	}
 
 	void testWordGenerateQuote()

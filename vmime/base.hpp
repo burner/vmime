@@ -45,21 +45,6 @@ namespace vmime
 	class word;
 	class charset;
 
-	template< class D_ > class factory {
-		public:
-		template<typename... Args_ > static
-		std::shared_ptr< D_ > create(Args_&&... args ) {
-			D_* tmp = new D_(std::forward<Args_>(args) ...);
-			return std::dynamic_pointer_cast<D_>(tmp->thisRef());
-		}
-
-		static std::shared_ptr<D_> create() {
-			D_* tmp = new D_();
-			return std::dynamic_pointer_cast<D_>(tmp->thisRef());
-		}
-	};
-
-
 	// "Null" strings
 	extern const string NULL_STRING;
 

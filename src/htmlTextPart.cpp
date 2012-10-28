@@ -44,6 +44,11 @@ htmlTextPart::htmlTextPart()
 {
 }
 
+void htmlTextPart::initAfterCreate() {
+	m_plainText = vmime::factory<emptyContentHandler>::create();
+	m_text = vmime::factory<emptyContentHandler>::create();
+}
+
 
 htmlTextPart::~htmlTextPart()
 {

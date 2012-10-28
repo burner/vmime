@@ -48,6 +48,10 @@ protected:
 
 public:
 
+	void initAfterCreate() {
+		service::initAfterCreate();
+	}
+
 	/** Return the default folder. This is protocol dependent
 	  * and usually is the INBOX folder.
 	  *

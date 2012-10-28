@@ -33,6 +33,9 @@ namespace vmime
 
 messageBuilder::messageBuilder()
 {
+}
+
+void messageBuilder::initAfterCreate() {
 	// By default there is one text part of type "text/plain"
 	constructTextPart(mediaType(mediaTypes::TEXT, mediaTypes::TEXT_PLAIN));
 }

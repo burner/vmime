@@ -25,6 +25,7 @@
 #include "vmime/parserHelpers.hpp"
 
 #include <algorithm>
+#include <assert.h>
 
 
 namespace vmime
@@ -362,6 +363,7 @@ header::fieldHasName::fieldHasName(const string& name)
 
 bool header::fieldHasName::operator() (const std::shared_ptr<const headerField>& field)
 {
+	assert(field);
 	return utility::stringUtils::toLower(field->getName()) == m_name;
 }
 

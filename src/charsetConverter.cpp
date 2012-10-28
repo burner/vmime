@@ -84,7 +84,20 @@ charsetConverter::charsetConverter(const charset& source, const charset& dest)
 	: m_desc(NULL), m_source(source), m_dest(dest)
 {
 	// Get an iconv descriptor
-	const iconv_t cd = iconv_open(dest.getName().c_str(), source.getName().c_str());
+	/*const iconv_t cd = iconv_open(dest.getName().c_str(), source.getName().c_str());
+
+	if (cd != reinterpret_cast <iconv_t>(-1))
+	{
+		iconv_t* p = new iconv_t;
+		*p= cd;
+
+		m_desc = p;
+	}*/
+}
+
+void charsetConverter::initAfterCreate() {
+	// Get an iconv descriptor
+	const iconv_t cd = iconv_open(m_dest.getName().c_str(), m_source.getName().c_str());
 
 	if (cd != reinterpret_cast <iconv_t>(-1))
 	{
@@ -93,6 +106,7 @@ charsetConverter::charsetConverter(const charset& source, const charset& dest)
 
 		m_desc = p;
 	}
+
 }
 
 

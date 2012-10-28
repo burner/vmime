@@ -49,6 +49,7 @@ public:
 	  * @param dest output charset
 	  */
 	charsetConverter(const charset& source, const charset& dest);
+	void initAfterCreate();
 
 	~charsetConverter();
 

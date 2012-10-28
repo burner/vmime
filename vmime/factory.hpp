@@ -1,6 +1,5 @@
-//
 // VMime library (http://www.vmime.org)
-// Copyright (C) 2002-2009 Vincent Richard <vincent@vincent-richard.net>
+// Copyright (C) 2012 Robert "burner" Schadek rburners@gmail.com
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -21,50 +20,31 @@
 // the GNU General Public License cover the whole combination.
 //
 
-#ifndef VMIME_PLAINTEXTPART_HPP_INCLUDED
-#define VMIME_PLAINTEXTPART_HPP_INCLUDED
+#ifndef VMIME_FACTORY_HPP_INCLUDED
+#define VMIME_FACTORY_HPP_INCLUDED
 
+#include <memory>
 
-#include "vmime/textPart.hpp"
+namespace vmime {
+	template< class D_ > class factory {
+		public:
+		template<typename... Args_ > static
+		std::shared_ptr< D_ > create(Args_&&... args ) {
+			//D_* tmp = new D_(std::forward<Args_>(args) ...);
+			//return std::dynamic_pointer_cast<D_>(tmp->thisRef());
+			std::shared_ptr<D_> tmp(new D_(std::forward<Args_>(args) ...));
+			tmp->initAfterCreate();
+			return tmp;
+		}
+	
+		static std::shared_ptr<D_> create() {
+			//D_* tmp = new D_();
+			//return std::dynamic_pointer_cast<D_>(tmp->thisRef());
+			std::shared_ptr<D_> tmp(new D_());
+			tmp->initAfterCreate();
+			return tmp;
+		}
+	};
+}
 
-
-namespace vmime
-{
-
-
-/** Text part of type 'text/plain'.
-  */
-
-class plainTextPart : public textPart
-{
-public:
-
-	plainTextPart();
-	void initAfterCreate();
-
-	~plainTextPart();
-
-	const mediaType getType() const;
-
-	const charset& getCharset() const;
-	void setCharset(const charset& ch);
-
-	const std::shared_ptr<const contentHandler> getText() const;
-	void setText(std::shared_ptr<contentHandler> text);
-
-	int getPartCount() const;
-
-	void generateIn(std::shared_ptr<bodyPart> message, std::shared_ptr<bodyPart> parent) const;
-	void parse(std::shared_ptr<const bodyPart> message, std::shared_ptr<const bodyPart> parent, std::shared_ptr<const bodyPart> textPart);
-
-private:
-
-	std::shared_ptr<contentHandler> m_text;
-	charset m_charset;
-};
-
-
-} // vmime
-
-
-#endif // VMIME_PLAINTEXTPART_HPP_INCLUDED
+#endif

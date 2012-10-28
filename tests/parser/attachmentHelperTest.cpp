@@ -91,14 +91,17 @@ VMIME_TEST_SUITE_BEGIN
 			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>::create
-			(vmime::factory<vmime::stringContentHandler>::create("test"),
-				vmime::mediaType("image/jpeg"));
+		std::shared_ptr<vmime::attachment> att =
+			vmime::factory<vmime::defaultAttachment>::create(
+				vmime::factory<vmime::stringContentHandler>::create("test"),
+				vmime::mediaType("image/jpeg")
+			);
 
 		vmime::attachmentHelper::addAttachment(msg, att);
 
 		VASSERT_EQ("1", "multipart/mixed[text/plain,image/jpeg]", getStructure(msg));
-		VASSERT_EQ("2", "The text\r\n", extractBodyContents(msg->getBody()->getPartAt(0)));
+		VASSERT_EQ("2", "The text\r\n",
+		extractBodyContents(msg->getBody()->getPartAt(0)));
 	}
 
 	void testAddAttachment2()
@@ -121,9 +124,11 @@ VMIME_TEST_SUITE_BEGIN
 			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>::create
-			(vmime::factory<vmime::stringContentHandler>::create("test"),
-				vmime::mediaType("image/jpeg"));
+		std::shared_ptr<vmime::attachment> att =
+			vmime::factory<vmime::defaultAttachment>::create(
+				vmime::factory<vmime::stringContentHandler>::create("test"),
+				vmime::mediaType("image/jpeg")
+			);
 
 		vmime::attachmentHelper::addAttachment(msg, att);
 
@@ -146,9 +151,11 @@ VMIME_TEST_SUITE_BEGIN
 			vmime::factory<vmime::message>::create();
 		msg->parse(data);
 
-		std::shared_ptr<vmime::attachment> att = vmime::factory<vmime::defaultAttachment>::create
-			(vmime::factory<vmime::stringContentHandler>::create("test"),
-				vmime::mediaType("image/jpeg"));
+		std::shared_ptr<vmime::attachment> att =
+			vmime::factory<vmime::defaultAttachment>::create(
+				vmime::factory<vmime::stringContentHandler>::create("test"),
+				vmime::mediaType("image/jpeg")
+			);
 
 		vmime::attachmentHelper::addAttachment(msg, att);
 

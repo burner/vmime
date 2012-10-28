@@ -41,7 +41,7 @@ class message : public bodyPart
 public:
 
 	message();
-
+	void initAfterCreate();
 
 public:
 

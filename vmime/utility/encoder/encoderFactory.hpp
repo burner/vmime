@@ -39,14 +39,17 @@ namespace encoder {
 
 class encoderFactory
 {
+	friend class vmime::factory<encoderFactory>;
 private:
 
 	encoderFactory();
-	~encoderFactory();
 
 public:
+	~encoderFactory();
+	void initAfterCreate();
 
-	static encoderFactory* getInstance();
+	// static encoderFactory* getInstance(); TODO shared
+	static std::shared_ptr<encoderFactory> getInstance();
 
 	/** Information about a registered encoder. */
 	class registeredEncoder : public object
@@ -108,7 +111,10 @@ public:
 		//std::shared_ptr<registeredEncoderImpl<E>> tmpStd =
 		//	vmime::factory<registeredEncoderImpl<E>>(
 		//	);
-		registeredEncoderImpl<E>* tmp = new registeredEncoderImpl<E>(
+		// registeredEncoderImpl<E>* tmp = new registeredEncoderImpl<E>( TODO
+		// shared
+		std::shared_ptr<registeredEncoderImpl<E>> tmp =
+			vmime::factory<registeredEncoderImpl<E>>::create(
 				utility::stringUtils::toLower(name)
 				);
 		std::shared_ptr<object> tmpStd = tmp->thisRef();
