@@ -172,13 +172,15 @@ VMIME_TEST_SUITE_BEGIN
 		std::string istr(testmail);
 
 		std::string ostr;
-		vmime::utility::outputStreamStringAdapter out(ostr);
+		//vmime::utility::outputStreamStringAdapter out(ostr); TODO shared
+		auto out(vmime::factory<vmime::utility::outputStreamStringAdapter>::
+			create(ostr));
 
 		for (int i = 0 ; i < 10 ; ++i) {
 			ostr.clear();
 
 			msg->parse(istr);
-			msg->generate(out);
+			msg->generate(*out);
 
 			istr = ostr;
 		}
